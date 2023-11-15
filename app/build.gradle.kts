@@ -58,8 +58,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:0.31.5-beta")
     implementation("com.google.accompanist:accompanist-insets:0.31.5-beta")
 
-
-
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("androidx.compose.material:material:1.6.0-alpha08")
