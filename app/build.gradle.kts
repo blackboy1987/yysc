@@ -62,13 +62,7 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.navigation:navigation-compose:2.7.5")
-    implementation("com.google.android.material:material:1.12.0-alpha01")
-    implementation("androidx.compose.material:material:1.5.4")
     implementation("androidx.compose.material:material:1.6.0-alpha08")
-
-
-
-
 
     implementation("io.coil-kt:coil-compose:2.5.0")
 
@@ -79,8 +73,6 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    // implementation("androidx.compose.material3:material3")
-    //implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material3:material3:1.2.0-alpha10")
 
     testImplementation("junit:junit:4.13.2")
