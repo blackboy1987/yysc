@@ -69,7 +69,7 @@ fun HomeScreen(navController: NavHostController) {
         modifier = Modifier.fillMaxHeight(),
         color = backgroundColor,
     ) {
-        LazyRow() {
+        LazyColumn() {
 
             item {
                 Row(

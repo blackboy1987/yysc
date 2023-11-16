@@ -18,10 +18,13 @@ val btnTextSize = 12.sp
 val padding8 = 8.dp
 val padding16 = 16.dp
 
+val shape4 = 4.dp
 val shape8 = 8.dp
 val shape16 = 16.dp
 
 
+val fontSize8 = 8.sp
+val fontSize9 = 9.sp
 val fontSize10 = 10.sp
 val fontSize11 = 11.sp
 val fontSize12 = 12.sp
