@@ -3,31 +3,23 @@ package com.bootx.yysc.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +35,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.R
-
+import com.bootx.yysc.ui.components.AdData
+import com.bootx.yysc.ui.theme.backgroundColor
+import com.bootx.yysc.ui.theme.fontSize12
+import com.bootx.yysc.ui.theme.height16
+import com.bootx.yysc.ui.theme.height32
+import com.bootx.yysc.ui.theme.height4
+import com.bootx.yysc.ui.theme.height8
+import com.bootx.yysc.ui.theme.padding8
+import com.bootx.yysc.ui.theme.primaryFontColor
+import com.bootx.yysc.ui.theme.shape8
 
 data class ItemList(
     val icon: Int,
@@ -62,7 +63,7 @@ var itemList = listOf<ItemList>(
 fun HomeScreen(navController: NavHostController) {
     Surface(
         modifier = Modifier.fillMaxHeight(),
-        color = Color(0xFFf2f1f6),
+        color = backgroundColor,
     ) {
         Column {
             Row(
@@ -90,32 +91,32 @@ fun HomeScreen(navController: NavHostController) {
                             painter = painterResource(id = itemList.icon),
                             contentDescription = "", tint = Color(0xFFfea928)
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = itemList.title, fontSize = 12.sp)
+                        Spacer(modifier = Modifier.height(height4))
+                        Text(text = itemList.title, color = primaryFontColor, fontSize = fontSize12)
                     }
                 }
             }
 
             Column(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .padding(padding8)
+                    .clip(RoundedCornerShape(shape8))
                     .background(Color.White)
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(padding8)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(text = "好如潮")
+                    Text(text = "好评如潮", fontSize = fontSize12, color = primaryFontColor)
                     Icon(
                         imageVector = Icons.Default.ArrowForwardIos,
                         contentDescription = "",
-                        tint = Color(0xFFaeaeae)
+                        tint = Color(0xFFb7b7b7)
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(height16))
                 LazyRow {
                     items(100) {
                         Column(
@@ -124,45 +125,55 @@ fun HomeScreen(navController: NavHostController) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(height8))
                             AsyncImage(
                                 modifier = Modifier.size(80.dp),
                                 model = "https://pp.myapp.com/ma_icon/0/icon_93301_1699860270/256",
                                 contentDescription = ""
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(height8))
                             Text(
                                 text = "WiFi万能钥匙",
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(height8))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Icon(imageVector = Icons.Filled.Star, contentDescription = "", tint = MaterialTheme.colorScheme.primary)
+                                Icon(
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
                                 Text(
                                     text = "9.9",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.primary,
                                 )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(height8))
                             Button(
-                                modifier = Modifier.fillMaxWidth(0.9f),
+                                modifier = Modifier
+                                    .fillMaxWidth(0.9f)
+                                    .height(height32),
                                 onClick = { /*TODO*/ },
                             ) {
-                                Text(text = "下载", fontSize = 12.sp)
+                                Text(text = "下载", fontSize = fontSize12, color = Color.White)
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(height8))
                         }
                     }
                 }
             }
+
+
+            AdData()
         }
     }
 }
