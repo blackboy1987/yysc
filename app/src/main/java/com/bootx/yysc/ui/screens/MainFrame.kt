@@ -46,7 +46,7 @@ fun MainFrame(navController: NavHostController) {
     )
 
     var currentNavigationIndex by remember {
-        mutableIntStateOf(3)
+        mutableIntStateOf(4)
     }
 
     Scaffold(
