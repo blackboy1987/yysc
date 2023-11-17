@@ -35,8 +35,6 @@ data class NavigationItem(
 
 @Composable
 fun MainFrame(navController: NavHostController) {
-
-    navController.navigate("ListFrame/今日热门/1")
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
         NavigationItem(title = "应用", icon = Icons.Filled.Apps),
@@ -46,7 +44,7 @@ fun MainFrame(navController: NavHostController) {
     )
 
     var currentNavigationIndex by remember {
-        mutableIntStateOf(4)
+        mutableIntStateOf(0)
     }
 
     Scaffold(
