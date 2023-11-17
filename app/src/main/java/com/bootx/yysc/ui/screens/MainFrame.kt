@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Games
@@ -27,16 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
+import com.bootx.yysc.ui.navigation.Destinations
 
 data class NavigationItem(
     val title: String, //底部导航栏的标题
     val icon: ImageVector//底部导航栏图标
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainFrame(navController: NavHostController) {
 
+    navController.navigate("ListFrame/今日热门/1")
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
         NavigationItem(title = "应用", icon = Icons.Filled.Apps),

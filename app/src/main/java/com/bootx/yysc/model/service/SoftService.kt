@@ -19,6 +19,14 @@ interface SoftService {
         @Field("pageSize") pageSize: Int
     ): SoftListResponse
 
+    @POST("/api/soft/orderBy")
+    @FormUrlEncoded
+    suspend fun orderBy(
+        @Field("pageNumber") pageNumber: Int,
+        @Field("pageSize") pageSize: Int,
+        @Field("orderBy") orderBy: String
+    ): SoftListResponse
+
 
     @POST("/api/soft/detail")
     @FormUrlEncoded

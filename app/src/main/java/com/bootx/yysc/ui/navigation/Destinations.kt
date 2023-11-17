@@ -43,5 +43,7 @@ sealed class Destinations(val route: String) {
     object HistoryFrame : Destinations("HistoryFrame")
     //历史
     object SearchFrame : Destinations("SearchFrame")
+    //历史
+    object ListFrame : Destinations("ListFrame")
 
 }

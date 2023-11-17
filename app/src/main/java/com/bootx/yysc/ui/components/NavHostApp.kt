@@ -1,21 +1,24 @@
 package com.bootx.yysc.ui.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
 import com.bootx.yysc.ui.screens.SearchScreen
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.gson.Gson
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavHostApp() {
-    val navController = rememberAnimatedNavController()
-    AnimatedNavHost(
+    val navController = rememberNavController()
+    NavHost(
         navController = navController,
         startDestination = Destinations.HomeFrame.route,
     ) {
@@ -63,6 +66,23 @@ fun NavHostApp() {
             },
         ) {
             SearchScreen(navController)
+        }
+        composable(
+            route = "ListFrame/{title}/{orderBy}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val title = it.arguments?.getString("title") ?: ""
+            val orderBy = it.arguments?.getString("orderBy") ?: ""
+            ListScreen(navController,title,orderBy)
         }
     }
 }
