@@ -24,7 +24,8 @@ interface SoftService {
     suspend fun orderBy(
         @Field("pageNumber") pageNumber: Int,
         @Field("pageSize") pageSize: Int,
-        @Field("orderBy") orderBy: String
+        @Field("orderBy") orderBy: String,
+        @Field("categoryId") categoryId: Int = 0,
     ): SoftListResponse
 
 

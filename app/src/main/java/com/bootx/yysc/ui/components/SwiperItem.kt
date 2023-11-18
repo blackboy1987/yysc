@@ -23,20 +23,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
+import com.bootx.yysc.model.entity.CarouselEntity
 import com.bootx.yysc.ui.theme.fontSize10
 import kotlin.math.absoluteValue
 
-data class SwiperItemEntity(
-    val logo: String,
-    val image: String,
-    val title1: String = "",
-    val title2: String = "",
-    val btn: String = "",
-)
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwiperItem(items: List<SwiperItemEntity>) {
+fun SwiperItem(items: List<CarouselEntity>) {
+    Log.e("SwiperItem",items.toString())
     val pagerState = rememberPagerState(pageCount = {
         items.size
     })
@@ -48,6 +42,7 @@ fun SwiperItem(items: List<SwiperItemEntity>) {
 
         ) {
             AsyncImage(
+                contentScale = ContentScale.Inside,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -82,20 +77,23 @@ fun SwiperItem(items: List<SwiperItemEntity>) {
                     contentDescription = ""
                 )
             }
-            Box(
-                Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 80.dp, bottom = 40.dp)
-            ) {
-                Text(text = items[page].title1, color = Color.White, fontSize = fontSize10)
+            if(items[page].title1.isNotEmpty()){
+                Box(
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 80.dp, bottom = 40.dp)
+                ) {
+                    Text(text = items[page].title1, color = Color.White, fontSize = fontSize10)
+                }
             }
-
-            Box(
-                Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 80.dp, bottom = 24.dp)
-            ) {
-                Text(text = items[page].title2, color = Color.White, fontSize = fontSize10)
+            if(items[page].title2.isNotEmpty()){
+                Box(
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 80.dp, bottom = 24.dp)
+                ) {
+                    Text(text = items[page].title2, color = Color.White, fontSize = fontSize10)
+                }
             }
             Box(
                 Modifier

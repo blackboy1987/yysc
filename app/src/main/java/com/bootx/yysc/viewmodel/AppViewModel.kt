@@ -49,7 +49,7 @@ class AppViewModel:ViewModel() {
     suspend fun updateCurrentIndex(id: Int) {
         softListLoaded = false
         currentIndex = id
-        val res = softService.list(id,1,20)
+        val res = softService.orderBy(1,20,"7",id)
         val gson = Gson()
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()

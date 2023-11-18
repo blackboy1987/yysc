@@ -38,9 +38,7 @@ fun AppScreen(navController: NavHostController,vm: AppViewModel = viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         //获取分类列表
-        Log.e("LaunchedEffect2",vm.listLoaded.toString())
         vm.fetchList(1,100)
-        Log.e("LaunchedEffect2",vm.listLoaded.toString())
     }
 
     Scaffold(
@@ -76,7 +74,6 @@ fun AppScreen(navController: NavHostController,vm: AppViewModel = viewModel()) {
                             }
                         } }
                     }
-
                 }
                 LazyColumn(
                     modifier = Modifier

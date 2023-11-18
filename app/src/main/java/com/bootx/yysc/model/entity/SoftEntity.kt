@@ -10,7 +10,7 @@ data class SoftEntity(
     var memo: String,
     var logo: String,
     var updateDate: String,
-    val score: Int,
+    val score: Double,
     val downloadUrl: String,
     var images: String,
 )

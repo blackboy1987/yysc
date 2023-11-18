@@ -42,4 +42,22 @@ class SoftViewModel:ViewModel() {
         }
     }
 
+    suspend fun list2(pageNumber: Int,pageSize: Int,orderBy: String) {
+        val gson = Gson()
+        try {
+            val res = softService.orderBy(1,20,orderBy)
+            if (res.code == 0 && res.data != null) {
+                val tmpList = mutableListOf<SoftEntity>()
+                tmpList.addAll(res.data)
+                softList = tmpList
+                softListLoaded = true
+            } else {
+                Log.e("fetchList",gson.toJson(res))
+            }
+        }catch (e: Throwable){
+            listLoadedErrorData = ""
+            Log.e("fetchList", gson.toJson(e), )
+        }
+    }
+
 }

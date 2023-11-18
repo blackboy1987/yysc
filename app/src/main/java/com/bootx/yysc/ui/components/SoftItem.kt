@@ -51,8 +51,9 @@ fun SoftItem(soft: SoftEntity) {
         AsyncImage(
             model = soft.logo,
             contentDescription = "",
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier.size(60.dp)
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -67,7 +68,7 @@ fun SoftItem(soft: SoftEntity) {
                     tint = Color(0xFF2196f3),
                 )
                 Text(
-                    text = "9.7",
+                    text = String.format("%.2f", soft.score),
                     fontSize = fontSize12,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF2196f3),
@@ -101,20 +102,15 @@ fun SoftItem(soft: SoftEntity) {
                     Text(text = "星标", color = Color.White, fontSize = fontSize10)
                 }
                 Text(
-                    text = "2013条评论",
+                    text = soft.memo,
                     fontSize = fontSize12,
                     color = Color(0xFF8d9195),
                     modifier = Modifier.padding(start = padding8)
                 )
             }
         }
+        Spacer(modifier = Modifier.width(8.dp))
         OutlinedButton(
-            colors = ButtonColors(
-                containerColor = Color(0xFFf2f1f6),
-                contentColor = Color(0xFF030304),
-                disabledContainerColor = Color(0xFFf2f1f6),
-                disabledContentColor = Color(0xFF030304),
-            ),
             modifier = Modifier
                 .height(32.dp)
                 .align(Alignment.CenterVertically),

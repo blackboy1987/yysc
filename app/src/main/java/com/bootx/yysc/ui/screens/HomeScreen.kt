@@ -1,5 +1,6 @@
 package com.bootx.yysc.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.R
@@ -41,8 +46,6 @@ import com.bootx.yysc.ui.components.AdData
 import com.bootx.yysc.ui.components.MyCard
 import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.SwiperItem
-import com.bootx.yysc.ui.components.SwiperItemEntity
-import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.backgroundColor
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.height16
@@ -52,6 +55,8 @@ import com.bootx.yysc.ui.theme.height8
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.primaryFontColor
 import com.bootx.yysc.ui.theme.shape8
+import com.bootx.yysc.viewmodel.CarouselViewModel
+import com.bootx.yysc.viewmodel.HomeViewModel
 
 data class ItemList(
     val icon: Int,
@@ -67,22 +72,39 @@ var itemList = listOf<ItemList>(
 )
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    var items = listOf(
-        SwiperItemEntity(
-            title1 = "title1",
-            title2 = "title2",
-            logo = "logo",
-            image = "image",
-        )
-    )
+fun HomeScreen(
+    navController: NavHostController,
+    carouselViewModel: CarouselViewModel = viewModel(),
+    homeViewModel: HomeViewModel = viewModel()
+) {
+
+    val todayDownloadList = remember {
+        mutableStateOf(listOf<SoftEntity>())
+    }
+
+    val todayCommentList = remember {
+        mutableStateOf(listOf<SoftEntity>())
+    }
+
+
+    LaunchedEffect(Unit) {
+        //获取轮播数据
+        carouselViewModel.fetchList();
+        todayDownloadList.value = homeViewModel.orderBy(1, 30, "00")
+        todayCommentList.value = homeViewModel.orderBy(1, 30, "02")
+    }
+
+
     Surface(
         modifier = Modifier.fillMaxHeight(),
         color = backgroundColor,
     ) {
-        LazyColumn(){
+
+        LazyColumn() {
             item {
-                SwiperItem(items)
+                if (carouselViewModel.listLoaded) {
+                    SwiperItem(carouselViewModel.carousels)
+                }
             }
             item {
                 Row(
@@ -142,57 +164,65 @@ fun HomeScreen(navController: NavHostController) {
                     }
                     Spacer(modifier = Modifier.height(height16))
                     LazyRow {
-                        items(100) {
-                            Column(
-                                modifier = Modifier
-                                    .width(100.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                            ) {
-                                Spacer(modifier = Modifier.height(height8))
-                                AsyncImage(
-                                    modifier = Modifier.size(60.dp),
-                                    model = "https://pp.myapp.com/ma_icon/0/icon_93301_1699860270/256",
-                                    contentDescription = ""
-                                )
-                                Spacer(modifier = Modifier.height(height8))
-                                Text(
-                                    text = "WiFi万能钥匙",
-                                    maxLines = 1,
-                                    fontSize= fontSize12,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                                Spacer(modifier = Modifier.height(height8))
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Icon(
-                                        modifier = Modifier.size(12.dp),
-                                        imageVector = Icons.Filled.Star,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                    Text(
-                                        text = "9.9",
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                        todayCommentList.value.forEachIndexed { index, softEntity ->
+                            run {
+                                item {
+                                    Column(
+                                        modifier = Modifier
+                                            .width(100.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                    ) {
+                                        Spacer(modifier = Modifier.height(height8))
+                                        AsyncImage(
+                                            modifier = Modifier.size(60.dp),
+                                            model = softEntity.logo,
+                                            contentDescription = ""
+                                        )
+                                        Spacer(modifier = Modifier.height(height8))
+                                        Text(
+                                            text = softEntity.name,
+                                            maxLines = 1,
+                                            fontSize = fontSize12,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                        Spacer(modifier = Modifier.height(height8))
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center,
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier.size(12.dp),
+                                                imageVector = Icons.Filled.Star,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
+                                            Text(
+                                                text = "9.9",
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 12.sp,
+                                                color = MaterialTheme.colorScheme.primary,
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(height8))
+                                        Button(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.9f)
+                                                .height(height32),
+                                            onClick = { /*TODO*/ },
+                                        ) {
+                                            Text(
+                                                text = "下载",
+                                                fontSize = fontSize12,
+                                                color = Color.White
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(height8))
+                                    }
                                 }
-                                Spacer(modifier = Modifier.height(height8))
-                                Button(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .height(height32),
-                                    onClick = { /*TODO*/ },
-                                ) {
-                                    Text(text = "下载", fontSize = fontSize12, color = Color.White)
-                                }
-                                Spacer(modifier = Modifier.height(height8))
                             }
                         }
                     }
@@ -202,50 +232,13 @@ fun HomeScreen(navController: NavHostController) {
                 AdData()
             }
             item {
-                MyCard(title = "热门下载") {
+                MyCard(title = "今日下载") {
                     Column {
-                        val soft = SoftEntity(
-                            id = 3,
-                            name = "abc",
-                            size = "12.34M",
-                            memo = "memo",
-                            logo = "logo",
-                            updateDate = "2023=11-17 23:59:59",
-                            score = 3,
-                            downloadUrl = "downloadUrl",
-                            images = "",
-                        )
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
-                        SoftItem(soft)
+                        todayDownloadList.value.forEachIndexed { index, softEntity ->
+                            SoftItem(
+                                softEntity
+                            )
+                        }
                     }
                 }
             }

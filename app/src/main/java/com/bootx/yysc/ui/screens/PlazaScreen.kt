@@ -25,7 +25,7 @@ fun PlazaScreen(navController: NavHostController) {
                     name = "PUBGTool官方版",
                     images = "",
                     memo="",
-                    score = 1,
+                    score = 1.1,
                     size = "12.34M",
                     updateDate = "2023-11-16 23:52:33"
                 ))
