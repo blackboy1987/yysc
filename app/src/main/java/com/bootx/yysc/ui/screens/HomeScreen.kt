@@ -42,6 +42,7 @@ import com.bootx.yysc.ui.components.MyCard
 import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.components.SwiperItemEntity
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.backgroundColor
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.height16
@@ -67,6 +68,7 @@ var itemList = listOf<ItemList>(
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
+    navController.navigate(Destinations.SupportFrame.route)
     var items = listOf(
         SwiperItemEntity(
             title1 = "title1",
@@ -150,7 +152,7 @@ fun HomeScreen(navController: NavHostController) {
                             ) {
                                 Spacer(modifier = Modifier.height(height8))
                                 AsyncImage(
-                                    modifier = Modifier.size(80.dp),
+                                    modifier = Modifier.size(60.dp),
                                     model = "https://pp.myapp.com/ma_icon/0/icon_93301_1699860270/256",
                                     contentDescription = ""
                                 )
@@ -158,6 +160,7 @@ fun HomeScreen(navController: NavHostController) {
                                 Text(
                                     text = "WiFi万能钥匙",
                                     maxLines = 1,
+                                    fontSize= fontSize12,
                                     overflow = TextOverflow.Ellipsis,
                                 )
                                 Spacer(modifier = Modifier.height(height8))
@@ -167,6 +170,7 @@ fun HomeScreen(navController: NavHostController) {
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Icon(
+                                        modifier = Modifier.size(12.dp),
                                         imageVector = Icons.Filled.Star,
                                         contentDescription = "",
                                         tint = MaterialTheme.colorScheme.primary

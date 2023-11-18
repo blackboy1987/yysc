@@ -37,13 +37,13 @@ sealed class Destinations(val route: String) {
     object DownloadManagerFrame : Destinations("DownloadManagerFrame")
     //支持应用
     object SupportFrame : Destinations("SupportFrame")
+    //支持排行榜
+    object SupportRankFrame : Destinations("SupportRankFrame")
     //福利
     object FuLiFrame : Destinations("FuLiFrame")
     //历史
     object HistoryFrame : Destinations("HistoryFrame")
-    //历史
+    //搜索
     object SearchFrame : Destinations("SearchFrame")
-    //历史
-    object ListFrame : Destinations("ListFrame")
 
 }

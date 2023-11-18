@@ -1,6 +1,5 @@
 package com.bootx.yysc.ui.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
@@ -12,7 +11,8 @@ import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
 import com.bootx.yysc.ui.screens.SearchScreen
-import com.google.gson.Gson
+import com.bootx.yysc.ui.screens.SupportRankScreen
+import com.bootx.yysc.ui.screens.SupportScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -83,6 +83,37 @@ fun NavHostApp() {
             val title = it.arguments?.getString("title") ?: ""
             val orderBy = it.arguments?.getString("orderBy") ?: ""
             ListScreen(navController,title,orderBy)
+        }
+        composable(
+            Destinations.SupportFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            SupportScreen(navController)
+        }
+
+        composable(
+            Destinations.SupportRankFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            SupportRankScreen(navController)
         }
     }
 }
