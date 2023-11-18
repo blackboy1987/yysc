@@ -68,7 +68,6 @@ var itemList = listOf<ItemList>(
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    navController.navigate(Destinations.SupportFrame.route)
     var items = listOf(
         SwiperItemEntity(
             title1 = "title1",
