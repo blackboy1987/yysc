@@ -24,40 +24,55 @@ class SoftViewModel:ViewModel() {
 
     var softList = mutableListOf<SoftEntity>()
 
-    suspend fun fetchList(pageNumber: Int,pageSize: Int,orderBy: String) {
-        val gson = Gson()
+    var pageNumber by mutableStateOf(1)
+        private set
+
+
+    suspend fun orderBy(pageNumber: Int,pageSize: Int,orderBy: String): List<SoftEntity> {
         try {
-            val res = softService.orderBy(1,20,orderBy)
+            val res = softService.orderBy(pageNumber, pageSize,orderBy)
             if (res.code == 0 && res.data != null) {
                 val tmpList = mutableListOf<SoftEntity>()
                 tmpList.addAll(res.data)
-                softList = tmpList
-                softListLoaded = true
-            } else {
-                Log.e("fetchList",gson.toJson(res))
+                return tmpList;
             }
         }catch (e: Throwable){
-            listLoadedErrorData = ""
-            Log.e("fetchList", gson.toJson(e), )
+            return listOf()
         }
+        return listOf()
     }
 
-    suspend fun list2(pageNumber: Int,pageSize: Int,orderBy: String) {
+    suspend fun reload(orderBy: String) {
+        softListLoaded = false
+        pageNumber = 1
+        val res = softService.orderBy(1,20,orderBy)
         val gson = Gson()
-        try {
-            val res = softService.orderBy(1,20,orderBy)
-            if (res.code == 0 && res.data != null) {
-                val tmpList = mutableListOf<SoftEntity>()
-                tmpList.addAll(res.data)
-                softList = tmpList
-                softListLoaded = true
-            } else {
-                Log.e("fetchList",gson.toJson(res))
-            }
-        }catch (e: Throwable){
-            listLoadedErrorData = ""
-            Log.e("fetchList", gson.toJson(e), )
+        if (res.code == 0 && res.data != null) {
+            val tmpList = mutableListOf<SoftEntity>()
+            tmpList.addAll(res.data)
+            softList = tmpList
+            softListLoaded = true
+            pageNumber += 1
+        } else {
+            Log.e("fetchList",gson.toJson(res))
         }
     }
 
+    suspend fun loadMore(orderBy: String) {
+        softListLoaded = false
+        val res = softService.orderBy(pageNumber,20,orderBy)
+        val gson = Gson()
+        if (res.code == 0 && res.data != null) {
+            val tmpList = mutableListOf<SoftEntity>()
+            if (pageNumber != 1) {
+                tmpList.addAll(softList)
+            }
+            tmpList.addAll(res.data)
+            softList = tmpList
+            softListLoaded = true
+            pageNumber += 1
+        } else {
+            Log.e("fetchList",gson.toJson(res))
+        }
+    }
 }

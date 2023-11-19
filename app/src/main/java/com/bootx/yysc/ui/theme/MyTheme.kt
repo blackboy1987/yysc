@@ -10,9 +10,6 @@ val height24 = 24.dp
 val height32 = 32.dp
 val height48 = 48.dp
 
-val backgroundColor = Color(0xFFf2f1f6)
-
-val btnTextColor = Color.White
 val btnTextSize = 12.sp
 
 val padding8 = 8.dp
@@ -32,8 +29,6 @@ val fontSize13 = 13.sp
 val fontSize14 = 14.sp
 val fontSize15 = 15.sp
 val fontSize16 = 16.sp
-
-val primaryFontColor = Color(0xFF5e5e5e)
 
 var Spacer8 = 8.dp
 var Spacer16 = 16.dp

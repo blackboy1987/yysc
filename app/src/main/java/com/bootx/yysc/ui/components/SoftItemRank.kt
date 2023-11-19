@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Anchor
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -31,29 +32,33 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
+import com.bootx.yysc.model.entity.DownloadManager
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.theme.fontSize10
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape4
+import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
-fun SoftItem(soft: SoftEntity, showDownload: Boolean = true) {
+fun SoftItemRank(soft: SoftEntity, index: Int,onClick:()->Unit,onDownload:()->Unit,showRank: Boolean=true) {
     Row(
         modifier = Modifier
+            .background(Color(0xFFFFFFFF))
             .height(100.dp)
             .fillMaxWidth()
             .padding(padding8)
             .clickable {
-
+                onClick()
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SubcomposeAsyncImage(
-            loading = {
-                CircularProgressIndicator() // 圆形进度条
-            },
+        if(showRank){
+            RankIndex(index)
+        }
+        AsyncImage(
             model = soft.logo,
             contentDescription = "",
             modifier = Modifier.size(60.dp)
@@ -62,12 +67,7 @@ fun SoftItem(soft: SoftEntity, showDownload: Boolean = true) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Text(
-                text = soft.name,
-                fontSize = fontSize14,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Text(text = soft.name, fontSize = fontSize14, color = Color(0xFF050505))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -119,16 +119,20 @@ fun SoftItem(soft: SoftEntity, showDownload: Boolean = true) {
                 )
             }
         }
-        if (showDownload) {
-            Spacer(modifier = Modifier.width(8.dp))
-            OutlinedButton(
-                modifier = Modifier
-                    .height(32.dp)
-                    .align(Alignment.CenterVertically),
-                onClick = { /*TODO*/ }) {
-                Text(text = "下载", fontSize = fontSize12, textAlign = TextAlign.Center)
-            }
+        Button(
+            colors = ButtonColors(
+                containerColor = Color(0xFFf2f1f6),
+                contentColor = Color(0xFF030304),
+                disabledContainerColor = Color(0xFFf2f1f6),
+                disabledContentColor = Color(0xFF030304),
+            ),
+            modifier = Modifier
+                .height(32.dp)
+                .align(Alignment.CenterVertically),
+            onClick = {
+                onDownload()
+            }) {
+            Text(text = "下载", fontSize = fontSize12, textAlign = TextAlign.Center)
         }
-
     }
 }

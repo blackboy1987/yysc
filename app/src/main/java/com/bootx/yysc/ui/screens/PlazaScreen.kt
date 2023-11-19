@@ -2,19 +2,17 @@ package com.bootx.yysc.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.SoftItem
-import com.bootx.yysc.ui.theme.backgroundColor
 
 @Composable
 fun PlazaScreen(navController: NavHostController) {
     Surface(
         modifier = Modifier.fillMaxHeight(),
-        color = backgroundColor,
     ) {
         LazyColumn(){
             items(100) {

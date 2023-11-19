@@ -43,20 +43,20 @@ import coil.compose.AsyncImage
 import com.bootx.yysc.R
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.AdData
+import com.bootx.yysc.ui.components.ListData
 import com.bootx.yysc.ui.components.MyCard
 import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.SwiperItem
-import com.bootx.yysc.ui.theme.backgroundColor
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.height16
 import com.bootx.yysc.ui.theme.height32
 import com.bootx.yysc.ui.theme.height4
 import com.bootx.yysc.ui.theme.height8
 import com.bootx.yysc.ui.theme.padding8
-import com.bootx.yysc.ui.theme.primaryFontColor
 import com.bootx.yysc.ui.theme.shape8
 import com.bootx.yysc.viewmodel.CarouselViewModel
 import com.bootx.yysc.viewmodel.HomeViewModel
+import com.bootx.yysc.viewmodel.SoftViewModel
 
 data class ItemList(
     val icon: Int,
@@ -75,7 +75,8 @@ var itemList = listOf<ItemList>(
 fun HomeScreen(
     navController: NavHostController,
     carouselViewModel: CarouselViewModel = viewModel(),
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(),
+    softViewModel: SoftViewModel = viewModel()
 ) {
 
     val todayDownloadList = remember {
@@ -86,18 +87,22 @@ fun HomeScreen(
         mutableStateOf(listOf<SoftEntity>())
     }
 
+    val randomList = remember {
+        mutableStateOf(listOf<SoftEntity>())
+    }
+
 
     LaunchedEffect(Unit) {
         //获取轮播数据
         carouselViewModel.fetchList();
-        todayDownloadList.value = homeViewModel.orderBy(1, 30, "00")
-        todayCommentList.value = homeViewModel.orderBy(1, 30, "02")
+        todayDownloadList.value = softViewModel.orderBy(1, 30, "00")
+        todayCommentList.value = softViewModel.orderBy(1, 30, "01")
+        randomList.value = softViewModel.orderBy(1, 30, "2")
     }
 
 
     Surface(
         modifier = Modifier.fillMaxHeight(),
-        color = backgroundColor,
     ) {
 
         LazyColumn() {
@@ -135,7 +140,6 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(height4))
                             Text(
                                 text = itemList.title,
-                                color = primaryFontColor,
                                 fontSize = fontSize12
                             )
                         }
@@ -155,8 +159,11 @@ fun HomeScreen(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(text = "好评如潮", fontSize = fontSize12, color = primaryFontColor)
+                        Text(text = "好评如潮", fontSize = fontSize12)
                         Icon(
+                            modifier = Modifier.clickable {
+                                navController.navigate("ListFrame/好评如潮/01")
+                            },
                             imageVector = Icons.Default.ArrowForwardIos,
                             contentDescription = "",
                             tint = Color(0xFFb7b7b7)
@@ -199,7 +206,7 @@ fun HomeScreen(
                                                 tint = MaterialTheme.colorScheme.primary
                                             )
                                             Text(
-                                                text = "9.9",
+                                                text = softEntity.score.toString(),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 fontWeight = FontWeight.Bold,
@@ -231,8 +238,18 @@ fun HomeScreen(
             item {
                 AdData()
             }
+            item{
+                MyCard(title = "随心看看", onClick = {
+                    navController.navigate("ListFrame/随心看看/2")
+                }) {
+                    ListData(randomList.value)
+                }
+                Spacer(modifier = Modifier.height(height16))
+            }
             item {
-                MyCard(title = "今日下载") {
+                MyCard(title = "今日下载", onClick = {
+                    navController.navigate("ListFrame/今日下载/00")
+                }) {
                     Column {
                         todayDownloadList.value.forEachIndexed { index, softEntity ->
                             SoftItem(
