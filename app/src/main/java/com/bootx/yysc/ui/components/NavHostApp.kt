@@ -11,6 +11,7 @@ import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
 import com.bootx.yysc.ui.screens.SearchScreen
+import com.bootx.yysc.ui.screens.SignInScreen
 import com.bootx.yysc.ui.screens.SupportRankScreen
 import com.bootx.yysc.ui.screens.SupportScreen
 
@@ -114,6 +115,22 @@ fun NavHostApp() {
             },
         ) {
             SupportRankScreen(navController)
+        }
+
+        composable(
+            Destinations.SignInFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            SignInScreen(navController)
         }
     }
 }

@@ -47,6 +47,7 @@ import com.bootx.yysc.ui.components.ListData
 import com.bootx.yysc.ui.components.MyCard
 import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.SwiperItem
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.height16
 import com.bootx.yysc.ui.theme.height32
@@ -128,7 +129,9 @@ fun HomeScreen(
                                 .weight(1.0f)
                                 .fillMaxHeight()
                                 .clickable {
-
+                                    if(itemList.title=="签到"){
+                                        navController.navigate(Destinations.SignInFrame.route)
+                                    }
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,

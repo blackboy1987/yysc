@@ -32,7 +32,7 @@ sealed class Destinations(val route: String) {
     //我的收藏
     object CollectFrame : Destinations("CollectFrame")
     //签到
-    object SignFrame : Destinations("SignFrame")
+    object SignInFrame : Destinations("SignInFrame")
     //下载管理
     object DownloadManagerFrame : Destinations("DownloadManagerFrame")
     //支持应用
