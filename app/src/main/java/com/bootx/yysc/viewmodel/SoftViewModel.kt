@@ -2,6 +2,7 @@ package com.bootx.yysc.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,7 @@ class SoftViewModel:ViewModel() {
 
     var softList = mutableListOf<SoftEntity>()
 
-    var pageNumber by mutableStateOf(1)
+    var pageNumber by mutableIntStateOf(1)
         private set
 
 

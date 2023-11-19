@@ -45,5 +45,4 @@ sealed class Destinations(val route: String) {
     object HistoryFrame : Destinations("HistoryFrame")
     //搜索
     object SearchFrame : Destinations("SearchFrame")
-
 }
