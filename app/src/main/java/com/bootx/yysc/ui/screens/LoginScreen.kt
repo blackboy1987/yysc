@@ -1,5 +1,6 @@
 package com.bootx.yysc.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,15 +40,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.R
 import com.bootx.yysc.ui.AnimatedButton
 import com.bootx.yysc.ui.theme.YYSCTheme
+import com.bootx.yysc.viewmodel.LoginViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(navController: NavHostController,loginViewModel: LoginViewModel= viewModel()) {
+    val coroutineScope = rememberCoroutineScope()
     YYSCTheme {
         Surface(
             color = Color.White,
@@ -137,7 +143,12 @@ fun LoginScreen(navController: NavHostController) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(text = "忘记密码", fontSize = 12.sp, textAlign = TextAlign.Right)
                         Spacer(modifier = Modifier.height(16.dp))
-                        AnimatedButton(username.value,password.value)
+                        AnimatedButton(username.value,password.value, onLogin = {
+                            coroutineScope.launch {
+                                val data = loginViewModel.login(username.value,password.value)
+                                Log.e("LoginScreen", "LoginScreen: ${data.toString()}", )
+                            }
+                        })
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(text = "或者", fontSize = 12.sp, textAlign = TextAlign.Right)
                         Spacer(modifier = Modifier.height(16.dp))

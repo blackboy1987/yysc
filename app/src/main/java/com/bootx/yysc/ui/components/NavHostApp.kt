@@ -13,6 +13,7 @@ import com.bootx.yysc.ui.screens.HotScreen
 import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
+import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
 import com.bootx.yysc.ui.screens.QunZuScreen
 import com.bootx.yysc.ui.screens.SearchScreen
@@ -215,6 +216,21 @@ fun NavHostApp() {
             },
         ) {
             MyIconScreen(navController)
+        }
+        composable(
+            Destinations.MyIconListFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            MyIconListScreen(navController)
         }
     }
 }

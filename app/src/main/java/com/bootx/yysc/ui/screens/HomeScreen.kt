@@ -1,6 +1,5 @@
 package com.bootx.yysc.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -80,7 +79,7 @@ fun HomeScreen(
     softViewModel: SoftViewModel = viewModel()
 ) {
 
-    navController.navigate(Destinations.MyIconFrame.route)
+    navController.navigate(Destinations.LoginFrame.route)
 
     val todayDownloadList = remember {
         mutableStateOf(listOf<SoftEntity>())

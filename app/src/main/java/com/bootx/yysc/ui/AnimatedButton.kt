@@ -27,7 +27,7 @@ enum class ButtonState {
 }
 
 @Composable
-fun AnimatedButton(username: String, password: String) {
+fun AnimatedButton(username: String, password: String,onLogin:()->Unit) {
     val buttonState = remember {
         mutableStateOf(ButtonState.Normal)
     }
@@ -85,6 +85,7 @@ fun AnimatedButton(username: String, password: String) {
             }else{
                 ButtonState.Normal
             }
+            onLogin()
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonBackgroundColor,

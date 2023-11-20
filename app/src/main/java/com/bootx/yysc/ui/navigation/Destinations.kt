@@ -54,6 +54,8 @@ sealed class Destinations(val route: String) {
     object FanFrame : Destinations("FanFrame")
     //我的硬币
     object MyIconFrame : Destinations("MyIconFrame")
+    //我的硬币明细
+    object MyIconListFrame : Destinations("MyIconListFrame")
 
 
 
