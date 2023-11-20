@@ -22,7 +22,7 @@ fun ServerError() {
         modifier = Modifier.fillMaxSize()
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.server_error),
+            painter = painterResource(id = R.drawable.network_error),
             contentDescription = ""
         )
         Text(text = "服务器异常")
