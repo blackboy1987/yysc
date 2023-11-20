@@ -68,6 +68,7 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.0-beta01")
 
     // 图片懒加载
+    implementation("io.coil-kt:coil-gif:2.5.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     implementation("androidx.core:core-ktx:1.12.0")

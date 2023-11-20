@@ -80,7 +80,7 @@ fun HomeScreen(
     softViewModel: SoftViewModel = viewModel()
 ) {
 
-    navController.navigate(Destinations.HotFrame.route)
+    navController.navigate(Destinations.MyIconFrame.route)
 
     val todayDownloadList = remember {
         mutableStateOf(listOf<SoftEntity>())

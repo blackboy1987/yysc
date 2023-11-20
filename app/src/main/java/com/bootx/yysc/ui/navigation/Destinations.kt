@@ -50,4 +50,11 @@ sealed class Destinations(val route: String) {
     object FuLiFrame : Destinations("FuLiFrame")
     //热门
     object HotFrame : Destinations("HotFrame")
+    //粉丝
+    object FanFrame : Destinations("FanFrame")
+    //我的硬币
+    object MyIconFrame : Destinations("MyIconFrame")
+
+
+
 }
