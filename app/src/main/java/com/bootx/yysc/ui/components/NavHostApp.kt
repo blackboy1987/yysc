@@ -7,9 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.ui.screens.FuLiScreen
+import com.bootx.yysc.ui.screens.HotScreen
 import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
+import com.bootx.yysc.ui.screens.QunZuScreen
 import com.bootx.yysc.ui.screens.SearchScreen
 import com.bootx.yysc.ui.screens.SignInScreen
 import com.bootx.yysc.ui.screens.SupportRankScreen
@@ -131,6 +134,54 @@ fun NavHostApp() {
             },
         ) {
             SignInScreen(navController)
+        }
+
+        composable(
+            Destinations.QunZuFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            QunZuScreen(navController)
+        }
+
+        composable(
+            Destinations.FuLiFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            FuLiScreen(navController)
+        }
+
+        composable(
+            Destinations.HotFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            HotScreen(navController)
         }
     }
 }

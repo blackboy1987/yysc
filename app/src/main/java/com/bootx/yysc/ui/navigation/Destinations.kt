@@ -39,10 +39,15 @@ sealed class Destinations(val route: String) {
     object SupportFrame : Destinations("SupportFrame")
     //支持排行榜
     object SupportRankFrame : Destinations("SupportRankFrame")
-    //福利
-    object FuLiFrame : Destinations("FuLiFrame")
+
     //历史
     object HistoryFrame : Destinations("HistoryFrame")
     //搜索
     object SearchFrame : Destinations("SearchFrame")
+    //群组
+    object QunZuFrame : Destinations("QunZuFrame")
+    //福利
+    object FuLiFrame : Destinations("FuLiFrame")
+    //热门
+    object HotFrame : Destinations("HotFrame")
 }

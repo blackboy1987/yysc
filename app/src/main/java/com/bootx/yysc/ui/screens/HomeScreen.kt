@@ -80,7 +80,7 @@ fun HomeScreen(
     softViewModel: SoftViewModel = viewModel()
 ) {
 
-    navController.navigate(Destinations.SearchFrame.route)
+    navController.navigate(Destinations.HotFrame.route)
 
     val todayDownloadList = remember {
         mutableStateOf(listOf<SoftEntity>())
@@ -133,6 +133,10 @@ fun HomeScreen(
                                 .clickable {
                                     if(itemList.title=="签到"){
                                         navController.navigate(Destinations.SignInFrame.route)
+                                    }else if(itemList.title=="群组"){
+                                        navController.navigate(Destinations.QunZuFrame.route)
+                                    }else if(itemList.title=="福利"){
+                                        navController.navigate(Destinations.FuLiFrame.route)
                                     }
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally,

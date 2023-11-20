@@ -53,6 +53,7 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.0-alpha06")
 
+    implementation("com.google.accompanist:accompanist-webview:0.33.2-alpha")
 
     // 网络请求
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -64,7 +65,7 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.navigation:navigation-compose:2.7.5")
-    implementation("androidx.compose.material:material:1.6.0-alpha08")
+    implementation("androidx.compose.material:material:1.6.0-beta01")
 
     // 图片懒加载
     implementation("io.coil-kt:coil-compose:2.5.0")
