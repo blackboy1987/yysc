@@ -1,6 +1,7 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -60,13 +61,15 @@ import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
-import com.bootx.yysc.viewmodel.TouGaoListViewModel
+import com.youxiao.ssp.ad.bean.SSPAd
+import com.youxiao.ssp.ad.core.AdClient
+import com.youxiao.ssp.ad.listener.AdLoadAdapter
 import kotlinx.coroutines.launch
+
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(
@@ -80,6 +83,15 @@ fun TouGaoListScreen(
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
+    val adClient = AdClient(LocalContext.current as Activity)
+
+    adClient.requestBannerAd(adContainer, "6938", object : AdLoadAdapter() {
+        override fun onAdLoad(ad: SSPAd) {
+            super.onAdLoad(ad)
+        }
+    })
+
+
 
     fun refresh() = refreshScope.launch {
         Log.e("refresh", "refresh: ")
