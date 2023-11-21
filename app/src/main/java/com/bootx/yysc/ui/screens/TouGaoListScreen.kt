@@ -1,7 +1,6 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -63,11 +62,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.ui.components.BannerAd
+import com.bootx.yysc.ui.components.FeedAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
-import com.youxiao.ssp.ad.bean.SSPAd
-import com.youxiao.ssp.ad.core.AdClient
-import com.youxiao.ssp.ad.listener.AdLoadAdapter
 import kotlinx.coroutines.launch
 
 
@@ -80,17 +78,11 @@ import kotlinx.coroutines.launch
 fun TouGaoListScreen(
     navController: NavHostController
 ) {
+    val context = LocalContext.current
+
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
-    val adClient = AdClient(LocalContext.current as Activity)
-
-    adClient.requestBannerAd(adContainer, "6938", object : AdLoadAdapter() {
-        override fun onAdLoad(ad: SSPAd) {
-            super.onAdLoad(ad)
-        }
-    })
-
 
 
     fun refresh() = refreshScope.launch {
@@ -130,7 +122,7 @@ fun TouGaoListScreen(
                 },
                 navigationIcon = {
                     Icon(modifier = Modifier.clickable {
-
+                        navController.popBackStack()
                     }, imageVector = Icons.Default.ArrowBackIosNew, contentDescription = "")
                 },
                 actions = {
@@ -153,6 +145,8 @@ fun TouGaoListScreen(
             modifier = Modifier.padding(it)
         ) {
             Column {
+                //BannerAd(context)
+                FeedAd(context)
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier

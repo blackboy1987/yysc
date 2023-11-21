@@ -80,7 +80,6 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
     softViewModel: SoftViewModel = viewModel()
 ) {
-    SSPSdk.attachBaseContext(LocalContext.current)
     navController.navigate(Destinations.TouGaoListFrame.route)
 
     val todayDownloadList = remember {

@@ -53,9 +53,12 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0-alpha03")
     implementation("androidx.appsearch:appsearch:1.1.0-alpha03")
 
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
 
 
-
+    implementation("com.github.bumptech.glide:glide:4.9.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.9.0")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(files("/libs/ssp_sdk_v5.1.9.1035.aar"))
 
@@ -87,6 +90,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.2.0-alpha10")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
