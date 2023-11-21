@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,6 +58,7 @@ import com.bootx.yysc.ui.theme.shape8
 import com.bootx.yysc.viewmodel.CarouselViewModel
 import com.bootx.yysc.viewmodel.HomeViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
+import com.youxiao.ssp.core.SSPSdk
 
 data class ItemList(
     val icon: Int,
@@ -78,7 +80,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
     softViewModel: SoftViewModel = viewModel()
 ) {
-
+    SSPSdk.attachBaseContext(LocalContext.current)
     navController.navigate(Destinations.TouGaoListFrame.route)
 
     val todayDownloadList = remember {

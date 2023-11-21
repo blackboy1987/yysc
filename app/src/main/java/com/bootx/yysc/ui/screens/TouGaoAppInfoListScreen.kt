@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.model.entity.AppInfo
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.viewmodel.TouGaoListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,12 +93,31 @@ fun TouGaoAppInfoListScreen(
             modifier = Modifier.padding(it)
         ) {
             LazyColumn {
-                items(appInfoList.filter { item->item.appName.indexOf(keywords)>=0 }) {
+                items(appInfoList.filter { item -> item.appName.indexOf(keywords) >= 0 }) {
                     ListItem(
-                        headlineContent = { Text(text = it.appName, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                        supportingContent = { Text(text = it.packageName, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                        modifier = Modifier.clickable {
+                            navController.navigate(Destinations.TouGaoFrame.route+"/"+it.packageName)
+                        },
+                        headlineContent = {
+                            Text(
+                                text = it.appName,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                text = it.packageName,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
                         leadingContent = {
-                            AsyncImage(modifier = Modifier.size(60.dp), model = it.appIcon, contentDescription = "")
+                            AsyncImage(
+                                modifier = Modifier.size(60.dp),
+                                model = it.appIcon,
+                                contentDescription = ""
+                            )
                         }
                     )
                 }

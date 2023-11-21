@@ -22,6 +22,7 @@ import com.bootx.yysc.ui.screens.SupportRankScreen
 import com.bootx.yysc.ui.screens.SupportScreen
 import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
+import com.bootx.yysc.ui.screens.TouGaoScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -264,6 +265,22 @@ fun NavHostApp() {
             },
         ) {
             TouGaoAppInfoListScreen(navController)
+        }
+        composable(
+            Destinations.TouGaoFrame.route+"/{packageName}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val packageName = it.arguments?.getString("packageName") ?: ""
+            TouGaoScreen(navController,packageName)
         }
     }
 }

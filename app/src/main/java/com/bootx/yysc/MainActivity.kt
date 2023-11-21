@@ -9,10 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.bootx.yysc.ui.components.NavHostApp
 import com.bootx.yysc.ui.theme.YYSCTheme
+import com.youxiao.ssp.core.SSPSdk
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             YYSCTheme {
                 Surface(
