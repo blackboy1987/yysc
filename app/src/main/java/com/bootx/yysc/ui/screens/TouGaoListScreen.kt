@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
@@ -18,14 +17,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.ModalBottomSheetDefaults
@@ -38,14 +32,11 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -53,6 +44,7 @@ import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,11 +57,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
+import com.bootx.yysc.viewmodel.TouGaoListViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
@@ -78,7 +74,9 @@ import kotlinx.coroutines.launch
     ExperimentalMaterialApi::class
 )
 @Composable
-fun TouGaoListScreen(navController: NavHostController) {
+fun TouGaoListScreen(
+    navController: NavHostController
+) {
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
@@ -220,23 +218,39 @@ fun TouGaoListScreen(navController: NavHostController) {
         sheetState = sheetState,
         sheetContent = {
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = " sheetContent title")
-            Text(text = " sheetContent content")
-            Text(text = " sheetContent content2")
-            Text(text = " sheetContent content3")
-            Text(text = " sheetContent content4")
-            Text(text = " sheetContent content5")
-            Text(text = " sheetContent content6")
-            Text(text = " sheetContent content7")
-            Text(text = " sheetContent content8")
-            Text(text = " sheetContent content9")
+            Text(
+                text = "应用投稿",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = "选择安装包位置",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "手机存储",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Left
+                )
+            }
+            TextButton(onClick = {
+                navController.navigate(Destinations.TouGaoAppInfoListFrame.route)
+            }, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "已安装应用",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Left
+                )
+            }
             Spacer(modifier = Modifier.height(10.dp))
             Button(onClick = {
                 coroutineScope.launch {
                     sheetState.hide()
                 }
-            }) {
-                Text(text = "取消")
+            }, modifier = Modifier.fillMaxWidth()) {
+                Text(text = "取消", modifier = Modifier.fillMaxWidth())
             }
         },
         modifier = Modifier.fillMaxWidth(),

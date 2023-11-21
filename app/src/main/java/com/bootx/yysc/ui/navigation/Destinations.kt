@@ -25,6 +25,7 @@ sealed class Destinations(val route: String) {
     object AppDetailFrame : Destinations("AppDetailFrame")
     //应用投稿列表
     object TouGaoListFrame : Destinations("TouGaoListFrame")
+    object TouGaoAppInfoListFrame : Destinations("TouGaoAppInfoListFrame")
     //应用投稿
     object TouGaoFrame : Destinations("TouGaoFrame")
     //应用更新
