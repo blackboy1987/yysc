@@ -20,6 +20,7 @@ import com.bootx.yysc.ui.screens.SearchScreen
 import com.bootx.yysc.ui.screens.SignInScreen
 import com.bootx.yysc.ui.screens.SupportRankScreen
 import com.bootx.yysc.ui.screens.SupportScreen
+import com.bootx.yysc.ui.screens.TouGaoListScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -231,6 +232,21 @@ fun NavHostApp() {
             },
         ) {
             MyIconListScreen(navController)
+        }
+        composable(
+            Destinations.TouGaoListFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            TouGaoListScreen(navController)
         }
     }
 }

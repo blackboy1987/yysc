@@ -28,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -64,7 +65,7 @@ fun MineScreen(navController: NavHostController) {
             Column(
                 modifier = Modifier.padding(it),
 
-            ) {
+                ) {
                 Column(
                     modifier = Modifier.padding(padding8)
                 ) {
@@ -99,13 +100,13 @@ fun MineScreen(navController: NavHostController) {
                                 .fillMaxWidth()
                                 .height(60.dp),
                         ) {
-                            Item(title = "15", title2 = "硬币", modifier =  Modifier.weight(1.0f))
+                            Item(title = "15", title2 = "硬币", modifier = Modifier.weight(1.0f))
                             MyDivider1()
-                            Item(title = "15", title2 = "关注", modifier =  Modifier.weight(1.0f))
+                            Item(title = "15", title2 = "关注", modifier = Modifier.weight(1.0f))
                             MyDivider1()
-                            Item(title = "15", title2 = "粉丝", modifier =  Modifier.weight(1.0f))
+                            Item(title = "15", title2 = "粉丝", modifier = Modifier.weight(1.0f))
                             MyDivider1()
-                            Item(title = "15", title2 = "付费", modifier =  Modifier.weight(1.0f))
+                            Item(title = "15", title2 = "付费", modifier = Modifier.weight(1.0f))
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -126,9 +127,9 @@ fun MineScreen(navController: NavHostController) {
                         LazyVerticalGrid(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            columns = GridCells.Fixed(4) ,
+                            columns = GridCells.Fixed(4),
                             content = {
-                                items(item0List){ item->
+                                items(item0List) { item ->
                                     Item0(item)
                                 }
                             }
@@ -143,19 +144,25 @@ fun MineScreen(navController: NavHostController) {
 }
 
 @Composable
-fun Item(title: String,title2: String,modifier: Modifier){
+fun Item(title: String, title2: String, modifier: Modifier) {
     Column(
         modifier = Modifier.then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(text = title)
-        Text(text = title2)
+        Text(
+            text = title, fontSize = MaterialTheme.typography.titleMedium.fontSize,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = title2, fontSize = MaterialTheme.typography.titleSmall.fontSize,
+            color = MaterialTheme.colorScheme.secondary
+        )
     }
 }
 
 @Composable
-fun MyDivider1(){
+fun MyDivider1() {
     HorizontalDivider(
         color = Color(0xFFAEAEAE), modifier = Modifier
             .fillMaxHeight()
