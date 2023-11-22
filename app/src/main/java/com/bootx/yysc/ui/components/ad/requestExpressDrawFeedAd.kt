@@ -3,9 +3,13 @@ package com.bootx.yysc.ui.components.ad
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidView
+import com.bootx.yysc.R
 import com.bootx.yysc.config.Config
-import com.google.gson.Gson
-import com.youxiao.ssp.ad.bean.NextAdInfo
 import com.youxiao.ssp.ad.bean.SSPAd
 import com.youxiao.ssp.ad.core.AdClient
 import com.youxiao.ssp.ad.listener.AdLoadAdapter
@@ -13,75 +17,37 @@ import com.youxiao.ssp.ad.listener.AdLoadAdapter
 /**
  *模板视频信息流：8517
  */
-fun requestExpressDrawFeedAd(context: Context, onClose:(type:String)->Unit) {
-    var status: String = ""
+@Composable
+fun RequestExpressDrawFeedAd(context: Context) {
     val adClient = AdClient(context as Activity)
-    adClient.requestExpressDrawFeedAd(Config.VIDEO_FEED_AD_ID, object : AdLoadAdapter() {
-        var gson = Gson()
-        override fun onStatus(p0: Int, p1: Int, p2: Int, p3: String) {
-            Log.e("requestExpressDrawFeedAd", "onStatus: $p0,$p1,$p2, $p3", )
-            super.onStatus(p0, p1, p2, p3)
-            status = "onStatus"
-        }
 
-        override fun onNext(p0: NextAdInfo?) {
-            super.onNext(p0)
-            status = "onNext"
-            Log.e("requestExpressDrawFeedAd", "onNext: $p0", )
-        }
 
-        override fun onAdLoad(p0: SSPAd?) {
-            super.onAdLoad(p0)
-            status = "onAdLoad"
-            Log.e("requestExpressDrawFeedAd", "onAdLoad: ${gson.toJson(gson)}", )
-        }
+    AndroidView(factory = {
+        val view = LayoutInflater.from(context).inflate(R.layout.activity_video_feed, null)
+        val findViewById = view.findViewById<FrameLayout>(R.id.ad_flayout)
+        adClient.requestExpressDrawFeedAd(Config.VIDEO_FEED_AD_ID, object : AdLoadAdapter() {
+            override fun onAdLoad(ad: SSPAd) {
+                super.onAdLoad(ad)
+                findViewById.removeAllViews()
+                findViewById.addView(ad.view)
+            }
 
-        override fun onAdClick(p0: SSPAd?) {
-            super.onAdClick(p0)
-            status = "onAdClick"
-            Log.e("requestExpressDrawFeedAd", "onAdClick: $p0", )
-        }
+            override fun onError(i: Int, s: String) {
+                super.onError(i, s)
+                Toast.makeText(
+                    context,
+                    "横幅广告加载失败:$s",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e("requestBannerAd onError", "onAdLoad: $s")
+            }
 
-        override fun onAdShow(p0: SSPAd?) {
-            super.onAdShow(p0)
-            status = "onAdShow"
-            Log.e("requestExpressDrawFeedAd", "onAdShow: $p0", )
-        }
-
-        override fun onAdDismiss(p0: SSPAd?) {
-            super.onAdDismiss(p0)
-            status = "onAdDismiss"
-            Log.e("requestExpressDrawFeedAd", "onAdDismiss: $p0", )
-        }
-
-        override fun onStartDownload(p0: String?) {
-            super.onStartDownload(p0)
-            status = "onStartDownload"
-            Log.e("requestExpressDrawFeedAd", "onStartDownload: $p0", )
-        }
-
-        override fun onDownloadCompleted(p0: String?) {
-            super.onDownloadCompleted(p0)
-            status = "onDownloadCompleted"
-            Log.e("requestExpressDrawFeedAd", "onDownloadCompleted: $p0", )
-        }
-
-        override fun onStartInstall(p0: String?) {
-            super.onStartInstall(p0)
-            status = "onStartInstall"
-            Log.e("requestExpressDrawFeedAd", "onStartInstall: $p0", )
-        }
-
-        override fun onInstallCompleted(p0: String?) {
-            super.onInstallCompleted(p0)
-            status = "onInstallCompleted"
-            Log.e("requestExpressDrawFeedAd", "onInstallCompleted: $p0", )
-        }
-
-        override fun onError(p0: Int, p1: String?) {
-            super.onError(p0, p1)
-            status = "onError"
-            Log.e("requestExpressDrawFeedAd", "onError: $p1", )
-        }
+            override fun onAdShow(ad: SSPAd?) {
+                super.onAdShow(ad)
+                Log.e("requestBannerAd onAdShow", "onAdLoad: $ad")
+                super.onAdLoad(ad)
+            }
+        })
+        view
     })
 }
