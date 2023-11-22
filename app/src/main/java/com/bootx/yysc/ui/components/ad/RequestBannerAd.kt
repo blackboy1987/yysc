@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
 import com.bootx.yysc.R
+import com.bootx.yysc.config.Config
 import com.youxiao.ssp.ad.bean.SSPAd
 import com.youxiao.ssp.ad.core.AdClient
 import com.youxiao.ssp.ad.listener.AdLoadAdapter
@@ -22,7 +23,7 @@ fun RequestBannerAd(context: Context) {
     AndroidView(factory = {
         val view = LayoutInflater.from(it).inflate(R.layout.activity_banner, null)
         val findViewById = view.findViewById<FrameLayout>(R.id.ad_layout)
-        adClient.requestBannerAd(findViewById, "1983", object : AdLoadAdapter() {
+        adClient.requestBannerAd(findViewById, Config.BANNER_AD_ID, object : AdLoadAdapter() {
             override fun onAdLoad(ad: SSPAd) {
                 Log.e("requestBannerAd onAdLoad", "onAdLoad: $ad")
                 super.onAdLoad(ad)

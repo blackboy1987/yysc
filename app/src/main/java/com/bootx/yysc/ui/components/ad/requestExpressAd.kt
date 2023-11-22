@@ -3,6 +3,7 @@ package com.bootx.yysc.ui.components.ad
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import com.bootx.yysc.config.Config
 import com.google.gson.Gson
 import com.youxiao.ssp.ad.bean.NextAdInfo
 import com.youxiao.ssp.ad.bean.SSPAd
@@ -16,7 +17,7 @@ fun requestExpressAd(context: Context, onClose:(type:String)->Unit) {
     var gson = Gson()
     var status: String = ""
     val adClient = AdClient(context as Activity)
-    adClient.requestExpressAd("8461", object : AdLoadAdapter() {
+    adClient.requestExpressAd(Config.TEMPLATE_AD_ID, object : AdLoadAdapter() {
         override fun onStatus(p0: Int, p1: Int, p2: Int, p3: String) {
             Log.e("requestExpressAd", "onStatus: $p0,$p1,$p2, $p3", )
             super.onStatus(p0, p1, p2, p3)

@@ -3,6 +3,7 @@ package com.bootx.yysc.ui.components.ad
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import com.bootx.yysc.config.Config
 import com.youxiao.ssp.ad.bean.NextAdInfo
 import com.youxiao.ssp.ad.bean.SSPAd
 import com.youxiao.ssp.ad.core.AdClient
@@ -14,7 +15,7 @@ import com.youxiao.ssp.ad.listener.AdLoadAdapter
 fun requestInteractionAd(context: Context, onClose:(type:String)->Unit) {
     var status: String = ""
     val adClient = AdClient(context as Activity)
-    adClient.requestInteractionAd("3560", object : AdLoadAdapter() {
+    adClient.requestInteractionAd(Config.INTER_AD_ID, object : AdLoadAdapter() {
         override fun onStatus(p0: Int, p1: Int, p2: Int, p3: String?) {
             Log.e("requestInteractionAd", "onStatus: $p3", )
             super.onStatus(p0, p1, p2, p3)

@@ -3,6 +3,7 @@ package com.bootx.yysc.ui.components.ad
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import com.bootx.yysc.config.Config
 import com.google.gson.Gson
 import com.youxiao.ssp.ad.bean.NextAdInfo
 import com.youxiao.ssp.ad.bean.SSPAd
@@ -15,7 +16,7 @@ import com.youxiao.ssp.ad.listener.AdLoadAdapter
 fun requestExpressDrawFeedAd(context: Context, onClose:(type:String)->Unit) {
     var status: String = ""
     val adClient = AdClient(context as Activity)
-    adClient.requestExpressDrawFeedAd("8517", object : AdLoadAdapter() {
+    adClient.requestExpressDrawFeedAd(Config.VIDEO_FEED_AD_ID, object : AdLoadAdapter() {
         var gson = Gson()
         override fun onStatus(p0: Int, p1: Int, p2: Int, p3: String) {
             Log.e("requestExpressDrawFeedAd", "onStatus: $p0,$p1,$p2, $p3", )
