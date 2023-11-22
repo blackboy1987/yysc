@@ -38,11 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
-import com.bootx.yysc.ui.components.ad.requestExpressAd
-import com.bootx.yysc.ui.components.ad.requestExpressDrawFeedAd
+import com.bootx.yysc.ui.components.ad.RequestExpressAd
 import com.bootx.yysc.ui.components.ad.requestFeedAd
-import com.bootx.yysc.ui.components.ad.requestFullScreenVideoAd
-import com.bootx.yysc.ui.components.ad.requestInteractionAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
@@ -110,8 +107,9 @@ fun SupportScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "已获得5硬币")
+                RequestExpressAd(context)
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = { requestInteractionAd(context,onClose={status->
+                Button(onClick = { requestFeedAd(context,onClose={status->
                     run {
                         Log.i("requestInteractionAd", "SupportScreen: $status")
                     }
