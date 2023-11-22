@@ -19,7 +19,10 @@ class MainActivity : ComponentActivity() {
         SSPSdk.attachBaseContext(this@MainActivity)
         SSPSdk.init(this@MainActivity, "881", true);
         SSPSdk.init(this@MainActivity, "881", null, true)
-
+        /**
+         * 设置是否动态请求权限（默认开启，建议开启提高广告收益）
+         **/
+        SSPSdk.setReqPermission(true);
         setContent {
             YYSCTheme {
                 Surface(

@@ -36,8 +36,6 @@ import com.bootx.yysc.ui.navigation.Destinations
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyIconScreen(navController: NavHostController) {
-
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,7 +82,9 @@ fun MyIconScreen(navController: NavHostController) {
                     }
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = {
+                    navController.navigate(Destinations.SupportFrame.route)
+                }) {
                     Text(text = "获取硬币")
                 }
                 Spacer(modifier = Modifier.height(24.dp))

@@ -62,8 +62,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
-import com.bootx.yysc.ui.components.BannerAd
-import com.bootx.yysc.ui.components.FeedAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
 import kotlinx.coroutines.launch
@@ -145,8 +143,6 @@ fun TouGaoListScreen(
             modifier = Modifier.padding(it)
         ) {
             Column {
-                //BannerAd(context)
-                FeedAd(context)
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier

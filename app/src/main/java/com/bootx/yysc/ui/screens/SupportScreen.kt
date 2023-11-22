@@ -1,7 +1,7 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.widget.Space
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,26 +29,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import coil.size.Size
+import com.bootx.yysc.ui.components.ad.requestExpressAd
+import com.bootx.yysc.ui.components.ad.requestExpressDrawFeedAd
+import com.bootx.yysc.ui.components.ad.requestFeedAd
+import com.bootx.yysc.ui.components.ad.requestFullScreenVideoAd
+import com.bootx.yysc.ui.components.ad.requestInteractionAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
-import com.bootx.yysc.ui.theme.fontSize16
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupportScreen(navController: NavHostController) {
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -108,7 +111,11 @@ fun SupportScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "已获得5硬币")
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { requestInteractionAd(context,onClose={status->
+                    run {
+                        Log.i("requestInteractionAd", "SupportScreen: $status")
+                    }
+                }) }) {
                     Text(text = "观看激励广告")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +129,7 @@ fun SupportScreen(navController: NavHostController) {
                 Box(
                     Modifier
                         .align(Alignment.BottomStart)
-                        .padding( bottom = 40.dp)
+                        .padding(bottom = 40.dp)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ){
@@ -131,7 +138,7 @@ fun SupportScreen(navController: NavHostController) {
                 Box(
                     Modifier
                         .align(Alignment.BottomStart)
-                        .padding( bottom = 16.dp)
+                        .padding(bottom = 16.dp)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ){
