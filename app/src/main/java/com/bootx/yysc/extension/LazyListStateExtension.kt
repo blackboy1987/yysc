@@ -1,6 +1,5 @@
 package com.bootx.yysc.extension
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +28,25 @@ fun LazyListState.onBottomReached(buffer:Int = 1,loadMore:()->Unit) {
             if(it){
                 loadMore()
             }
+        }
+
+    }
+}
+
+@Composable
+fun LazyListState.onScroll(callback:(index: Int)->Unit) {
+
+    // 是否应该加载更多的状态
+    val index = remember {
+        // 由另一个状态计算派生
+        derivedStateOf {
+            val firstVisibleItem = layoutInfo.visibleItemsInfo.firstOrNull()?: return@derivedStateOf layoutInfo.visibleItemsInfo.first().index
+            firstVisibleItem.index
+        }
+    }
+    LaunchedEffect(index){
+        snapshotFlow{index.value}.collect{
+            callback(index.value)
         }
 
     }

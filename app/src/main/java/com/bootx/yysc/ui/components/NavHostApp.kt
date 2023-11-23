@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.ui.screens.AppDetailScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
 import com.bootx.yysc.ui.screens.HotScreen
@@ -281,6 +282,22 @@ fun NavHostApp() {
         ) {
             val packageName = it.arguments?.getString("packageName") ?: ""
             TouGaoScreen(navController,packageName)
+        }
+        composable(
+            Destinations.AppDetailFrame.route+"/{id}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val id = it.arguments?.getString("id") ?: ""
+            AppDetailScreen(navController,id)
         }
     }
 }

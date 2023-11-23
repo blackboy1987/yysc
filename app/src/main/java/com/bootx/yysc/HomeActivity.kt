@@ -1,6 +1,5 @@
 package com.bootx.yysc
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,13 +13,13 @@ import com.bootx.yysc.ui.theme.YYSCTheme
 import com.bootx.yysc.util.ActivityStackManager
 import com.youxiao.ssp.core.SSPSdk
 
-class MainActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        ActivityStackManager.pushActivity(this@MainActivity)
+        ActivityStackManager.pushActivity(this@HomeActivity)
         super.onCreate(savedInstanceState)
-        SSPSdk.attachBaseContext(this@MainActivity)
-        SSPSdk.init(this@MainActivity, Config.MEDIA_ID, true);
-        SSPSdk.init(this@MainActivity, Config.MEDIA_ID, null, true)
+        SSPSdk.attachBaseContext(this@HomeActivity)
+        SSPSdk.init(this@HomeActivity, Config.MEDIA_ID, true);
+        SSPSdk.init(this@HomeActivity, Config.MEDIA_ID, null, true)
         /**
          * 设置是否动态请求权限（默认开启，建议开启提高广告收益）
          **/
