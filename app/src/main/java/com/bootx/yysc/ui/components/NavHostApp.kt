@@ -1,7 +1,6 @@
 package com.bootx.yysc.ui.components
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +17,7 @@ import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
 import com.bootx.yysc.ui.screens.QunZuScreen
 import com.bootx.yysc.ui.screens.SearchScreen
+import com.bootx.yysc.ui.screens.SettingScreen
 import com.bootx.yysc.ui.screens.SignInScreen
 import com.bootx.yysc.ui.screens.SupportRankScreen
 import com.bootx.yysc.ui.screens.SupportScreen
@@ -25,13 +25,12 @@ import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.SettingFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -298,6 +297,21 @@ fun NavHostApp() {
         ) {
             val id = it.arguments?.getString("id") ?: ""
             AppDetailScreen(navController,id)
+        }
+        composable(
+            Destinations.SettingFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            SettingScreen(navController)
         }
     }
 }
