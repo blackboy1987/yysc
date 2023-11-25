@@ -44,6 +44,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.azhon.appupdate.manager.DownloadManager
 import com.bootx.yysc.R
+import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.AdData
@@ -55,7 +56,6 @@ import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.ui.theme.height16
-import com.bootx.yysc.ui.theme.height32
 import com.bootx.yysc.ui.theme.height4
 import com.bootx.yysc.ui.theme.height8
 import com.bootx.yysc.ui.theme.padding8
@@ -94,12 +94,18 @@ fun HomeScreen(
         mutableStateOf(listOf<HomeCenterBar>())
     }
 
+    val activityList = remember {
+        mutableStateOf(listOf<ActivityEntity>())
+    }
+
 
     LaunchedEffect(Unit) {
         //获取轮播数据
         carouselViewModel.fetchList();
         // 中间工具栏
         homeCenterBarList.value = homeViewModel.homeCenterBar();
+        // 活动
+        activityList.value = homeViewModel.activity();
 
         todayDownloadList.value = softViewModel.orderBy(1, 30, "00")
         todayCommentList.value = softViewModel.orderBy(1, 30, "01")
@@ -224,7 +230,7 @@ fun HomeScreen(
                 }
             }
             item {
-                AdData()
+                AdData(activityList.value)
             }
             item {
                 MyCard(title = "随心看看", onClick = {

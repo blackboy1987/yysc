@@ -3,6 +3,7 @@ package com.bootx.yysc.viewmodel
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.model.entity.AppVersion
 import com.bootx.yysc.model.entity.CarouselEntity
 import com.bootx.yysc.model.entity.CategoryEntity
@@ -37,5 +38,13 @@ class HomeViewModel:ViewModel() {
             return res.data
         }
         return listOf<HomeCenterBar>()
+    }
+
+    suspend fun activity(): List<ActivityEntity> {
+        val res = homeService.activity()
+        if (res.code == 0 && res.data != null) {
+            return res.data
+        }
+        return listOf<ActivityEntity>()
     }
 }

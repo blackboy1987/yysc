@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,13 +23,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.height8
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape8
 
 @Composable
-fun AdData() {
+fun AdData(list:List<ActivityEntity>) {
     Column(
         modifier = Modifier
             .padding(padding8)
@@ -47,16 +48,15 @@ fun AdData() {
         )
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            state = rememberLazyListState()
         ) {
-            items(100) {
+            items(list) {item->
                 Box(
                     modifier = Modifier
                         .width(100.dp)
                         .height(50.dp),
                 ) {
                     AsyncImage(
-                        model = "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA15mchH.img",
+                        model = item.image,
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -64,7 +64,7 @@ fun AdData() {
                             .clip(RoundedCornerShape(shape8)),
                     )
                     Text(
-                        text = "官方交流群",
+                        text = item.title,
                         fontSize = fontSize12,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
@@ -79,12 +79,4 @@ fun AdData() {
             }
         }
     }
-}
-
-@Preview(
-    showBackground = true
-)
-@Composable
-fun PreviewAdData() {
-    AdData()
 }
