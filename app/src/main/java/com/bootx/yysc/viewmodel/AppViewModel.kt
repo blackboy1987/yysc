@@ -59,7 +59,6 @@ class AppViewModel:ViewModel() {
 
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()
-
             if (pageNumber != 1) {
                 tmpList.addAll(softList)
             }

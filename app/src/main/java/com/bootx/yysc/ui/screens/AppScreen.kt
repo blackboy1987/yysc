@@ -36,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel()) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         //获取分类列表
         vm.fetchList(1, 100)
@@ -66,10 +68,10 @@ fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel()) 
                     IconButton(onClick = {
                         navController.navigate(Destinations.SearchFrame.route)
                     }) {
-                        Icon(Icons.Filled.Search, contentDescription = "Localized description")
+                        Icon(Icons.Filled.Search, contentDescription = "")
                     }
                     IconButton(onClick = { /* doSomething() */ }) {
-                        Icon(Icons.Filled.MoreVert, contentDescription = "Localized description")
+                        Icon(Icons.Filled.MoreVert, contentDescription = "")
                     }
                 }
             )
@@ -127,7 +129,7 @@ fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel()) 
                     ) {
                         if (!refreshing) {
                             items(vm.softList) { soft ->
-                                SoftItem(soft, false)
+                                SoftItem(soft, false, onDownload = { download(context,soft) })
                             }
                         }
                     }

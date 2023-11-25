@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +40,7 @@ import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape4
 
 @Composable
-fun SoftItem(soft: SoftEntity, showDownload: Boolean = true) {
+fun SoftItem(soft: SoftEntity, showDownload: Boolean = true,onDownload:()->Unit) {
     Row(
         modifier = Modifier
             .height(100.dp)
@@ -78,13 +79,13 @@ fun SoftItem(soft: SoftEntity, showDownload: Boolean = true) {
                     tint = Color(0xFF2196f3),
                 )
                 Text(
-                    text = String.format("%.2f", soft.score),
+                    text = soft.score,
                     fontSize = fontSize12,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF2196f3),
                 )
                 Text(
-                    text = "1.0.1",
+                    text = soft.versionName?:"位置",
                     fontSize = fontSize12,
                     color = Color(0xFF8d9195),
                     modifier = Modifier.padding(start = 8.dp),
@@ -122,10 +123,10 @@ fun SoftItem(soft: SoftEntity, showDownload: Boolean = true) {
         if (showDownload) {
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedButton(
-                modifier = Modifier
-                    .height(32.dp)
-                    .align(Alignment.CenterVertically),
-                onClick = { /*TODO*/ }) {
+                contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
+                onClick = {
+                    onDownload()
+                }) {
                 Text(text = "下载", fontSize = fontSize12, textAlign = TextAlign.Center)
             }
         }

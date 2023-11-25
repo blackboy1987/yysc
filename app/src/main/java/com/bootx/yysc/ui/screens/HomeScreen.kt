@@ -2,6 +2,7 @@ package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -203,15 +204,7 @@ fun HomeScreen(
                                             modifier = Modifier
                                                 .fillMaxWidth(0.9f),
                                             onClick = {
-                                                val manager = DownloadManager.Builder(context as Activity).run {
-                                                    apkUrl(softEntity.downloadUrl).smallIcon(R.drawable.qiandao)
-                                                    apkName(softEntity.name+".apk")
-                                                    apkVersionName(softEntity.versionName)
-                                                    apkSize(softEntity.size)
-                                                    apkDescription("更新描述信息(取服务端返回数据)")
-                                                    build()
-                                                }
-                                                manager.download()
+                                                download(context,softEntity)
                                             },
                                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
                                         ) {
@@ -247,7 +240,8 @@ fun HomeScreen(
                     Column {
                         todayDownloadList.value.forEachIndexed { index, softEntity ->
                             SoftItem(
-                                softEntity
+                                softEntity,
+                                onDownload = { download(context,softEntity) }
                             )
                         }
                     }
@@ -302,4 +296,16 @@ fun CenterBar(list:List<HomeCenterBar>,navigate:(path: String)->Unit){
             }
         }
     }
+}
+
+fun download(context:Context,softEntity: SoftEntity){
+    val manager = DownloadManager.Builder(context as Activity).run {
+        apkUrl(softEntity.downloadUrl).smallIcon(R.drawable.qiandao)
+        apkName(softEntity.name+".apk")
+        apkVersionName(softEntity.versionName)
+        apkSize(softEntity.size)
+        apkDescription("更新描述信息(取服务端返回数据)")
+        build()
+    }
+    manager.download()
 }

@@ -27,7 +27,9 @@ fun PlazaScreen(navController: NavHostController) {
                     size = "12.34M",
                     versionName="",
                     updateDate = "2023-11-16 23:52:33"
-                ))
+                ), onDownload = {
+
+                })
             }
         }
     }
