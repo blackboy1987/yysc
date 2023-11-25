@@ -30,7 +30,7 @@ fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.SettingFrame.route,
+        startDestination = Destinations.HomeFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,

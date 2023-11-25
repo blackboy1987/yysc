@@ -10,9 +10,10 @@ data class SoftEntity(
     var memo: String,
     var logo: String,
     var updateDate: String,
-    val score: Double,
+    val score: String,
     val downloadUrl: String,
     var images: String,
+    var versionName: String,
 )
 
 data class SoftListResponse(val data: List<SoftEntity>?) : BaseResponse()

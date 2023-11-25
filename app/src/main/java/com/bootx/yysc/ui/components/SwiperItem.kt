@@ -1,5 +1,6 @@
 package com.bootx.yysc.ui.components
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,17 +21,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
+import com.azhon.appupdate.listener.OnDownloadListener
+import com.azhon.appupdate.manager.DownloadManager
+import com.bootx.yysc.R
 import com.bootx.yysc.model.entity.CarouselEntity
 import com.bootx.yysc.ui.theme.fontSize10
+import java.io.File
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwiperItem(items: List<CarouselEntity>) {
-    Log.e("SwiperItem",items.toString())
+    val context = LocalContext.current
     val pagerState = rememberPagerState(pageCount = {
         items.size
     })
@@ -42,7 +48,7 @@ fun SwiperItem(items: List<CarouselEntity>) {
 
         ) {
             AsyncImage(
-                contentScale = ContentScale.Inside,
+                contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
@@ -52,7 +58,6 @@ fun SwiperItem(items: List<CarouselEntity>) {
                     .graphicsLayer {
                         val pageOffset =
                             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-                        Log.e("HomeScreen", pagerState.currentPage.toString())
                         alpha = lerp(
                             start = 0.5f,
                             stop = 1f,
@@ -102,9 +107,18 @@ fun SwiperItem(items: List<CarouselEntity>) {
             ) {
                 Button(
                     modifier = Modifier
-                        .height(32.dp)
                         .align(Alignment.Center),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val manager = DownloadManager.Builder(context as Activity).run {
+                            apkUrl(items[page].downloadUrl).smallIcon(R.drawable.qiandao)
+                            apkName(items[page].title1+".apk")
+                            apkVersionName("v4.2.2")
+                            apkSize("82.05MB")
+                            apkDescription("更新描述信息(取服务端返回数据)")
+                            build()
+                        }
+                        manager.download()
+                    },
                 ){
                     Text(text = "下载")
                 }

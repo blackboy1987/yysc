@@ -11,7 +11,7 @@ interface AppVersionService {
 
     @POST("/api/appVersion/check")
     @FormUrlEncoded
-    suspend fun check(@Field("versionCode") versionCode: String): AppVersionListResponse
+    suspend fun check(@Field("versionCode") versionCode: String,@Field("versionName") versionName: String): AppVersionListResponse
     companion object {
         fun instance(): AppVersionService {
             return HiRetrofit.create(AppVersionService::class.java)

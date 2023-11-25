@@ -1,10 +1,12 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,7 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.azhon.appupdate.manager.DownloadManager
 import com.bootx.yysc.R
+import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.AdData
 import com.bootx.yysc.ui.components.ListData
@@ -50,6 +53,7 @@ import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
+import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.ui.theme.height16
 import com.bootx.yysc.ui.theme.height32
 import com.bootx.yysc.ui.theme.height4
@@ -65,16 +69,7 @@ data class ItemList(
     val title: String,
 )
 
-var itemList = listOf<ItemList>(
-    ItemList(R.drawable.hot, "热门"),
-    ItemList(R.drawable.tougao, "投稿"),
-    ItemList(R.drawable.fuli, "福利"),
-    ItemList(R.drawable.qunzu, "群组"),
-    ItemList(R.drawable.qiandao, "签到"),
-)
-
 @SuppressLint("InvalidColorHexValue")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -82,6 +77,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
     softViewModel: SoftViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val todayDownloadList = remember {
         mutableStateOf(listOf<SoftEntity>())
     }
@@ -94,10 +90,17 @@ fun HomeScreen(
         mutableStateOf(listOf<SoftEntity>())
     }
 
+    val homeCenterBarList = remember {
+        mutableStateOf(listOf<HomeCenterBar>())
+    }
+
 
     LaunchedEffect(Unit) {
         //获取轮播数据
         carouselViewModel.fetchList();
+        // 中间工具栏
+        homeCenterBarList.value = homeViewModel.homeCenterBar();
+
         todayDownloadList.value = softViewModel.orderBy(1, 30, "00")
         todayCommentList.value = softViewModel.orderBy(1, 30, "01")
         randomList.value = softViewModel.orderBy(1, 30, "2")
@@ -105,7 +108,9 @@ fun HomeScreen(
 
 
     Surface(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.primary),
     ) {
 
         LazyColumn() {
@@ -115,45 +120,9 @@ fun HomeScreen(
                 }
             }
             item {
-                Row(
-                    modifier = Modifier
-                        .height(90.dp)
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    itemList.forEachIndexed { index, itemList ->
-                        Column(
-                            modifier = Modifier
-                                .weight(1.0f)
-                                .fillMaxHeight()
-                                .clickable {
-                                    if (itemList.title == "签到") {
-                                        navController.navigate(Destinations.SignInFrame.route)
-                                    } else if (itemList.title == "群组") {
-                                        navController.navigate(Destinations.QunZuFrame.route)
-                                    } else if (itemList.title == "福利") {
-                                        navController.navigate(Destinations.FuLiFrame.route)
-                                    }
-                                },
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                        ) {
-                            Icon(
-                                painter = painterResource(id = itemList.icon),
-                                contentDescription = "", tint = Color(0xFFfea928)
-                            )
-                            Spacer(modifier = Modifier.height(height4))
-                            Text(
-                                text = itemList.title,
-                                fontSize = fontSize12
-                            )
-                        }
-                    }
-                }
+                CenterBar(homeCenterBarList.value,navigate = {
+                    navController.navigate(it)
+                })
             }
             item {
                 Column(
@@ -168,7 +137,7 @@ fun HomeScreen(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(text = "好评如潮", fontSize = fontSize12)
+                        Text(text = "好评如潮", fontSize = fontSize14)
                         Icon(
                             modifier = Modifier.clickable {
                                 navController.navigate("ListFrame/好评如潮/01")
@@ -215,7 +184,7 @@ fun HomeScreen(
                                                 tint = MaterialTheme.colorScheme.primary
                                             )
                                             Text(
-                                                text = softEntity.score.toString(),
+                                                text = softEntity.score,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
                                                 fontWeight = FontWeight.Bold,
@@ -226,9 +195,19 @@ fun HomeScreen(
                                         Spacer(modifier = Modifier.height(height8))
                                         Button(
                                             modifier = Modifier
-                                                .fillMaxWidth(0.9f)
-                                                .height(height32),
-                                            onClick = { /*TODO*/ },
+                                                .fillMaxWidth(0.9f),
+                                            onClick = {
+                                                val manager = DownloadManager.Builder(context as Activity).run {
+                                                    apkUrl(softEntity.downloadUrl).smallIcon(R.drawable.qiandao)
+                                                    apkName(softEntity.name+".apk")
+                                                    apkVersionName(softEntity.versionName)
+                                                    apkSize(softEntity.size)
+                                                    apkDescription("更新描述信息(取服务端返回数据)")
+                                                    build()
+                                                }
+                                                manager.download()
+                                            },
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
                                         ) {
                                             Text(
                                                 text = "下载",
@@ -274,4 +253,47 @@ fun HomeScreen(
         }
     }
 
+}
+
+
+@Composable
+fun CenterBar(list:List<HomeCenterBar>,navigate:(path: String)->Unit){
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .height(90.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        list.forEachIndexed { index, itemList ->
+            Column(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .fillMaxHeight()
+                    .clickable {
+                        when (itemList.name) {
+                            "签到" -> navigate(Destinations.SignInFrame.route)
+                            "群组" -> navigate(Destinations.QunZuFrame.route)
+                            "福利" -> navigate(Destinations.FuLiFrame.route)
+                        }
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                AsyncImage(
+                    modifier = Modifier.size(48.dp),
+                    model = itemList.image,
+                    contentDescription = ""
+                )
+                Spacer(modifier = Modifier.height(height4))
+                Text(
+                    text = itemList.name,
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
 }
