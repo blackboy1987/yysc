@@ -50,6 +50,12 @@ android {
 }
 
 dependencies {
+
+    implementation("io.github.azhon:appupdate:4.3.1")
+
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+
+
     implementation("androidx.appcompat:appcompat:1.7.0-alpha03")
     implementation("androidx.appsearch:appsearch:1.1.0-alpha03")
 
@@ -57,7 +63,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
 
 
-    implementation("com.github.bumptech.glide:glide:4.9.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.9.0")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(files("/libs/ssp_sdk_v5.1.9.1035.aar"))
