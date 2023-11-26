@@ -28,7 +28,6 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.CurrencyBitcoin
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.rememberModalBottomSheetState
@@ -68,6 +67,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.model.entity.SoftDetailEntity
+import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.RightIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.RequestBannerAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.ShareUtils
@@ -86,35 +88,28 @@ fun AppDetailScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val state1 = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var selectedIndex by remember {
         mutableIntStateOf(1)
     }
     val context = LocalContext.current
-    val showTitle = remember {
-        mutableStateOf(false)
-    }
 
     val softDetail = remember {
         mutableStateOf<SoftDetailEntity>(SoftDetailEntity())
     }
 
     LaunchedEffect(Unit) {
-        softDetail.value = softViewModel.detail("61862")
+        softDetail.value = softViewModel.detail(id)
+        Log.e("AppDetailScreen", "AppDetailScreen: $id", )
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = softDetail.value.name) },
+                title = { TopBarTitle(text = softDetail.value.name) },
                 navigationIcon = {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()
-                        },
-                        imageVector = Icons.Filled.ArrowBackIosNew,
-                        contentDescription = ""
-                    )
+                    LeftIcon{
+                        navController.popBackStack()
+                    }
                 },
             )
         },
@@ -166,6 +161,7 @@ fun AppDetailScreen(
                             Text(
                                 text = softDetail.value.name,
                                 maxLines = 1,
+                                color = MaterialTheme.colorScheme.primary,
                                 overflow = TextOverflow.Ellipsis
                             )
                         },
@@ -173,12 +169,15 @@ fun AppDetailScreen(
                             Text(
                                 text = softDetail.value.fullName,
                                 maxLines = 1,
+                                color = MaterialTheme.colorScheme.secondary,
                                 overflow = TextOverflow.Ellipsis
                             )
                         },
                         leadingContent = {
                             AsyncImage(
-                                modifier = Modifier.size(60.dp),
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
                                 model = softDetail.value.logo,
                                 contentDescription = ""
                             )
@@ -198,32 +197,32 @@ fun AppDetailScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = softDetail.value.score)
-                            Text(text = "544条评论")
+                            Text(text = softDetail.value.score, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
+                            Text(text = "544条评论", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = softDetail.value.size)
-                            Text(text = "大小")
+                            Text(text = softDetail.value.size, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
+                            Text(text = "大小", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = softDetail.value.downloads)
-                            Text(text = "下载")
+                            Text(text = softDetail.value.downloads, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
+                            Text(text = "下载", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "1841")
-                            Text(text = "748人投币")
+                            Text(text = "1841", color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
+                            Text(text = "748人投币", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
                         }
                     }
                 }
@@ -318,10 +317,9 @@ fun AppDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(text = "详情")
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                    contentDescription = ""
-                                )
+                                RightIcon {
+
+                                }
                             }
                         }
                     )
@@ -337,10 +335,9 @@ fun AppDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(text = "beta0.02(2)")
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                    contentDescription = ""
-                                )
+                                RightIcon {
+
+                                }
                             }
                         }
                     )
@@ -356,10 +353,9 @@ fun AppDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(text = "去举报")
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                    contentDescription = ""
-                                )
+                                RightIcon {
+
+                                }
                             }
                         }
                     )

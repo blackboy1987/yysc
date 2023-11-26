@@ -40,11 +40,11 @@ import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.AdData
-import com.bootx.yysc.ui.components.BackIcon
 import com.bootx.yysc.ui.components.CardTitle
 import com.bootx.yysc.ui.components.ListItem1
 import com.bootx.yysc.ui.components.ListItem2
 import com.bootx.yysc.ui.components.ListItem3
+import com.bootx.yysc.ui.components.RightIcon
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.height4
@@ -137,7 +137,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         CardTitle(text = "好评如潮")
-                        BackIcon {
+                        RightIcon {
                             navController.navigate("ListFrame/好评如潮/01")
                         }
                     }
@@ -181,7 +181,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         CardTitle(text = "随心看看")
-                        BackIcon {
+                        RightIcon {
                             navController.navigate("ListFrame/随心看看/2")
                         }
                     }
@@ -205,7 +205,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         CardTitle(text = "今日下载")
-                        BackIcon {
+                        RightIcon {
                             navController.navigate("ListFrame/今日下载/00")
                         }
                     }
