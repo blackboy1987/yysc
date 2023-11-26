@@ -6,11 +6,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.bootx.yysc.model.entity.CategoryEntity
+import com.bootx.yysc.model.entity.DownloadEntityResponse
 import com.bootx.yysc.model.entity.SoftDetailEntity
-import com.bootx.yysc.model.entity.SoftDetailResponse
 import com.bootx.yysc.model.entity.SoftEntity
-import com.bootx.yysc.model.service.CategoryService
 import com.bootx.yysc.model.service.SoftService
 import com.google.gson.Gson
 
@@ -85,5 +83,9 @@ class SoftViewModel:ViewModel() {
             return res.data
         }
         return SoftDetailEntity()
+    }
+
+    suspend fun download(id: Int): DownloadEntityResponse {
+        return softService.download(id)
     }
 }

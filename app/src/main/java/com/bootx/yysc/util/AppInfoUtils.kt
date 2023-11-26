@@ -84,6 +84,8 @@ object AppInfoUtils {
         try {
             val packageInfo =
                 packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            appInfo.minSdkVersion = packageInfo.applicationInfo.minSdkVersion
+            appInfo.targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion
             appInfo.versionName = packageInfo.versionName
             if(Build.VERSION.SDK_INT>Build.VERSION_CODES.P){
                 appInfo.versionCode = packageInfo.longVersionCode.toString()
@@ -122,7 +124,7 @@ object AppInfoUtils {
                 //应用大小
                 appInfo.appBytes = storageStats!!.appBytes
                 //应用的总大小
-                storageStats!!.cacheBytes + storageStats!!.dataBytes + storageStats!!.appBytes
+                appInfo.appBytes = storageStats!!.cacheBytes + storageStats!!.dataBytes + storageStats!!.appBytes
             }
 
 

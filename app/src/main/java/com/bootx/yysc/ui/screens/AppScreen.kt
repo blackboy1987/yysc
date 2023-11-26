@@ -48,11 +48,12 @@ import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.viewmodel.AppViewModel
+import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel()) {
+fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel(),softViewModel: SoftViewModel= viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -101,7 +102,7 @@ fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel()) 
                         .padding(top = 16.dp)
                 ) {
                     if (vm.listLoaded) {
-                        vm.categories.forEachIndexed { index, category ->
+                        vm.categories.forEachIndexed { _, category ->
                             item {
                                 CategoryItem(
                                     category,
@@ -129,7 +130,11 @@ fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel()) 
                     ) {
                         if (!refreshing) {
                             items(vm.softList) { soft ->
-                                SoftItem(soft, false, onDownload = { download(context,soft) })
+                                SoftItem(soft, false, onDownload = {
+                                    coroutineScope.launch {
+                                        download(context,soft.id, softViewModel)
+                                    }
+                                })
                             }
                         }
                     }

@@ -1,5 +1,8 @@
 package com.bootx.yysc.model.service
 
+import com.bootx.yysc.model.entity.BaseResponse
+import com.bootx.yysc.model.entity.DownloadEntityResponse
+import com.bootx.yysc.model.entity.SoftDetailEntity
 import com.bootx.yysc.model.entity.SoftDetailResponse
 import com.bootx.yysc.model.entity.SoftListResponse
 import com.bootx.yysc.util.HiRetrofit
@@ -28,12 +31,19 @@ interface SoftService {
         @Field("categoryId") categoryId: Int = 0,
     ): SoftListResponse
 
+    data class DownloadResponse(val data: String?) : BaseResponse()
 
     @POST("/api/soft/detail")
     @FormUrlEncoded
     suspend fun detail(
         @Field("id") id: String,
     ): SoftDetailResponse
+
+    @POST("/api/soft/download")
+    @FormUrlEncoded
+    suspend fun download(
+        @Field("id") id: Int,
+    ): DownloadEntityResponse
 
     companion object {
         fun instance(): SoftService {
