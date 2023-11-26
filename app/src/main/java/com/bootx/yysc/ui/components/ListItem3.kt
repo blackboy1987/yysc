@@ -12,12 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Anchor
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,14 +29,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.bootx.yysc.model.entity.SoftEntity
-import com.bootx.yysc.ui.theme.fontSize10
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape4
 
 @Composable
-fun ListItem3(list: List<SoftEntity>, showDownload: Boolean =true, onDownload:(id:Int)->Unit) {
+fun ListItem3(list: List<SoftEntity>, showDownload: Boolean = true, onDownload: (id: Int) -> Unit,onClick:(id: Int)->Unit) {
     Column {
         list.forEachIndexed { _, item ->
             Row(
@@ -44,7 +44,7 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean =true, onDownload:(i
                     .fillMaxWidth()
                     .padding(padding8)
                     .clickable {
-
+                        onClick(item.id)
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -54,7 +54,9 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean =true, onDownload:(i
                     },
                     model = item.logo,
                     contentDescription = "",
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(6.dp))
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(
@@ -62,7 +64,7 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean =true, onDownload:(i
                 ) {
                     Text(
                         text = item.name,
-                        fontSize = fontSize14,
+                        fontSize = MaterialTheme.typography.titleMedium.copy(fontSize = fontSize14).fontSize,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -77,13 +79,13 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean =true, onDownload:(i
                         )
                         Text(
                             text = item.score,
-                            fontSize = fontSize12,
+                            fontSize = MaterialTheme.typography.titleSmall.copy(fontSize = fontSize12).fontSize,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF2196f3),
                         )
                         Text(
-                            text = item.versionName?:"位置",
-                            fontSize = fontSize12,
+                            text = item.versionName ?: "",
+                            fontSize = MaterialTheme.typography.titleSmall.copy(fontSize = fontSize12).fontSize,
                             color = Color(0xFF8d9195),
                             modifier = Modifier.padding(start = 8.dp),
                         )
@@ -96,22 +98,26 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean =true, onDownload:(i
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(shape4))
-                                .width(44.dp)
                                 .height(22.dp)
                                 .background(Color(0xFF2196f3)),
                         ) {
                             Icon(
-                                modifier = Modifier.size(10.dp),
-                                imageVector = Icons.Filled.Anchor,
+                                modifier = Modifier.size(12.dp).padding(start = 4.dp),
+                                imageVector = Icons.Filled.Star,
                                 contentDescription = "",
                                 tint = Color(0xFFFFFFFF),
                             )
                             Spacer(modifier = Modifier.width(2.dp))
-                            Text(text = "星标", color = Color.White, fontSize = fontSize10)
+                            Text(
+                                modifier = Modifier.padding(end = 4.dp),
+                                text = "星标",
+                                color = Color.White,
+                                fontSize = MaterialTheme.typography.titleSmall.copy(fontSize = fontSize12).fontSize,
+                            )
                         }
                         Text(
                             text = item.memo,
-                            fontSize = fontSize12,
+                            fontSize = MaterialTheme.typography.titleSmall.copy(fontSize = fontSize12).fontSize,
                             color = Color(0xFF8d9195),
                             modifier = Modifier.padding(start = padding8)
                         )

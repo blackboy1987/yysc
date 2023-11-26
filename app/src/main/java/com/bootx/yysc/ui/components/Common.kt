@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,9 +33,8 @@ fun BackIcon(onBack:()->Unit) {
 @Composable
 fun DownloadButton(onClick:()->Unit) {
     Button(
-        modifier = Modifier.padding(0.dp).height(36.dp),
+        modifier = Modifier.padding(0.dp).height(36.dp).width(80.dp),
         onClick = onClick,
-        contentPadding = PaddingValues(vertical = 0.dp)
     ) {
         Text(
             text = "下载",

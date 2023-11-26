@@ -42,7 +42,9 @@ import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.AdData
 import com.bootx.yysc.ui.components.BackIcon
 import com.bootx.yysc.ui.components.CardTitle
-import com.bootx.yysc.ui.components.ListItem
+import com.bootx.yysc.ui.components.ListItem1
+import com.bootx.yysc.ui.components.ListItem2
+import com.bootx.yysc.ui.components.ListItem3
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.height4
@@ -139,10 +141,12 @@ fun HomeScreen(
                             navController.navigate("ListFrame/好评如潮/01")
                         }
                     }
-                    ListItem(type = 1, todayCommentList.value, onDownload = {id->
+                    ListItem1(todayCommentList.value, onDownload = {id->
                         coroutineScope.launch {
                             download(context,id,softViewModel)
                         }
+                    }, onClick = {id ->
+                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
                     })
                 }
             }
@@ -181,8 +185,10 @@ fun HomeScreen(
                             navController.navigate("ListFrame/随心看看/2")
                         }
                     }
-                    ListItem(2,randomList.value, onDownload = {id->
-                        navController.navigate("${Destinations.AppDetailFrame}/${id}")
+                    ListItem2(randomList.value, onDownload = {id->
+                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                    }, onClick = {id ->
+                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
                     })
                 }
             }
@@ -203,10 +209,12 @@ fun HomeScreen(
                             navController.navigate("ListFrame/今日下载/00")
                         }
                     }
-                    ListItem(type = 3, list = todayDownloadList.value, onDownload = {id->
+                    ListItem3(list = todayDownloadList.value, onDownload = {id->
                         coroutineScope.launch {
                             download(context,id,softViewModel)
                         }
+                    }, onClick = {id ->
+                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
                     })
                 }
             }

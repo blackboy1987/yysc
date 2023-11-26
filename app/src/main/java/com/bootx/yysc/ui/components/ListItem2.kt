@@ -31,7 +31,7 @@ import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 
 @Composable
-fun ListItem2(list: List<SoftEntity>,onDownload:(id:Int)->Unit) {
+fun ListItem2(list: List<SoftEntity>, onDownload: (id: Int) -> Unit, onClick: (id: Int) -> Unit) {
     val colors = listOf(
         Color(0xFF6F4849),
         Color(0xFFD67940),
@@ -62,14 +62,14 @@ fun ListItem2(list: List<SoftEntity>,onDownload:(id:Int)->Unit) {
             modifier = Modifier.fillMaxWidth(),
             state = rememberLazyListState()
         ) {
-            itemsIndexed(list){index, item ->
+            itemsIndexed(list) { index, item ->
                 Card(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .width(120.dp)
                         .height(200.dp)
                         .clickable {
-                                   onDownload(item.id)
+                            onClick(item.id)
                         },
                     colors = CardColors(
                         containerColor = colors[index % colors.size],

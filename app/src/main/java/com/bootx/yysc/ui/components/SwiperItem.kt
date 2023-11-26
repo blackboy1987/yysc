@@ -105,16 +105,10 @@ fun SwiperItem(items: List<CarouselEntity>,softViewModel: SoftViewModel= viewMod
                     .align(Alignment.BottomEnd)
                     .padding(end = 24.dp, bottom = 24.dp)
             ) {
-                Button(
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    onClick = {
-                        coroutineScope.launch {
-                            download(context,items[page].id, softViewModel)
-                        }
-                    },
-                ){
-                    Text(text = "下载")
+                DownloadButton {
+                    coroutineScope.launch {
+                        download(context,items[page].id, softViewModel)
+                    }
                 }
             }
         }

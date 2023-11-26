@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
-import com.bootx.yysc.ui.components.ListItem
+import com.bootx.yysc.ui.components.ListItem3
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.viewmodel.AppViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
@@ -113,10 +113,12 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
                         .padding(top = 16.dp)
                         .pullRefresh(state)
                 ) {
-                    ListItem(type = 3, list = vm.softList, onDownload = {id->
+                    ListItem3(list = vm.softList, onDownload = {id->
                         coroutineScope.launch {
                             download(context,id, sofViewModel)
                         }
+                    }, onClick = {id ->
+                        navController.navigate("${Destinations.AppDetailFrame.route}/$id")
                     })
                     PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.Center))
                 }
