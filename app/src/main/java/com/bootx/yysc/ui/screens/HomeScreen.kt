@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,16 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,12 +28,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -50,20 +37,15 @@ import com.azhon.appupdate.listener.OnDownloadListener
 import com.azhon.appupdate.manager.DownloadManager
 import com.bootx.yysc.R
 import com.bootx.yysc.model.entity.ActivityEntity
-import com.bootx.yysc.model.entity.CarouselEntity
 import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.AdData
-import com.bootx.yysc.ui.components.ListData
-import com.bootx.yysc.ui.components.MyCard
-import com.bootx.yysc.ui.components.SoftItem
+import com.bootx.yysc.ui.components.BackIcon
+import com.bootx.yysc.ui.components.CardTitle
+import com.bootx.yysc.ui.components.ListItem
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.navigation.Destinations
-import com.bootx.yysc.ui.theme.fontSize12
-import com.bootx.yysc.ui.theme.fontSize14
-import com.bootx.yysc.ui.theme.height16
 import com.bootx.yysc.ui.theme.height4
-import com.bootx.yysc.ui.theme.height8
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape8
 import com.bootx.yysc.util.CommonUtils
@@ -144,8 +126,7 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .padding(padding8)
-                        .clip(RoundedCornerShape(shape8))
-                        .background(Color.White)
+                        .clip(RoundedCornerShape(shape8)),
                 ) {
                     Row(
                         modifier = Modifier
@@ -153,113 +134,80 @@ fun HomeScreen(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(text = "好评如潮", fontSize = fontSize14)
-                        Icon(
-                            modifier = Modifier.clickable {
-                                navController.navigate("ListFrame/好评如潮/01")
-                            },
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = "",
-                            tint = Color(0xFFb7b7b7)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(height16))
-                    LazyRow {
-                        todayCommentList.value.forEachIndexed { index, softEntity ->
-                            run {
-                                item {
-                                    Column(
-                                        modifier = Modifier
-                                            .width(100.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center,
-                                    ) {
-                                        Spacer(modifier = Modifier.height(height8))
-                                        AsyncImage(
-                                            modifier = Modifier.size(60.dp),
-                                            model = softEntity.logo,
-                                            contentDescription = ""
-                                        )
-                                        Spacer(modifier = Modifier.height(height8))
-                                        Text(
-                                            text = softEntity.name,
-                                            maxLines = 1,
-                                            fontSize = fontSize12,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                        Spacer(modifier = Modifier.height(height8))
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.Center,
-                                            verticalAlignment = Alignment.CenterVertically,
-                                        ) {
-                                            Icon(
-                                                modifier = Modifier.size(12.dp),
-                                                imageVector = Icons.Filled.Star,
-                                                contentDescription = "",
-                                                tint = MaterialTheme.colorScheme.primary
-                                            )
-                                            Text(
-                                                text = softEntity.score,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 12.sp,
-                                                color = MaterialTheme.colorScheme.primary,
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(height8))
-                                        Button(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.9f),
-                                            onClick = {
-                                                coroutineScope.launch {
-                                                    download(context,softEntity.id,softViewModel)
-                                                }
-                                            },
-                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
-                                        ) {
-                                            Text(
-                                                text = "下载",
-                                                fontSize = fontSize12,
-                                                color = Color.White
-                                            )
-                                        }
-                                        Spacer(modifier = Modifier.height(height8))
-                                    }
-                                }
-                            }
+                        CardTitle(text = "好评如潮")
+                        BackIcon {
+                            navController.navigate("ListFrame/好评如潮/01")
                         }
                     }
+                    ListItem(type = 1, todayCommentList.value, onDownload = {id->
+                        coroutineScope.launch {
+                            download(context,id,softViewModel)
+                        }
+                    })
+                }
+            }
+
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(padding8)
+                        .clip(RoundedCornerShape(shape8)),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(padding8)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        CardTitle(text = "最新活动")
+                    }
+                    AdData(activityList.value)
                 }
             }
             item {
-                AdData(activityList.value)
-            }
-            item {
-                MyCard(title = "随心看看", onClick = {
-                    navController.navigate("ListFrame/随心看看/2")
-                }) {
-                    ListData(randomList.value)
-                }
-                Spacer(modifier = Modifier.height(height16))
-            }
-            item {
-                MyCard(title = "今日下载", onClick = {
-                    navController.navigate("ListFrame/今日下载/00")
-                }) {
-                    Column {
-                        todayDownloadList.value.forEachIndexed { _, softEntity ->
-                            SoftItem(
-                                softEntity,
-                                onDownload = {
-                                    coroutineScope.launch {
-                                        download(context,softEntity.id,softViewModel)
-                                    }
-                                }
-                            )
+                Column(
+                    modifier = Modifier
+                        .padding(padding8)
+                        .clip(RoundedCornerShape(shape8)),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(padding8)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        CardTitle(text = "随心看看")
+                        BackIcon {
+                            navController.navigate("ListFrame/随心看看/2")
                         }
                     }
+                    ListItem(2,randomList.value, onDownload = {id->
+                        navController.navigate("${Destinations.AppDetailFrame}/${id}")
+                    })
+                }
+            }
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(padding8)
+                        .clip(RoundedCornerShape(shape8)),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(padding8)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        CardTitle(text = "今日下载")
+                        BackIcon {
+                            navController.navigate("ListFrame/今日下载/00")
+                        }
+                    }
+                    ListItem(type = 3, list = todayDownloadList.value, onDownload = {id->
+                        coroutineScope.launch {
+                            download(context,id,softViewModel)
+                        }
+                    })
                 }
             }
             item {

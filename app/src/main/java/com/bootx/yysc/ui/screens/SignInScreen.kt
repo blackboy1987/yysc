@@ -24,6 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,12 +43,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.model.entity.SignInEntity
+import com.bootx.yysc.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(navController: NavHostController) {
+fun SignInScreen(navController: NavHostController,userViewModel: UserViewModel= viewModel()) {
+    val coroutineScope = rememberCoroutineScope()
+    var signInInfo by remember {
+        mutableStateOf(SignInEntity())
+    }
+    var isSign by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(Unit){
+        isSign = userViewModel.isSign()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,15 +110,21 @@ fun SignInScreen(navController: NavHostController) {
                             color = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "已连续签到1天",
+                            text = "已连续签到${signInInfo.days}天",
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
-                    Button(
-                        modifier = Modifier.padding(start = 8.dp),
-                        onClick = { /*TODO*/ }) {
-                        Text(text = "签到")
+                    if(!isSign){
+                        Button(
+                            modifier = Modifier.padding(start = 8.dp),
+                            onClick = {
+                                coroutineScope.launch {
+                                    signInInfo = userViewModel.signIn()
+                                }
+                            }) {
+                            Text(text = "签到")
+                        }
                     }
                 }
                 Row(

@@ -3,11 +3,9 @@ package com.bootx.yysc.ui.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -36,9 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
-import com.bootx.yysc.ui.components.SoftItem
+import com.bootx.yysc.ui.components.ListItem
 import com.bootx.yysc.ui.navigation.Destinations
-import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.viewmodel.AppViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
@@ -116,20 +113,11 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
                         .padding(top = 16.dp)
                         .pullRefresh(state)
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
-                    ) {
-                        if (!refreshing) {
-                            items(vm.softList) { soft ->
-                                SoftItem(soft, false, onDownload = {
-                                    coroutineScope.launch {
-                                        download(context,soft.id,sofViewModel)
-                                    }
-                                })
-                            }
+                    ListItem(type = 3, list = vm.softList, onDownload = {id->
+                        coroutineScope.launch {
+                            download(context,id, sofViewModel)
                         }
-                    }
+                    })
                     PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.Center))
                 }
             }

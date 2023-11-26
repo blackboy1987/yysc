@@ -44,7 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.model.entity.CategoryEntity
-import com.bootx.yysc.ui.components.SoftItem
+import com.bootx.yysc.ui.components.ListItem
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.viewmodel.AppViewModel
@@ -124,20 +124,11 @@ fun AppScreen(navController: NavHostController, vm: AppViewModel = viewModel(),s
                         .padding(top = 16.dp)
                         .pullRefresh(state)
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
-                    ) {
-                        if (!refreshing) {
-                            items(vm.softList) { soft ->
-                                SoftItem(soft, false, onDownload = {
-                                    coroutineScope.launch {
-                                        download(context,soft.id, softViewModel)
-                                    }
-                                })
-                            }
+                    ListItem(type = 3, list = vm.softList, onDownload = {id->
+                        coroutineScope.launch {
+                            download(context,id, softViewModel)
                         }
-                    }
+                    })
                     PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.Center))
                 }
             }
