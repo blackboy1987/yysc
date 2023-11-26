@@ -1,27 +1,30 @@
 package com.bootx.yysc.ui.screens
 
-import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.CurrencyBitcoin
 import androidx.compose.material.icons.filled.Dehaze
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -29,11 +32,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -44,34 +46,39 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.bootx.yysc.extension.onBottomReached
-import com.bootx.yysc.extension.onScroll
-import com.bootx.yysc.ui.components.SoftItem
-import kotlinx.coroutines.launch
+import com.bootx.yysc.model.entity.SoftDetailEntity
+import com.bootx.yysc.ui.components.ad.RequestBannerAd
+import com.bootx.yysc.viewmodel.SoftViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
-fun AppDetailScreen(navController: NavHostController, id: String) {
-    val lazyListState = rememberLazyListState()
+fun AppDetailScreen(navController: NavHostController, id: String,softViewModel: SoftViewModel= viewModel()) {
+    val context = LocalContext.current
     val showTitle = remember {
         mutableStateOf(false)
     }
-    lazyListState.onScroll() {
-        Log.e("AppDetailScreen", "onScroll: $it", )
-        if(it>=1){
-            showTitle.value = true
-        }else if(showTitle.value){
-            showTitle.value = false
-        }
+
+    val softDetail = remember {
+        mutableStateOf<SoftDetailEntity>(SoftDetailEntity())
     }
+
+    LaunchedEffect(Unit){
+        softDetail.value = softViewModel.detail("61862")
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { if(showTitle.value) Text(text = "abc") },
+                title = { if(showTitle.value) Text(text = softDetail.value.name) },
                 navigationIcon = {
                     Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "")
                 },
@@ -80,6 +87,25 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                     Icon(imageVector = Icons.Filled.Dehaze,contentDescription = "")
                 }
             )
+        },
+        bottomBar = {
+            BottomAppBar {
+                TextButton(onClick = { /*TODO*/ }) {
+                    Column {
+                        Icon(imageVector = Icons.Filled.CurrencyBitcoin, contentDescription = "")
+                        Text(text = "投币")
+                    }
+                }
+                Button(modifier = Modifier.weight(1.0f), onClick = { /*TODO*/ }) {
+                    Text(text = "下载")
+                }
+               TextButton(onClick = { /*TODO*/ }) {
+                   Column {
+                       Icon(imageVector = Icons.Filled.Share, contentDescription = "")
+                       Text(text = "分享")
+                   }
+               }
+            }
         }
     ) {
 
@@ -90,20 +116,19 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp),
-                state = lazyListState,
             ) {
                 item{
                     ListItem(
                         headlineContent = {
                             Text(
-                                text = "奇妙搜搜",
+                                text = softDetail.value.name,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                         },
                         supportingContent = {
                             Text(
-                                text = "奇妙搜搜",
+                                text = softDetail.value.fullName,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -111,7 +136,7 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                         leadingContent = {
                             AsyncImage(
                                 modifier = Modifier.size(60.dp),
-                                model = "https://android-artworks.25pp.com/fs08/2023/11/06/10/110_f79419762ee11b23c04ea2e487adc0ba_con_130x130.png",
+                                model = softDetail.value.logo,
                                 contentDescription = ""
                             )
                         }
@@ -130,7 +155,7 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "9.7")
+                            Text(text = softDetail.value.score)
                             Text(text = "544条评论")
                         }
                         Column(
@@ -138,7 +163,7 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "7.79MB")
+                            Text(text = softDetail.value.size)
                             Text(text = "大小")
                         }
                         Column(
@@ -146,7 +171,7 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "10.86万")
+                            Text(text = softDetail.value.downloads)
                             Text(text = "下载")
                         }
                         Column(
@@ -169,7 +194,7 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                         selectedTabIndex = selectedTabIndex,
                         modifier = Modifier
                             .focusRestorer()
-                            .padding(8.dp),
+                            .padding(horizontal = 8.dp, vertical = 0.dp),
                         tabs = {
                             tabs.forEachIndexed { index, item ->
                                 Tab(selected = selectedTabIndex == index, onClick = {
@@ -180,6 +205,86 @@ fun AppDetailScreen(navController: NavHostController, id: String) {
                                         modifier = Modifier.padding(4.dp),
                                     )
                                 }
+                            }
+                        }
+                    )
+                }
+                item{
+                   LazyRow(){
+                        items(softDetail.value.images){image->
+                            AsyncImage(
+                                modifier = Modifier
+                                    .width(162.dp)
+                                    .height(288.dp)
+                                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.FillBounds,
+                                model = image, contentDescription = "")
+                        }
+                    }
+                }
+                /*item{
+                    Text(text = "更新内容")
+                    MyWebView(rememberWebViewState(data = softDetail.value.introduce))
+                }
+                item{
+                    Text(text = "关于应用")
+                    MyWebView(rememberWebViewState(data = softDetail.value.introduce))
+                }*/
+                item{
+                    RequestBannerAd(context = context)
+                }
+                item{
+                    ListItem(
+                        headlineContent = {
+                            Text(text = "分享者")
+                        },
+                        trailingContent={
+                            Row {
+                                AsyncImage(model = "https://profile-avatar.csdnimg.cn/9848118595564203baa263ac8ec3459a_ozhuimeng123.jpg", contentDescription = "")
+                                Text(text = "湯姆")
+                            }
+                        }
+                    )
+                    ListItem(
+                        headlineContent = {
+                            Text(text = "应用详情")
+                        },
+                        trailingContent={
+                            Row {
+                                Text(text = "详情")
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                    )
+                    ListItem(
+                        headlineContent = {
+                            Text(text = "应用版本")
+                        },
+                        trailingContent={
+                            Row {
+                                Text(text = "beta0.02(2)")
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                    )
+                    ListItem(
+                        headlineContent = {
+                            Text(text = "举报它")
+                        },
+                        trailingContent={
+                            Row {
+                                Text(text = "去举报")
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                    contentDescription = ""
+                                )
                             }
                         }
                     )

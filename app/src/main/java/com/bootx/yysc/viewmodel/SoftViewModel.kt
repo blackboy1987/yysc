@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.CategoryEntity
+import com.bootx.yysc.model.entity.SoftDetailEntity
+import com.bootx.yysc.model.entity.SoftDetailResponse
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.model.service.CategoryService
 import com.bootx.yysc.model.service.SoftService
@@ -75,5 +77,13 @@ class SoftViewModel:ViewModel() {
         } else {
             Log.e("fetchList",gson.toJson(res))
         }
+    }
+
+    suspend fun detail(id: String): SoftDetailEntity {
+        val res = softService.detail(id)
+        if (res.code == 0 && res.data != null) {
+            return res.data
+        }
+        return SoftDetailEntity()
     }
 }

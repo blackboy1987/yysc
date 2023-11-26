@@ -17,5 +17,3 @@ data class SoftEntity(
 )
 
 data class SoftListResponse(val data: List<SoftEntity>?) : BaseResponse()
-
-data class SoftDetailResponse(val data: SoftEntity?) : BaseResponse()

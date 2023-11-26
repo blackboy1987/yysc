@@ -1,11 +1,13 @@
 package com.bootx.yysc.ui.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.ui.screens.AppDetail1Screen
 import com.bootx.yysc.ui.screens.AppDetailScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
@@ -30,7 +32,7 @@ fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.AppDetail1Frame.route+"/61862",
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -295,6 +297,7 @@ fun NavHostApp() {
                 )
             },
         ) {
+            Log.e("NavHostApp", "NavHostApp: ${it.arguments.toString()}", )
             val id = it.arguments?.getString("id") ?: ""
             AppDetailScreen(navController,id)
         }
@@ -312,6 +315,23 @@ fun NavHostApp() {
             },
         ) {
             SettingScreen(navController)
+        }
+        composable(
+            Destinations.AppDetail1Frame.route+"/1234",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            Log.e("NavHostApp", "NavHostApp: ${it.arguments.toString()}", )
+            val id = it.arguments?.getString("id") ?: ""
+            AppDetail1Screen(navController,id)
         }
     }
 }

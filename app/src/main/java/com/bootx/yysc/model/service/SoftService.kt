@@ -32,7 +32,7 @@ interface SoftService {
     @POST("/api/soft/detail")
     @FormUrlEncoded
     suspend fun detail(
-        @Field("id") id: Int,
+        @Field("id") id: String,
     ): SoftDetailResponse
 
     companion object {
