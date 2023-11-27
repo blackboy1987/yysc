@@ -376,7 +376,7 @@ fun AppDetailScreen(
                 ) {
                     listOf<Int>(1, 5, 10, 20, 66, 99, 999).forEach { count ->
                         ElevatedButton(colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = if (selectedIndex === count) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                            containerColor = if (selectedIndex == count) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
                         ), modifier = Modifier.padding(4.dp), onClick = {
                             selectedIndex = count
                         }) {

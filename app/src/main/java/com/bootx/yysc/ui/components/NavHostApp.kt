@@ -1,6 +1,8 @@
 package com.bootx.yysc.ui.components
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -27,12 +29,13 @@ import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.TouGaoFrame.route+"/com.bootx.yysc",
     ) {
         composable(
             Destinations.HomeFrame.route,

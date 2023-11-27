@@ -1,7 +1,6 @@
 package com.bootx.yysc.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +31,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.model.entity.AppInfo
+import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.viewmodel.TouGaoListViewModel
 
@@ -54,32 +54,27 @@ fun TouGaoAppInfoListScreen(
     LaunchedEffect(Unit) {
         appInfoList = touGaoListViewModel.getAppList(context)
     }
-    Text(text = "TouGaoAppInfoListScreen")
-
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 title = {
                     if (!searchStatus) {
-                        Text(
-                            text = "已安装应用",
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+                        TopBarTitle(text = "已安装应用")
                     } else {
                         OutlinedTextField(value = keywords, onValueChange = { keywords = it })
                     }
                 },
                 navigationIcon = {
-                    Icon(modifier = Modifier.clickable {
+
+                    LeftIcon {
                         if (searchStatus) {
                             searchStatus = false
                             keywords = ""
                         } else {
                             navController.popBackStack()
                         }
-                    }, imageVector = Icons.Default.ArrowBackIosNew, contentDescription = "")
+                    }
                 },
                 actions = {
                     Icon(modifier = Modifier.clickable {
@@ -124,6 +119,4 @@ fun TouGaoAppInfoListScreen(
             }
         }
     }
-
-
 }
