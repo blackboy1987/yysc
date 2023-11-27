@@ -14,5 +14,3 @@ data class TouGaoEntity(
     var operationType: Int=0,
     var featuresType: Int=0,
 )
-
-
