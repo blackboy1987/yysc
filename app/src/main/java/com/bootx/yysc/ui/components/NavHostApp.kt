@@ -8,12 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.bootx.yysc.model.entity.SysMsgScreen
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.ui.screens.AboutScreen
 import com.bootx.yysc.ui.screens.AppDetail1Screen
 import com.bootx.yysc.ui.screens.AppDetailScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
 import com.bootx.yysc.ui.screens.HotScreen
+import com.bootx.yysc.ui.screens.IconDetailScreen
 import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
@@ -36,7 +39,7 @@ fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.NotifyFrame.route,
+        startDestination = Destinations.AboutFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -350,6 +353,51 @@ fun NavHostApp() {
             },
         ) {
             NotifyScreen(navController)
+        }
+        composable(
+            Destinations.SysMsgFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            SysMsgScreen(navController)
+        }
+        composable(
+            Destinations.IconDetailFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            IconDetailScreen(navController)
+        }
+        composable(
+            Destinations.AboutFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            AboutScreen(navController)
         }
     }
 }

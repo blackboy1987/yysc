@@ -1,6 +1,5 @@
-package com.bootx.yysc.ui.screens
+package com.bootx.yysc.model.entity
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,7 +38,7 @@ import com.bootx.yysc.ui.components.TopBarTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotifyScreen(navController: NavHostController) {
+fun SysMsgScreen(navController: NavHostController) {
 
     val show = remember {
         mutableStateOf(false)
@@ -53,7 +51,7 @@ fun NotifyScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { TopBarTitle(text = "通知消息") },
+                title = { TopBarTitle(text = "系统消息") },
                 navigationIcon = {
                     LeftIcon {
                         navController.popBackStack()
@@ -94,14 +92,13 @@ fun NotifyScreen(navController: NavHostController) {
                         modifier = Modifier.clickable {
 
                         },
-                        headlineContent = { Text(text = "系统消息") },
+                        headlineContent = { Text(text = "签到奖励") },
+                        supportingContent = { Text(text = "签到奖励硬币5枚") },
                         leadingContent = {
                             SoftIcon4(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/${it + 10}.png")
                         },
                         trailingContent = {
-                            RightIcon {
-
-                            }
+                            Text(text = "8天前")
                         }
                     )
                 }
