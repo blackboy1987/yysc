@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.ui.components.Tag
 import com.bootx.yysc.ui.theme.fontSize14
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")

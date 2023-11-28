@@ -61,6 +61,8 @@ sealed class Destinations(val route: String) {
     object MyIconListFrame : Destinations("MyIconListFrame")
     //设置
     object SettingFrame : Destinations("SettingFrame")
+    //通知信息
+    object NotifyFrame : Destinations("NotifyFrame")
 
 
 

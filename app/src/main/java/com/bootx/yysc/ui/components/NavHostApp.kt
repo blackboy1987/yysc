@@ -19,6 +19,7 @@ import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
 import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
+import com.bootx.yysc.ui.screens.NotifyScreen
 import com.bootx.yysc.ui.screens.QunZuScreen
 import com.bootx.yysc.ui.screens.SearchScreen
 import com.bootx.yysc.ui.screens.SettingScreen
@@ -35,7 +36,7 @@ fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.NotifyFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -332,9 +333,23 @@ fun NavHostApp() {
                 )
             },
         ) {
-            Log.e("NavHostApp", "NavHostApp: ${it.arguments.toString()}", )
             val id = it.arguments?.getString("id") ?: ""
             AppDetail1Screen(navController,id)
+        }
+        composable(
+            Destinations.NotifyFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            NotifyScreen(navController)
         }
     }
 }
