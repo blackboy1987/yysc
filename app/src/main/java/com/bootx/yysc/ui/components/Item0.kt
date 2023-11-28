@@ -1,16 +1,17 @@
 package com.bootx.yysc.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -46,11 +47,11 @@ fun Item0(item: Item0Model) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(4.dp),
+        modifier = Modifier.width(80.dp),
     ) {
         AsyncImage(
-            modifier = Modifier.size(32.dp),
-            model = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/yysc/res/jp.png",
+            modifier = Modifier.size(60.dp),
+            model = "https://pp.myapp.com/ma_icon/0/icon_10910_1699682909/256",
             contentDescription = ""
         )
         Text(text = item.title, fontSize = fontSize12)

@@ -35,7 +35,7 @@ fun NavHostApp() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destinations.TouGaoFrame.route+"/com.bootx.yysc",
+        startDestination = Destinations.HomeFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
