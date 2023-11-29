@@ -1,12 +1,11 @@
 package com.bootx.yysc.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.LoginEntity
-import com.bootx.yysc.model.entity.PointLogEntity
 import com.bootx.yysc.model.service.LoginService
 
 class LoginViewModel : ViewModel() {
@@ -28,23 +27,18 @@ class LoginViewModel : ViewModel() {
     )
 
 
-    // 页码
-    var pageNumber by mutableIntStateOf(1)
-        private set
-
-
-    suspend fun login(username: String, password: String): LoginEntity {
+    suspend fun login(username: String, password: String){
         try {
             loading = true
             val res = loginService.login(username, password)
             if (res.code == 0) {
                 data = res.data
             }
-        } catch (e: Throwable) {
+            Log.e("login", "login success: ${data.toString()}", )
             loading = false
-            return data
+        } catch (e: Throwable) {
+            Log.e("login", "login error: ${e.toString()}", )
+            loading = false
         }
-        loading = false
-        return data
     }
 }
