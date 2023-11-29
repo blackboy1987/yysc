@@ -25,23 +25,23 @@ class HomeViewModel:ViewModel() {
     /**
      * 检测更新
      */
-    suspend fun checkUpdate(context: Context): List<AppVersion> {
+    suspend fun checkUpdate(token: String,context: Context): List<AppVersion> {
         val appInfo = AppInfoUtils.getAppInfo(context, "com.bootx.yysc")
-        val check = appVersionService.check(appInfo.versionCode,appInfo.versionName)
+        val check = appVersionService.check(token,appInfo.versionCode,appInfo.versionName)
         Log.e("checkUpdate12345", "checkUpdate: ${check.data}", )
         return check.data?: listOf()
     }
 
-    suspend fun homeCenterBar(): List<HomeCenterBar> {
-        val res = homeService.homeCenterBar()
+    suspend fun homeCenterBar(token: String,): List<HomeCenterBar> {
+        val res = homeService.homeCenterBar(token)
         if (res.code == 0 && res.data != null) {
             return res.data
         }
         return listOf<HomeCenterBar>()
     }
 
-    suspend fun activity(): List<ActivityEntity> {
-        val res = homeService.activity()
+    suspend fun activity(token: String,): List<ActivityEntity> {
+        val res = homeService.activity(token)
         if (res.code == 0 && res.data != null) {
             return res.data
         }

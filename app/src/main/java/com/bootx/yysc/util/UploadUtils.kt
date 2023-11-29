@@ -21,7 +21,7 @@ import java.io.FileOutputStream
  */
 object UploadUtils {
 
-    suspend fun uploadImage(file: File): String {
+    suspend fun uploadImage(token: String,file: File): String {
         val uploadService = UploadService.instance();
         val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
         val requestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull());
@@ -31,7 +31,7 @@ object UploadUtils {
 
         builder.addFormDataPart("file", file.getName(), requestBody);
         val body = builder.build();
-        val upload = uploadService.upload(body)
+        val upload = uploadService.upload(token,body)
         return upload.data.url
     }
 

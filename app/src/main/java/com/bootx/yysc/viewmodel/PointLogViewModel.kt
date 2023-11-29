@@ -31,10 +31,10 @@ class PointLogViewModel:ViewModel() {
         private set
 
 
-    suspend fun list(pageNumber: Int,pageSize: Int): List<PointLogEntity> {
+    suspend fun list(token: String,pageNumber: Int,pageSize: Int): List<PointLogEntity> {
         try {
             loading = true
-            val res = pointLogService.list(pageNumber, pageSize)
+            val res = pointLogService.list(token,pageNumber, pageSize)
             if (res.code == 0 && res.data != null) {
                 val tmpList = mutableListOf<PointLogEntity>()
                 if (pageNumber != 1) {

@@ -18,8 +18,8 @@ class CarouselViewModel:ViewModel() {
 
     var carousels = mutableListOf<CarouselEntity>()
 
-    suspend fun fetchList() {
-        val res = carouselService.list()
+    suspend fun fetchList(token: String,) {
+        val res = carouselService.list(token)
         val gson = Gson()
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<CarouselEntity>()

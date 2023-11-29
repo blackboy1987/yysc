@@ -38,4 +38,10 @@ class StoreManager(private val context: Context) {
         }
     }
 
+    fun getToken(): Flow<String>{
+        return context.dataStore.data.map { preferences ->
+            preferences[stringPreferencesKey("token")] ?: ""
+        }
+    }
+
 }

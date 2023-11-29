@@ -47,8 +47,7 @@ import com.bootx.yysc.ui.components.Tag
 import com.bootx.yysc.ui.theme.fontSize14
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
-    ExperimentalAnimationApi::class
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class
 )
 @Composable
 fun FanScreen(navController: NavHostController) {

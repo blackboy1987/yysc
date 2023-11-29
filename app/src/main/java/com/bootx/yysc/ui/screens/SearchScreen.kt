@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
@@ -80,10 +81,11 @@ fun SearchScreen(
     var hotList by remember { mutableStateOf(listOf<SoftEntity>()) }
     var searchStatus by remember { mutableStateOf(false) }
 
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
         //获取分类列表
-        hotList = softViewModel.orderBy(1, 20, "8")
-        hotSearchViewModel.fetchList()
+        hotList = softViewModel.orderBy(token,1, 20, "8")
+        hotSearchViewModel.fetchList(token,)
     }
     val gson = Gson()
     val keywords = remember {

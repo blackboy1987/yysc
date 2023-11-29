@@ -15,11 +15,11 @@ import java.io.File
 
 object DownloadManager {
 
-    suspend fun download(url: String, file: File): Flow<DownloadState> {
+    suspend fun download(token: String,url: String, file: File): Flow<DownloadState> {
         Log.e("saveToFilesaveToFilesaveToFile", "downloadStart", )
         return flow {
             val retrofit = Retrofit.Builder().baseUrl(UrlUtils.getBaseUrl(url)).build()
-            val response = retrofit.create(DownloadService::class.java).download(url).execute()
+            val response = retrofit.create(DownloadService::class.java).download(token,url).execute()
             val gson = Gson()
             Log.e("saveToFilesaveToFilesaveToFile", "download: ${gson.toJson(response)}", )
             if (response.isSuccessful) {

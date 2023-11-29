@@ -29,9 +29,9 @@ class SoftViewModel:ViewModel() {
         private set
 
 
-    suspend fun orderBy(pageNumber: Int,pageSize: Int,orderBy: String): List<SoftEntity> {
+    suspend fun orderBy(token: String,pageNumber: Int,pageSize: Int,orderBy: String): List<SoftEntity> {
         try {
-            val res = softService.orderBy(pageNumber, pageSize,orderBy)
+            val res = softService.orderBy(token,pageNumber, pageSize,orderBy)
             if (res.code == 0 && res.data != null) {
                 val tmpList = mutableListOf<SoftEntity>()
                 tmpList.addAll(res.data)
@@ -43,10 +43,10 @@ class SoftViewModel:ViewModel() {
         return listOf()
     }
 
-    suspend fun reload(orderBy: String) {
+    suspend fun reload(token: String,orderBy: String) {
         softListLoaded = false
         pageNumber = 1
-        val res = softService.orderBy(1,20,orderBy)
+        val res = softService.orderBy(token,1,20,orderBy)
         val gson = Gson()
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()
@@ -59,9 +59,9 @@ class SoftViewModel:ViewModel() {
         }
     }
 
-    suspend fun loadMore(orderBy: String) {
+    suspend fun loadMore(token: String,orderBy: String) {
         softListLoaded = false
-        val res = softService.orderBy(pageNumber,20,orderBy)
+        val res = softService.orderBy(token,pageNumber,20,orderBy)
         val gson = Gson()
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()
@@ -77,15 +77,15 @@ class SoftViewModel:ViewModel() {
         }
     }
 
-    suspend fun detail(id: String): SoftDetailEntity {
-        val res = softService.detail(id)
+    suspend fun detail(token: String,id: String): SoftDetailEntity {
+        val res = softService.detail(token,id)
         if (res.code == 0 && res.data != null) {
             return res.data
         }
         return SoftDetailEntity()
     }
 
-    suspend fun download(id: Int): DownloadEntityResponse {
-        return softService.download(id)
+    suspend fun download(token: String,id: Int): DownloadEntityResponse {
+        return softService.download(token,id)
     }
 }

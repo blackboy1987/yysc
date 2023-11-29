@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.CarouselEntity
 import com.bootx.yysc.ui.screens.download
 import com.bootx.yysc.ui.theme.fontSize10
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -40,6 +43,8 @@ fun SwiperItem(items: List<CarouselEntity>,softViewModel: SoftViewModel= viewMod
     val pagerState = rememberPagerState(pageCount = {
         items.size
     })
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     HorizontalPager(
         state = pagerState,
         verticalAlignment = Alignment.Top,
@@ -107,7 +112,7 @@ fun SwiperItem(items: List<CarouselEntity>,softViewModel: SoftViewModel= viewMod
             ) {
                 DownloadButton {
                     coroutineScope.launch {
-                        download(context,items[page].id, softViewModel)
+                        download(token,context,items[page].id, softViewModel)
                     }
                 }
             }

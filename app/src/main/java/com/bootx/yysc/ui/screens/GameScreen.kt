@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,9 +34,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.ui.components.ListItem3
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.AppViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
@@ -45,9 +48,11 @@ import kotlinx.coroutines.launch
 fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),sofViewModel: SoftViewModel= viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
         //获取分类列表
-        vm.fetchList(1, 100)
+        vm.fetchList(token,1, 100)
     }
 
     Scaffold(
@@ -72,7 +77,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
 
         fun refresh() = refreshScope.launch {
             refreshing = true
-            vm.reload()
+            vm.reload(token)
             refreshing = false
         }
 
@@ -80,7 +85,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
         val lazyListState = rememberLazyListState()
         lazyListState.onBottomReached(buffer = 3) {
             coroutineScope.launch {
-                vm.loadMore()
+                vm.loadMore(token)
             }
         }
         Box(modifier = Modifier.padding(contentPadding)) {
@@ -99,7 +104,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
                                 ) { currentIndex ->
                                     coroutineScope.launch {
                                         lazyListState.animateScrollToItem(1)
-                                        vm.updateCurrentIndex(currentIndex)
+                                        vm.updateCurrentIndex(token,currentIndex)
                                     }
                                 }
                             }
@@ -115,7 +120,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
                 ) {
                     ListItem3(list = vm.softList, onDownload = {id->
                         coroutineScope.launch {
-                            download(context,id, sofViewModel)
+                            download(token,context,id, sofViewModel)
                         }
                     }, onClick = {id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/$id")

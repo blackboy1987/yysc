@@ -7,11 +7,11 @@ import com.bootx.yysc.model.service.SignInService
 class UserViewModel:ViewModel() {
     private val signInService = SignInService.instance()
 
-    suspend fun isSign():Boolean{
-        return signInService.isSign()
+    suspend fun isSign(token: String,):Boolean{
+        return signInService.isSign(token)
     }
 
-    suspend fun signIn(): SignInEntity {
-        return signInService.signIn()
+    suspend fun signIn(token: String,): SignInEntity {
+        return signInService.signIn(token)
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -46,7 +48,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SignInEntity
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -60,8 +64,10 @@ fun SignInScreen(navController: NavHostController,userViewModel: UserViewModel= 
     var isSign by remember {
         mutableStateOf(false)
     }
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit){
-        isSign = userViewModel.isSign()
+        isSign = userViewModel.isSign(token,)
     }
 
     Scaffold(
@@ -120,7 +126,7 @@ fun SignInScreen(navController: NavHostController,userViewModel: UserViewModel= 
                             modifier = Modifier.padding(start = 8.dp),
                             onClick = {
                                 coroutineScope.launch {
-                                    signInInfo = userViewModel.signIn()
+                                    signInInfo = userViewModel.signIn(token,)
                                 }
                             }) {
                             Text(text = "签到")

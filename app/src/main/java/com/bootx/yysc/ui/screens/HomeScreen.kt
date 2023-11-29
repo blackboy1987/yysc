@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,6 +37,7 @@ import coil.compose.AsyncImage
 import com.azhon.appupdate.listener.OnDownloadListener
 import com.azhon.appupdate.manager.DownloadManager
 import com.bootx.yysc.R
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
@@ -51,6 +53,7 @@ import com.bootx.yysc.ui.theme.height4
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape8
 import com.bootx.yysc.util.CommonUtils
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.CarouselViewModel
 import com.bootx.yysc.viewmodel.HomeViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
@@ -92,18 +95,19 @@ fun HomeScreen(
         mutableStateOf(listOf<ActivityEntity>())
     }
 
-
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
         //获取轮播数据
-        carouselViewModel.fetchList();
+        carouselViewModel.fetchList(token);
         // 中间工具栏
-        homeCenterBarList.value = homeViewModel.homeCenterBar();
+        homeCenterBarList.value = homeViewModel.homeCenterBar(token);
         // 活动
-        activityList.value = homeViewModel.activity();
+        activityList.value = homeViewModel.activity(token);
 
-        todayDownloadList.value = softViewModel.orderBy(1, 30, "00")
-        todayCommentList.value = softViewModel.orderBy(1, 30, "01")
-        randomList.value = softViewModel.orderBy(1, 30, "2")
+        todayDownloadList.value = softViewModel.orderBy(token,1, 30, "00")
+        todayCommentList.value = softViewModel.orderBy(token,1, 30, "01")
+        randomList.value = softViewModel.orderBy(token,1, 30, "2")
     }
 
 
@@ -143,7 +147,7 @@ fun HomeScreen(
                     }
                     ListItem1(todayCommentList.value, onDownload = {id->
                         coroutineScope.launch {
-                            download(context,id,softViewModel)
+                            download(token,context,id,softViewModel)
                         }
                     }, onClick = {id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
@@ -211,7 +215,7 @@ fun HomeScreen(
                     }
                     ListItem3(list = todayDownloadList.value, onDownload = {id->
                         coroutineScope.launch {
-                            download(context,id,softViewModel)
+                            download(token,context,id,softViewModel)
                         }
                     }, onClick = {id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
@@ -269,10 +273,10 @@ fun CenterBar(list:List<HomeCenterBar>,navigate:(path: String)->Unit){
     }
 }
 
-suspend fun download(context:Context, id:Int, softViewModel: SoftViewModel) {
+suspend fun download(token: String,context:Context, id:Int, softViewModel: SoftViewModel) {
 
     // 接口请求下载地址
-    val downloadInfo = softViewModel.download(id)
+    val downloadInfo = softViewModel.download(token,id)
     var data = downloadInfo.data
     if(downloadInfo.code==0 && data!=null && data.downloadUrl.isNotEmpty()){
 

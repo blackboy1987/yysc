@@ -47,6 +47,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftDetailEntity
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.RightIcon
@@ -73,6 +75,7 @@ import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.RequestBannerAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.ShareUtils
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 
@@ -96,9 +99,10 @@ fun AppDetailScreen(
     val softDetail = remember {
         mutableStateOf<SoftDetailEntity>(SoftDetailEntity())
     }
-
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
-        softDetail.value = softViewModel.detail(id)
+        softDetail.value = softViewModel.detail(token,id)
         Log.e("AppDetailScreen", "AppDetailScreen: $id", )
     }
 

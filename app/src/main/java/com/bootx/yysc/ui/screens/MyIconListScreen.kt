@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,22 +39,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.PointLogViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun MyIconListScreen(navController: NavHostController,pointLogViewModel: PointLogViewModel= viewModel()) {
+fun MyIconListScreen(
+    navController: NavHostController,
+    pointLogViewModel: PointLogViewModel = viewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
         //获取分类列表
-        pointLogViewModel.list(1, 20)
+        pointLogViewModel.list(token, 1, 20)
     }
     Scaffold(
         topBar = {
@@ -72,14 +81,14 @@ fun MyIconListScreen(navController: NavHostController,pointLogViewModel: PointLo
                 }
             )
         }
-    ) {contentPadding->
+    ) { contentPadding ->
         val refreshScope = rememberCoroutineScope()
         var refreshing by remember { mutableStateOf(false) }
 
         fun refresh() = refreshScope.launch {
-            Log.e("refresh", "refresh: ", )
+            Log.e("refresh", "refresh: ")
             refreshing = true
-            pointLogViewModel.list(1, 20)
+            pointLogViewModel.list(token, 1, 20)
             refreshing = false
         }
 
@@ -87,8 +96,8 @@ fun MyIconListScreen(navController: NavHostController,pointLogViewModel: PointLo
         val lazyListState = rememberLazyListState()
         lazyListState.onBottomReached(buffer = 3) {
             coroutineScope.launch {
-                pointLogViewModel.list(pointLogViewModel.pageNumber, 20)
-                Log.e("loadMore", "loadMore: ", )
+                pointLogViewModel.list(token, pointLogViewModel.pageNumber, 20)
+                Log.e("loadMore", "loadMore: ")
             }
         }
         Box(
@@ -96,14 +105,14 @@ fun MyIconListScreen(navController: NavHostController,pointLogViewModel: PointLo
                 .padding(contentPadding)
                 .pullRefresh(state)
         ) {
-            if(pointLogViewModel.loading){
+            if (pointLogViewModel.loading) {
                 CircularProgressIndicator()
-            }else{
+            } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
-                ){
-                    items(pointLogViewModel.list){
+                ) {
+                    items(pointLogViewModel.list) {
                         ListItem(
                             headlineContent = {
                                 Text(text = it.memo)
@@ -125,12 +134,12 @@ fun MyIconListScreen(navController: NavHostController,pointLogViewModel: PointLo
                                 ) {
                                     Text(
                                         text = "+${it.point}",
-                                        fontSize=MaterialTheme.typography.titleLarge.fontSize,
+                                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
                                         color = MaterialTheme.colorScheme.primary,
                                     )
                                     Text(
                                         text = it.seconds,
-                                        fontSize=MaterialTheme.typography.titleSmall.fontSize,
+                                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                         color = MaterialTheme.colorScheme.primary,
                                     )
                                 }

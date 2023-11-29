@@ -43,6 +43,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,12 +63,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.AppInfo
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.util.AppInfoUtils
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.TouGaoViewModel
 import kotlinx.coroutines.launch
 
@@ -106,9 +109,11 @@ fun TouGaoScreen(
     var images by remember {
         mutableStateOf(listOf<Uri?>())
     }
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
 
     LaunchedEffect(Unit) {
-        touGaoViewModel.categoryList()
+        touGaoViewModel.categoryList(token,)
         categoryId0 = touGaoViewModel.categories[0].id
         category1 = touGaoViewModel.categories[0].children
         categoryId1 = category1[0].id

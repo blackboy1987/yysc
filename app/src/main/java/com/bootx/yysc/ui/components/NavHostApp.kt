@@ -5,9 +5,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SysMsgScreen
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.screens.AboutScreen
@@ -32,14 +35,17 @@ import com.bootx.yysc.ui.screens.SupportScreen
 import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
+import com.bootx.yysc.util.StoreManager
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun NavHostApp() {
     val navController = rememberNavController()
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = "").value
     NavHost(
         navController = navController,
-        startDestination = Destinations.AboutFrame.route,
+        startDestination = Destinations.HomeFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -54,7 +60,12 @@ fun NavHostApp() {
                 )
             },
         ) {
-            MainFrame(navController)
+            if(token.isNotBlank()){
+                MainFrame(navController)
+            }else{
+                navController.navigate(Destinations.LoginFrame.route)
+            }
+
         }
         composable(
             Destinations.LoginFrame.route,

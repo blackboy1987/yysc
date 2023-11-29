@@ -27,8 +27,8 @@ class TouGaoViewModel : ViewModel() {
         return touGaoInfo
     }
 
-    suspend fun categoryList(){
-        val res = touGaoService.category();
+    suspend fun categoryList(token: String,){
+        val res = touGaoService.category(token);
         categories = res.data
         Log.e("categoryList", "categoryList: $res.data")
     }

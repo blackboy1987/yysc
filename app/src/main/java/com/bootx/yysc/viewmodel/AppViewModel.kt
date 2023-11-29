@@ -1,9 +1,12 @@
 package com.bootx.yysc.viewmodel
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.model.entity.SoftEntity
@@ -12,7 +15,15 @@ import com.bootx.yysc.model.service.SoftService
 import com.google.gson.Gson
 
 class AppViewModel:ViewModel() {
+    @SuppressLint("StaticFieldLeak")
+    protected lateinit var context: Context
+    open fun addContext(context: FragmentActivity) {
+        this.context = context
+    }
 
+    open fun addContext(context: Context) {
+        this.context = context
+    }
     private val categoryService = CategoryService.instance()
 
     private val softService = SoftService.instance()
@@ -37,13 +48,13 @@ class AppViewModel:ViewModel() {
 
     var softList by mutableStateOf(listOf<SoftEntity>())
 
-    suspend fun fetchList(pageNumber: Int,pageSize: Int) {
-        val res = categoryService.list(pageNumber,pageSize)
+    suspend fun fetchList(token: String,pageNumber: Int,pageSize: Int) {
+        val res = categoryService.list(token,pageNumber,pageSize)
         val gson = Gson()
-        if (res.code == 0 && res.data != null) {
+        if (res.code == 0) {
             val tmpList = mutableListOf<CategoryEntity>()
             tmpList.addAll(res.data)
-            updateCurrentIndex(tmpList[0].id)
+            updateCurrentIndex(token,tmpList[0].id)
             categories = tmpList
             listLoaded = true
         } else {
@@ -51,11 +62,11 @@ class AppViewModel:ViewModel() {
         }
     }
 
-    suspend fun updateCurrentIndex(id: Int) {
+    suspend fun updateCurrentIndex(token: String,id: Int) {
         pageNumber = 1;
         softListLoaded = false
         currentIndex = id
-        val res = softService.orderBy(1,20,"7",id)
+        val res = softService.orderBy(token,1,20,"7",id)
 
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()
@@ -69,10 +80,10 @@ class AppViewModel:ViewModel() {
         }
     }
 
-    suspend fun reload() {
+    suspend fun reload(token: String,) {
         softListLoaded = false
         pageNumber = 1
-        val res = softService.orderBy(1,20,"7",currentIndex)
+        val res = softService.orderBy(token,1,20,"7",currentIndex)
         val gson = Gson()
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()
@@ -85,9 +96,9 @@ class AppViewModel:ViewModel() {
         }
     }
 
-    suspend fun loadMore() {
+    suspend fun loadMore(token: String,) {
         softListLoaded = false
-        val res = softService.orderBy(pageNumber,20,"7",currentIndex)
+        val res = softService.orderBy(token,pageNumber,20,"7",currentIndex)
         val gson = Gson()
         if (res.code == 0 && res.data != null) {
             val tmpList = mutableListOf<SoftEntity>()

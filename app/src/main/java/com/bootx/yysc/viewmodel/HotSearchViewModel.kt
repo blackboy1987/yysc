@@ -17,10 +17,10 @@ class HotSearchViewModel:ViewModel() {
 
 
 
-    suspend fun fetchList(): List<HotSearchEntity> {
+    suspend fun fetchList(token: String,): List<HotSearchEntity> {
         try {
             listLoaded = false
-            val res = hotSearchService.fetchList()
+            val res = hotSearchService.fetchList(token)
             if (res.code == 0 && res.data != null) {
                 val tmpList = mutableListOf<HotSearchEntity>()
                 tmpList.addAll(res.data)

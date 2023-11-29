@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,7 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftDetailEntity
+import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.SoftViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +37,8 @@ fun AppDetail1Screen(
     id: String,
     softViewModel: SoftViewModel = viewModel()
 ) {
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     val context = LocalContext.current
     val showTitle = remember {
         mutableStateOf(false)
@@ -44,7 +49,7 @@ fun AppDetail1Screen(
     }
 
     LaunchedEffect(Unit) {
-        softDetail.value = softViewModel.detail("61862")
+        softDetail.value = softViewModel.detail(token,id)
     }
 
     Scaffold(

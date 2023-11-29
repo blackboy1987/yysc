@@ -1,12 +1,13 @@
 package com.bootx.yysc.util
 
+import com.bootx.yysc.config.Config
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object HiRetrofit {
-    private var baseUrl = "https://965z2991e.oicp.vip"
 
     private val mClient: OkHttpClient = OkHttpClient.Builder()
         .callTimeout(100, TimeUnit.SECONDS)
@@ -14,12 +15,13 @@ object HiRetrofit {
         .readTimeout(100, TimeUnit.SECONDS)
         .writeTimeout(100, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
+        .addInterceptor(MyInterceptor())
         .followRedirects(false)
         .build()
 
     private var retrofit: Retrofit = Retrofit.Builder()
         .client(mClient)
-        .baseUrl(baseUrl)
+        .baseUrl(Config.baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

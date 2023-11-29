@@ -2,17 +2,9 @@ package com.bootx.yysc.config
 
 object Config {
 
-    /**
-     * |    开屏广告    | 6862  | 12902 |
-     * |    插屏广告    | 6862  | 12903 |
-     * |    横幅广告    | 6862  | 12904 |
-     * |    模板广告    | 6862  | 12905 |
-     * | 模板视频信息流 | 6862  | 12906 |
-     * |    全屏视频    | 6862  | 12907 |
-     * |   信息流广告   | 6862  | 12908 |
-     * |  激励视频广告  | 6862  | 12909 |
-     */
-
+    //var baseUrl = "http://yysc.igomall.xin"
+    var baseUrl = "https://965z2991e.oicp.vip"
+    var initToken = "12343125132"
     var MEDIA_ID: String = "6862";
 
     // 测试开屏广告ID
