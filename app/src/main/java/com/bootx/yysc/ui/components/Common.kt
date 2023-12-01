@@ -21,15 +21,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.theme.fontSize12
@@ -40,7 +37,7 @@ fun RightIcon(onClick:()->Unit) {
     Icon(
         modifier = Modifier.clickable {
             onClick()
-        }.size(16.dp),
+        }.padding(8.dp).size(16.dp),
         imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
         contentDescription = "",
     )

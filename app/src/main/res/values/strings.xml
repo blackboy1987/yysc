@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">爱尚应用</string>
+    <string name="app_update_background_downloading">下载中...</string>
+    <string name="app_update_start_download">开始下载</string>
+    <string name="app_update_start_download_hint">app_update_start_download_hint</string>
+    <string name="app_update_start_downloading">app_update_start_downloading</string>
+    <string name="app_update_download_completed">下载完成</string>
+    <string name="app_update_click_hint">点击安装</string>
+    <string name="app_update_download_error">app_update_download_error</string>
+    <string name="app_update_continue_downloading">app_update_continue_downloading</string>
 </resources>

@@ -34,8 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.azhon.appupdate.config.Constant
 import com.azhon.appupdate.listener.OnDownloadListener
 import com.azhon.appupdate.manager.DownloadManager
+import com.azhon.appupdate.service.DownloadService
+import com.azhon.appupdate.util.LogUtil
+import com.azhon.appupdate.util.NotificationUtil
 import com.bootx.yysc.R
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.ActivityEntity
@@ -122,7 +126,6 @@ fun HomeScreen(
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.primary),
     ) {
-        Text(text = storeManager.get("token").collectAsState(initial = "").value)
         LazyColumn() {
             item {
                 if (carouselViewModel.listLoaded) {
@@ -148,7 +151,7 @@ fun HomeScreen(
                     ) {
                         CardTitle(text = "好评如潮")
                         RightIcon {
-                            navController.navigate("ListFrame/好评如潮/01")
+                            navController.navigate(Destinations.ListFrame.route+"/好评如潮/01")
                         }
                     }
                     ListItem1(todayCommentList.value, onDownload = { id ->
@@ -192,7 +195,7 @@ fun HomeScreen(
                     ) {
                         CardTitle(text = "随心看看")
                         RightIcon {
-                            navController.navigate("ListFrame/随心看看/2")
+                            navController.navigate(Destinations.ListFrame.route+"/随心看看/2")
                         }
                     }
                     ListItem2(randomList.value, onDownload = { id ->
@@ -216,7 +219,7 @@ fun HomeScreen(
                     ) {
                         CardTitle(text = "今日下载")
                         RightIcon {
-                            navController.navigate("ListFrame/今日下载/00")
+                            navController.navigate(Destinations.ListFrame.route+"/今日下载/00")
                         }
                     }
                     ListItem3(list = todayDownloadList.value, onDownload = { id ->
@@ -290,26 +293,47 @@ suspend fun download(token: String, context: Context, id: Int, softViewModel: So
             apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
             apkName(data.name + ".apk").onDownloadListener(object : OnDownloadListener {
                 override fun cancel() {
-                    Log.e("download", "cancel: ")
+                    NotificationUtil.cancelNotification(context)
                 }
 
                 override fun done(apk: File) {
-                    Log.e("download", "cancel: ${apk.name}")
+                    NotificationUtil.showDoneNotification(
+                        context, R.drawable.network_error,
+                        "${data.name}下载完成",
+                        "点击安装${data.name}",
+                        Constant.AUTHORITIES!!, apk
+                    )
+
+                    Log.e("download", "done: ${apk.name}")
                 }
 
                 override fun downloading(max: Int, progress: Int) {
-                    Log.e("download", "cancel: ")
+                    val curr = (progress / max.toDouble() * 100.0).toInt()
+                    val content = if (curr < 0) "" else "$curr%"
+                    NotificationUtil.showProgressNotification(
+                        context, R.drawable.network_error,
+                        "${data.name}下载中...",
+                        content, if (max == -1) -1 else 100, curr
+                    )
                 }
 
                 override fun error(e: Throwable) {
-                    Log.e("download", "error: ${e.toString()}")
+                    NotificationUtil.showErrorNotification(
+                        context, R.drawable.network_error,
+                        "${data.name} 下载出错",
+                        "点击继续下载",
+                    )
                 }
 
                 override fun start() {
-                    Log.e("download", "start: ")
+                    NotificationUtil.showNotification(
+                        context, R.drawable.network_error,
+                        "开始下载 ${data.name}",
+                        "可稍后查看 ${data.name} 下载进度"
+                    )
                 }
 
-            })
+            }).showNewerToast(true).showBgdToast(true).showNotification(true)
             apkVersionName(data.versionName)
             apkSize(data.size)
             apkDescription("更新描述信息(取服务端返回数据)")

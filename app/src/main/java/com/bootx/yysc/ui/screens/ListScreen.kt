@@ -8,13 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,6 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.NetWorkError
 import com.bootx.yysc.ui.components.ServerError
 import com.bootx.yysc.ui.components.SoftItemRank
@@ -44,7 +41,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun ListScreen(navController: NavHostController,title: String,orderBy: String,vm: SoftViewModel = viewModel()) {
+fun ListScreen(navController: NavHostController,title: String,orderBy: String,softViewModel: SoftViewModel = viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val connected = remember {
         mutableStateOf(true)
@@ -55,7 +52,6 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,vm
 
     fun refresh() = refreshScope.launch {
         refreshing = true
-        // reload()
         refreshing = false
     }
 
@@ -66,7 +62,7 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,vm
     lazyListState.onBottomReached(buffer = 3) {
         coroutineScope.launch {
             refreshing = true
-            vm.loadMore(token,orderBy)
+            softViewModel.loadMore(token,orderBy)
             refreshing = false
         }
     }
@@ -74,7 +70,7 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,vm
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         // 发起网络请求
-        vm.orderBy(token,1,20,orderBy)
+        softViewModel.orderBy(token,1,20,orderBy)
         connected.value = NetWorkUtils.isConnected(context)
     }
     Scaffold(
@@ -82,10 +78,8 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,vm
             TopAppBar(
                 title = { Text(text = title) },
                 navigationIcon = {
-                    IconButton(onClick = {
+                    LeftIcon {
                         navController.popBackStack()
-                    }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBackIos, contentDescription = "")
                     }
                 }
             )
@@ -99,18 +93,20 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,vm
             if(!connected.value){
                 NetWorkError()
             }else{
-                if(vm.listLoadedErrorData.isNotEmpty()){
+                if(softViewModel.listLoadedErrorData.isNotEmpty()){
                     ServerError()
                 }else{
                     Box(){
                         LazyColumn(
                             state = lazyListState,
                         ) {
-                            itemsIndexed(vm.softList){ index, soft ->
+                            itemsIndexed(softViewModel.softList){ index, soft ->
                                 SoftItemRank(soft = soft, index = index+1,onClick={
                                     Log.e("onClick", "ListScreen: ", )
                                 }, onDownload = {
-                                    Log.e("onDownload", "ListScreen: ", )
+                                    coroutineScope.launch {
+                                        download(token,context,soft.id, softViewModel)
+                                    }
                                 },showRank=(orderBy!="2"))
                             }
                         }

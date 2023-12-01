@@ -35,14 +35,14 @@ import com.bootx.yysc.ui.screens.SupportScreen
 import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.StoreManager
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun NavHostApp() {
     val navController = rememberNavController()
-    val storeManager: StoreManager = StoreManager(LocalContext.current)
-    val token = storeManager.getToken().collectAsState(initial = "").value
+    val token = SharedPreferencesUtils(LocalContext.current).get("token")
     NavHost(
         navController = navController,
         startDestination = Destinations.HomeFrame.route,
@@ -60,12 +60,7 @@ fun NavHostApp() {
                 )
             },
         ) {
-            if(token.isNotBlank()){
-                MainFrame(navController)
-            }else{
-                navController.navigate(Destinations.LoginFrame.route)
-            }
-
+            MainFrame(navController)
         }
         composable(
             Destinations.LoginFrame.route,
@@ -98,7 +93,7 @@ fun NavHostApp() {
             SearchScreen(navController)
         }
         composable(
-            route = "ListFrame/{title}/{orderBy}",
+            route = Destinations.ListFrame.route+"/{title}/{orderBy}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right

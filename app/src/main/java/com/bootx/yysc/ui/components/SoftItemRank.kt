@@ -78,7 +78,7 @@ fun SoftItemRank(soft: SoftEntity, index: Int,onClick:()->Unit,onDownload:()->Un
                     tint = Color(0xFF2196f3),
                 )
                 Text(
-                    text = String.format("%.2f", soft.score),
+                    text = soft.score,
                     fontSize = fontSize12,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF2196f3),
