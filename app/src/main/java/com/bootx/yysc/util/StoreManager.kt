@@ -43,5 +43,10 @@ class StoreManager(private val context: Context) {
             preferences[stringPreferencesKey("token")] ?: ""
         }
     }
+    suspend fun setToken(value: String){
+        context.dataStore.edit { preferences->
+            preferences[stringPreferencesKey("token")] = value
+        }
+    }
 
 }

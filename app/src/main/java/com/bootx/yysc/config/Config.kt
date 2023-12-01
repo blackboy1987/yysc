@@ -4,7 +4,7 @@ object Config {
 
     //var baseUrl = "http://yysc.igomall.xin"
     var baseUrl = "https://965z2991e.oicp.vip"
-    var initToken = "12343125132"
+    var initToken = ""
     var MEDIA_ID: String = "6862";
 
     // 测试开屏广告ID

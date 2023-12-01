@@ -53,6 +53,7 @@ import com.bootx.yysc.ui.theme.height4
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape8
 import com.bootx.yysc.util.CommonUtils
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.CarouselViewModel
 import com.bootx.yysc.viewmodel.HomeViewModel
@@ -97,7 +98,12 @@ fun HomeScreen(
 
     val storeManager: StoreManager = StoreManager(LocalContext.current)
     val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
+
     LaunchedEffect(Unit) {
+        val sharedPreferencesUtils = SharedPreferencesUtils(context)
+        val token = sharedPreferencesUtils.get("token")
+        Log.e("sharedPreferencesUtils", "HomeScreen: $token")
+
         //获取轮播数据
         carouselViewModel.fetchList(token);
         // 中间工具栏
@@ -105,9 +111,9 @@ fun HomeScreen(
         // 活动
         activityList.value = homeViewModel.activity(token);
 
-        todayDownloadList.value = softViewModel.orderBy(token,1, 30, "00")
-        todayCommentList.value = softViewModel.orderBy(token,1, 30, "01")
-        randomList.value = softViewModel.orderBy(token,1, 30, "2")
+        todayDownloadList.value = softViewModel.orderBy(token, 1, 30, "00")
+        todayCommentList.value = softViewModel.orderBy(token, 1, 30, "01")
+        randomList.value = softViewModel.orderBy(token, 1, 30, "2")
     }
 
 
@@ -116,7 +122,7 @@ fun HomeScreen(
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.primary),
     ) {
-
+        Text(text = storeManager.get("token").collectAsState(initial = "").value)
         LazyColumn() {
             item {
                 if (carouselViewModel.listLoaded) {
@@ -124,7 +130,7 @@ fun HomeScreen(
                 }
             }
             item {
-                CenterBar(homeCenterBarList.value,navigate = {
+                CenterBar(homeCenterBarList.value, navigate = {
                     navController.navigate(it)
                 })
             }
@@ -145,11 +151,11 @@ fun HomeScreen(
                             navController.navigate("ListFrame/好评如潮/01")
                         }
                     }
-                    ListItem1(todayCommentList.value, onDownload = {id->
+                    ListItem1(todayCommentList.value, onDownload = { id ->
                         coroutineScope.launch {
-                            download(token,context,id,softViewModel)
+                            download(token, context, id, softViewModel)
                         }
-                    }, onClick = {id ->
+                    }, onClick = { id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
                     })
                 }
@@ -189,9 +195,9 @@ fun HomeScreen(
                             navController.navigate("ListFrame/随心看看/2")
                         }
                     }
-                    ListItem2(randomList.value, onDownload = {id->
+                    ListItem2(randomList.value, onDownload = { id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                    }, onClick = {id ->
+                    }, onClick = { id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
                     })
                 }
@@ -213,11 +219,11 @@ fun HomeScreen(
                             navController.navigate("ListFrame/今日下载/00")
                         }
                     }
-                    ListItem3(list = todayDownloadList.value, onDownload = {id->
+                    ListItem3(list = todayDownloadList.value, onDownload = { id ->
                         coroutineScope.launch {
-                            download(token,context,id,softViewModel)
+                            download(token, context, id, softViewModel)
                         }
-                    }, onClick = {id ->
+                    }, onClick = { id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
                     })
                 }
@@ -232,7 +238,7 @@ fun HomeScreen(
 
 
 @Composable
-fun CenterBar(list:List<HomeCenterBar>,navigate:(path: String)->Unit){
+fun CenterBar(list: List<HomeCenterBar>, navigate: (path: String) -> Unit) {
     Row(
         modifier = Modifier
             .padding(8.dp)
@@ -273,34 +279,34 @@ fun CenterBar(list:List<HomeCenterBar>,navigate:(path: String)->Unit){
     }
 }
 
-suspend fun download(token: String,context:Context, id:Int, softViewModel: SoftViewModel) {
+suspend fun download(token: String, context: Context, id: Int, softViewModel: SoftViewModel) {
 
     // 接口请求下载地址
-    val downloadInfo = softViewModel.download(token,id)
+    val downloadInfo = softViewModel.download(token, id)
     var data = downloadInfo.data
-    if(downloadInfo.code==0 && data!=null && data.downloadUrl.isNotEmpty()){
+    if (downloadInfo.code == 0 && data != null && data.downloadUrl.isNotEmpty()) {
 
         val manager = DownloadManager.Builder(context as Activity).run {
-            apkUrl(data.downloadUrl).smallIcon(R.drawable.qiandao)
-            apkName(data.name+".apk").onDownloadListener(object: OnDownloadListener{
+            apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
+            apkName(data.name + ".apk").onDownloadListener(object : OnDownloadListener {
                 override fun cancel() {
-                    Log.e("download", "cancel: ", )
+                    Log.e("download", "cancel: ")
                 }
 
                 override fun done(apk: File) {
-                    Log.e("download", "cancel: ${apk.name}", )
+                    Log.e("download", "cancel: ${apk.name}")
                 }
 
                 override fun downloading(max: Int, progress: Int) {
-                    Log.e("download", "cancel: ", )
+                    Log.e("download", "cancel: ")
                 }
 
                 override fun error(e: Throwable) {
-                    Log.e("download", "error: ${e.toString()}", )
+                    Log.e("download", "error: ${e.toString()}")
                 }
 
                 override fun start() {
-                    Log.e("download", "start: ", )
+                    Log.e("download", "start: ")
                 }
 
             })
@@ -310,8 +316,8 @@ suspend fun download(token: String,context:Context, id:Int, softViewModel: SoftV
             build()
         }
         manager.download()
-    }else{
-        CommonUtils.toast(context,"暂无下载地址")
+    } else {
+        CommonUtils.toast(context, "暂无下载地址")
     }
 
 }

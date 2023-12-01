@@ -66,7 +66,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(files("/libs/ssp_sdk_v5.1.9.1035.aar"))
 
-    implementation("androidx.datastore:datastore-preferences:1.1.0-alpha06")
+    implementation("androidx.datastore:datastore-preferences:1.1.0-alpha07")
 
     implementation("com.google.accompanist:accompanist-webview:0.33.2-alpha")
 

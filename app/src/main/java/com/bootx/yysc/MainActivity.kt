@@ -49,6 +49,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityStackManager.pushActivity(this@MainActivity)
         super.onCreate(savedInstanceState)
+
+
         SSPSdk.attachBaseContext(this@MainActivity)
         SSPSdk.init(this@MainActivity, Config.MEDIA_ID, true);
         SSPSdk.init(this@MainActivity, Config.MEDIA_ID, null, true)

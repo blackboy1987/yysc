@@ -1,14 +1,13 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.view.Gravity
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,10 +28,13 @@ import androidx.navigation.NavHostController
 import com.bootx.yysc.ui.components.MyInput
 import com.bootx.yysc.ui.components.MyPasswordInput
 import com.bootx.yysc.ui.components.toast
+import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ShowToast")
 @Composable
 fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
@@ -44,6 +46,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
         mutableStateOf("")
     }
     val coroutineScope = rememberCoroutineScope()
+
     Surface() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +62,6 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                 fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
-            Text(text = "登录结果：${loginViewModel.data.token}")
             MyInput(value = username, onChange = {
                 username = it
             })
@@ -74,8 +76,12 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                 onClick = {
                     coroutineScope.launch {
                         loginViewModel.login(username, password)
-                        if(loginViewModel.data.token.isBlank()){
-                            toast(context,"用户不存在！")
+                        if (loginViewModel.data.token.isBlank()) {
+                            toast(context, "用户不存在！")
+                        }else{
+                            val sharedPreferencesUtils = SharedPreferencesUtils(context)
+                            sharedPreferencesUtils.set("token",loginViewModel.data.token)
+                            navController.navigate(Destinations.HomeFrame.route)
                         }
                     }
                 },
