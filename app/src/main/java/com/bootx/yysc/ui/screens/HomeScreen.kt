@@ -299,7 +299,7 @@ suspend fun download(token: String, context: Context, id: Int, softViewModel: So
                 override fun done(apk: File) {
                     NotificationUtil.showDoneNotification(
                         context, R.drawable.network_error,
-                        "${data.name}下载完成",
+                        "${data.name}下载完成,点击安装",
                         "点击安装${data.name}",
                         Constant.AUTHORITIES!!, apk
                     )
