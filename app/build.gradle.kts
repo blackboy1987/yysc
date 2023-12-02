@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {
@@ -51,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.window:window:1.0.0")
+    implementation("io.github.leavesczy:matisse:1.1.3")
 
     implementation("io.github.azhon:appupdate:4.3.1")
 
@@ -85,8 +86,10 @@ dependencies {
     implementation("androidx.compose.material:material:1.6.0-beta02")
 
     // 图片懒加载
-    implementation("io.coil-kt:coil-gif:2.5.0")
+    implementation("io.coil-kt:coil-gif:2.4.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-video:2.4.0")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
