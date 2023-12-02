@@ -5,17 +5,16 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SysMsgScreen
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.screens.AboutScreen
 import com.bootx.yysc.ui.screens.AppDetail1Screen
 import com.bootx.yysc.ui.screens.AppDetailScreen
+import com.bootx.yysc.ui.screens.ComplaintsScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
 import com.bootx.yysc.ui.screens.HotScreen
@@ -36,7 +35,6 @@ import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
 import com.bootx.yysc.util.SharedPreferencesUtils
-import com.bootx.yysc.util.StoreManager
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -404,6 +402,22 @@ fun NavHostApp() {
             },
         ) {
             AboutScreen(navController)
+        }
+        composable(
+            Destinations.ComplaintsFrame.route+"/{id}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val id = it.arguments?.getString("id") ?: ""
+            ComplaintsScreen(navController,id)
         }
     }
 }

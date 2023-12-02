@@ -51,6 +51,8 @@ android {
 
 dependencies {
 
+    implementation("androidx.window:window:1.0.0")
+
     implementation("io.github.azhon:appupdate:4.3.1")
 
     implementation("androidx.legacy:legacy-support-v4:1.0.0")

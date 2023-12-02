@@ -323,7 +323,7 @@ fun AppDetailScreen(
                             ) {
                                 Text(text = "去举报")
                                 RightIcon {
-
+                                    navController.navigate(Destinations.ComplaintsFrame.route+"/${softViewModel.softDetail.id}")
                                 }
                             }
                         }
