@@ -27,7 +27,6 @@ fun RequestExpressAd(context: Context) {
         val findViewById = view.findViewById<FrameLayout>(R.id.ad_layout)
         adClient.requestExpressAd(Config.TEMPLATE_AD_ID, object : AdLoadAdapter() {
             override fun onAdLoad(ad: SSPAd) {
-                Log.e("requestBannerAd onAdLoad", "onAdLoad: $ad")
                 super.onAdLoad(ad)
                 findViewById.removeAllViews()
                 findViewById.addView(ad.view)
@@ -35,18 +34,10 @@ fun RequestExpressAd(context: Context) {
 
             override fun onError(i: Int, s: String) {
                 super.onError(i, s)
-                Toast.makeText(
-                    context,
-                    "横幅广告加载失败:$s",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Log.e("requestBannerAd onError", "onAdLoad: $s")
             }
 
             override fun onAdShow(ad: SSPAd?) {
                 super.onAdShow(ad)
-                Log.e("requestBannerAd onAdShow", "onAdLoad: $ad")
-                super.onAdLoad(ad)
             }
         })
         view

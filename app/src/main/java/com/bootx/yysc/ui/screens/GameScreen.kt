@@ -95,7 +95,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
                         .width(80.dp)
                         .padding(top = 16.dp)
                 ) {
-                    if (vm.listLoaded) {
+                    if (!vm.categoryLoading) {
                         vm.categories.forEachIndexed { _, category ->
                             item {
                                 CategoryItem(

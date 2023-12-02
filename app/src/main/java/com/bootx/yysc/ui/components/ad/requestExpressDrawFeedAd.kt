@@ -34,18 +34,10 @@ fun RequestExpressDrawFeedAd(context: Context) {
 
             override fun onError(i: Int, s: String) {
                 super.onError(i, s)
-                Toast.makeText(
-                    context,
-                    "横幅广告加载失败:$s",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Log.e("requestBannerAd onError", "onAdLoad: $s")
             }
 
             override fun onAdShow(ad: SSPAd?) {
                 super.onAdShow(ad)
-                Log.e("requestBannerAd onAdShow", "onAdLoad: $ad")
-                super.onAdLoad(ad)
             }
         })
         view

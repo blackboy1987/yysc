@@ -12,11 +12,14 @@ data class SoftDetailEntity(
     var logo: String="",
     var updateDate: String="",
     val score: String="",
-    val downloadUrl: String="",
     val downloads: String="",
     var images: List<String> = listOf(),
     var versionName: String="",
-    var introduce: String=""
+    var introduce: String="",
+    var donationMember: Int=0,
+    var donationIcon: Int = 0,
+    var reviewCount: Int = 0,
+    var updatedContent: String = "",
 )
 
 data class SoftDetailResponse(val data: SoftDetailEntity?) : BaseResponse()

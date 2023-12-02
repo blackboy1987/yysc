@@ -1,7 +1,8 @@
 package com.bootx.yysc.ui.screens
 
+import android.text.Html
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.widget.TextView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,9 +26,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CurrencyBitcoin
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.rememberModalBottomSheetState
@@ -40,48 +40,44 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SecondaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.bootx.yysc.config.Config
-import com.bootx.yysc.model.entity.SoftDetailEntity
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.MyTabRow
 import com.bootx.yysc.ui.components.RightIcon
+import com.bootx.yysc.ui.components.SoftIcon6
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.RequestBannerAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.ShareUtils
-import com.bootx.yysc.util.StoreManager
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class,
-    ExperimentalMaterialApi::class, ExperimentalLayoutApi::class, ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class, ExperimentalLayoutApi::class
 )
 @Composable
 fun AppDetailScreen(
@@ -96,20 +92,15 @@ fun AppDetailScreen(
     }
     val context = LocalContext.current
 
-    val softDetail = remember {
-        mutableStateOf<SoftDetailEntity>(SoftDetailEntity())
-    }
-    val storeManager: StoreManager = StoreManager(LocalContext.current)
-    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
-        softDetail.value = softViewModel.detail(token,id)
-        Log.e("AppDetailScreen", "AppDetailScreen: $id", )
+        softViewModel.detail(SharedPreferencesUtils(context).get("token"),id)
+        Log.e("AppDetailScreen", "AppDetailScreen: ${softViewModel.softDetail.toString()}", )
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { TopBarTitle(text = softDetail.value.name) },
+                title = { TopBarTitle(text = softViewModel.softDetail.name) },
                 navigationIcon = {
                     LeftIcon{
                         navController.popBackStack()
@@ -163,7 +154,7 @@ fun AppDetailScreen(
                     ListItem(
                         headlineContent = {
                             Text(
-                                text = softDetail.value.name,
+                                text = softViewModel.softDetail.name,
                                 maxLines = 1,
                                 color = MaterialTheme.colorScheme.primary,
                                 overflow = TextOverflow.Ellipsis
@@ -171,20 +162,14 @@ fun AppDetailScreen(
                         },
                         supportingContent = {
                             Text(
-                                text = softDetail.value.fullName,
+                                text = softViewModel.softDetail.fullName ?:"",
                                 maxLines = 1,
                                 color = MaterialTheme.colorScheme.secondary,
                                 overflow = TextOverflow.Ellipsis
                             )
                         },
                         leadingContent = {
-                            AsyncImage(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(RoundedCornerShape(8.dp)),
-                                model = softDetail.value.logo,
-                                contentDescription = ""
-                            )
+                            SoftIcon6(url = softViewModel.softDetail.logo)
                         }
                     )
                 }
@@ -201,63 +186,40 @@ fun AppDetailScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = softDetail.value.score, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
-                            Text(text = "544条评论", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
+                            Item(softViewModel.softDetail.score,"${softViewModel.softDetail.reviewCount}条评论")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = softDetail.value.size, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
-                            Text(text = "大小", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
+                            Item(softViewModel.softDetail.size,"大小")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = softDetail.value.downloads, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
-                            Text(text = "下载", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
+                            Item(softViewModel.softDetail.downloads,"下载")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(text = "1841", color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
-                            Text(text = "748人投币", color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
+                            Item("${softViewModel.softDetail.donationIcon}","${softViewModel.softDetail.donationMember}人投币")
                         }
                     }
                 }
                 item {
                     val tabs = listOf("详情", "讨论", "版本")
-                    var selectedTabIndex by remember { mutableIntStateOf(0) }
-                    SecondaryTabRow(
-                        divider = @Composable {
+                    MyTabRow(tabs, onClick = {index->
 
-                        },
-                        selectedTabIndex = selectedTabIndex,
-                        modifier = Modifier
-                            .focusRestorer()
-                            .padding(horizontal = 8.dp, vertical = 0.dp),
-                        tabs = {
-                            tabs.forEachIndexed { index, item ->
-                                Tab(selected = selectedTabIndex == index, onClick = {
-                                    selectedTabIndex = index
-                                }) {
-                                    Text(
-                                        text = item,
-                                        modifier = Modifier.padding(4.dp),
-                                    )
-                                }
-                            }
-                        }
-                    )
+                    })
                 }
                 item {
                     LazyRow() {
-                        items(softDetail.value.images) { image ->
+                        items(softViewModel.softDetail.images) { image ->
                             AsyncImage(
                                 modifier = Modifier
                                     .width(162.dp)
@@ -270,14 +232,34 @@ fun AppDetailScreen(
                         }
                     }
                 }
-                /*item{
-                    Text(text = "更新内容")
-                    MyWebView(rememberWebViewState(data = softDetail.value.introduce))
+                if(softViewModel.softDetail.updatedContent!=null){
+                    item{
+                        Text(
+                            text = "更新内容",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        AndroidView(factory = { context ->
+                            TextView(context).apply {
+                                text = Html.fromHtml(softViewModel.softDetail.updatedContent)
+                            }
+                        })
+                    }
                 }
-                item{
-                    Text(text = "关于应用")
-                    MyWebView(rememberWebViewState(data = softDetail.value.introduce))
-                }*/
+                if(softViewModel.softDetail.introduce!=null){
+                    item{
+                        Text(
+                            text = "关于应用",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        AndroidView(factory = { context ->
+                            TextView(context).apply {
+                                text = Html.fromHtml(softViewModel.softDetail.introduce)
+                            }
+                        })
+                    }
+                }
                 item {
                     Column(
                         modifier = Modifier.fillMaxWidth()
@@ -328,24 +310,7 @@ fun AppDetailScreen(
                         }
                     )
                 }
-                item {
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "应用版本")
-                        },
-                        trailingContent = {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(text = "beta0.02(2)")
-                                RightIcon {
 
-                                }
-                            }
-                        }
-                    )
-                }
                 item {
                     ListItem(
                         headlineContent = {
@@ -415,5 +380,10 @@ fun AppDetailScreen(
         }) {
 
     }
+}
 
+@Composable
+fun Item(title1: String,title2: String){
+    Text(text = title1, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
+    Text(text = title2, color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
 }

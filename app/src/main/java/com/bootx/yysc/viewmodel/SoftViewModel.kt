@@ -25,6 +25,9 @@ class SoftViewModel:ViewModel() {
 
     var softList = mutableListOf<SoftEntity>()
 
+
+    var softDetail by mutableStateOf<SoftDetailEntity>(SoftDetailEntity())
+
     var pageNumber by mutableIntStateOf(1)
         private set
 
@@ -80,7 +83,7 @@ class SoftViewModel:ViewModel() {
     suspend fun detail(token: String,id: String): SoftDetailEntity {
         val res = softService.detail(token,id)
         if (res.code == 0 && res.data != null) {
-            return res.data
+            softDetail = res.data
         }
         return SoftDetailEntity()
     }

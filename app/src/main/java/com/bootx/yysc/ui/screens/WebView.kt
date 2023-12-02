@@ -1,6 +1,7 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
+import android.text.Html
 import android.util.Log
 import android.webkit.WebView
 import androidx.compose.runtime.Composable
@@ -26,7 +27,6 @@ fun MyWebView(state: WebViewState) {
                 }
             }
             is WebContent.Data -> {
-                Log.e("MyWebView111111", "MyWebView111111: ${content.data}", )
                 view.loadDataWithBaseURL(
                     content.baseUrl,
                     content.data,

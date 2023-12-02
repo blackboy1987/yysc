@@ -57,6 +57,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftEntity
+import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.util.StoreManager
@@ -161,7 +162,9 @@ fun SearchScreen(
                     )
                 },
                 navigationIcon = {
-                    Icon(imageVector = Icons.Default.ArrowBackIosNew, contentDescription = "")
+                    LeftIcon {
+                        navController.popBackStack()
+                    }
                 },
                 actions = {
                     Icon(
