@@ -1,6 +1,9 @@
 package com.bootx.yysc.ui.screens
 
+import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,6 +18,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -33,72 +38,93 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.CoilImageEngine
+import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.util.SystemInfoUtils
+import com.bootx.yysc.viewmodel.ComplaintsModel
 import github.leavesczy.matisse.DefaultMediaFilter
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseContract
 import github.leavesczy.matisse.MediaResource
 import github.leavesczy.matisse.MimeType
 import github.leavesczy.matisse.NothingCaptureStrategy
+import kotlinx.coroutines.launch
 
 /**
  * 投诉
  */
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ComplaintsScreen(navController: NavHostController, id: String) {
-    var imageCount = 10
+fun ComplaintsScreen(navController: NavHostController, id: String,complaintsModel: ComplaintsModel = viewModel()) {
+    var context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var imageCount = 50
     var list by remember {
         mutableStateOf(listOf<MediaResource>())
     }
-    val mediaPickerLauncher =
-        rememberLauncherForActivityResult(contract = MatisseContract()) { result: List<MediaResource>? ->
-
-            if (!result.isNullOrEmpty()) {
-                val mediaResource = result[0]
-                val uri = mediaResource.uri
-                val path = mediaResource.path
-                val name = mediaResource.name
-                val mimeType = mediaResource.mimeType
-                list = result
-            } else {
-                list = listOf()
-            }
-        }
+    var isCommit by remember {
+        mutableStateOf(false)
+    }
     var reason by remember {
         mutableStateOf("")
     }
     var type by remember {
-        mutableStateOf(0)
+        mutableStateOf(1)
     }
+    val mediaPickerLauncher =
+        rememberLauncherForActivityResult(contract = MatisseContract()) { images: List<MediaResource>? ->
+
+            if (!images.isNullOrEmpty()) {
+                val mediaResource = images[0]
+                val uri = mediaResource.uri
+                val path = mediaResource.path
+                val name = mediaResource.name
+                val mimeType = mediaResource.mimeType
+                list = images
+                isCommit = reason.isNotBlank() && type >= 1 && list.isNotEmpty()
+            } else {
+                list = listOf()
+                isCommit = false
+            }
+        }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "投诉") },
+                title = { TopBarTitle(text = "投诉") },
                 navigationIcon = {
                     LeftIcon {
                         navController.popBackStack()
                     }
                 },
                 actions = {
-                    Button(onClick = { /*TODO*/ }, enabled = false) {
+                    Button(onClick = {
+                        coroutineScope.launch {
+                            complaintsModel.save(context,SharedPreferencesUtils(context).get("token"),list,type,reason)
+                        }
+                    }, enabled = isCommit) {
                         Text(text = "提交")
                     }
                 }
             )
         }
-    ) {
+    ) { it ->
         Surface(
             modifier = Modifier.padding(it)
         ) {
@@ -108,20 +134,54 @@ fun ComplaintsScreen(navController: NavHostController, id: String) {
                     .fillMaxWidth()
             ) {
                 item {
-                    ComplaintsList(selectedKey=type)
+                    ComplaintsList(selectedKey = type, onClick = {key->
+                        type=key
+                        isCommit = reason.isNotBlank() && type >= 1 && list.isNotEmpty()
+                    })
                 }
                 item {
-                    Text(text = "违规描述")
-                    OutlinedTextField(
-                        minLines = 7,
-                        value = reason,
-                        modifier = Modifier.fillMaxWidth(),
-                        onValueChange = {
-                            reason = it
-                        })
+                    Text(text = "违规描述:")
+                    Box(
+                        modifier = Modifier.clickable {
+                            Log.e("ComplaintsScreen", "ComplaintsScreen: click", )
+                        }
+                    ){
+                        OutlinedTextField(
+                            minLines = 7,
+                            value = reason,
+                            modifier = Modifier.fillMaxWidth(),
+                            onValueChange = { value ->
+                                reason = value
+                                isCommit = value.isNotBlank() && type >= 1 && list.isNotEmpty()
+                            },
+                            keyboardOptions= KeyboardOptions.Default,
+                            keyboardActions= KeyboardActions(
+                                onDone= {
+                                    Log.e("keyboardActions", "keyboardActions: onDone", )
+                                },
+                                onGo= {
+                                    Log.e("keyboardActions", "keyboardActions: onGo", )
+                                },
+                                onNext= {
+                                    Log.e("keyboardActions", "keyboardActions: onNext", )
+                                },
+                                onPrevious= {
+                                    Log.e("keyboardActions", "keyboardActions: onPrevious", )
+                                },
+                                onSearch= {
+                                    Log.e("keyboardActions", "keyboardActions: onSearch", )
+                                },
+                                onSend= {
+                                    Log.e("keyboardActions", "keyboardActions: onSend", )
+                                },
+                            ),
+                        )
+                    }
                 }
                 item {
+                    var imageWidth = (SystemInfoUtils.px2dp((SystemInfoUtils.getScreenWidth(context)-80) / 3,context))
                     FlowRow(
+                        maxItemsInEachRow=3,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp),
@@ -132,8 +192,8 @@ fun ComplaintsScreen(navController: NavHostController, id: String) {
                                     .padding(4.dp)
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(Color(0xfff4f4f4))
-                                    .width(120.dp)
-                                    .height(120.dp)
+                                    .width((imageWidth - 8).dp)
+                                    .height((imageWidth - 8).dp)
                                     .padding(4.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -144,7 +204,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String) {
                                 )
                             }
                         }
-                        if(list.size<imageCount){
+                        if (list.size < imageCount) {
                             Box(
                                 modifier = Modifier
                                     .padding(4.dp)
@@ -164,8 +224,8 @@ fun ComplaintsScreen(navController: NavHostController, id: String) {
                                     }
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(Color(0xfff4f4f4))
-                                    .width(120.dp)
-                                    .height(120.dp)
+                                    .width((imageWidth - 8).dp)
+                                    .height((imageWidth - 8).dp)
                                     .padding(4.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -184,7 +244,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String) {
 }
 
 @Composable
-fun ComplaintsList(selectedKey: Int) {
+fun ComplaintsList(selectedKey: Int,onClick:(key: Int)->Unit) {
     var index by remember {
         mutableStateOf(selectedKey)
     }
@@ -241,7 +301,10 @@ fun ComplaintsList(selectedKey: Int) {
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.primary,
                 ),
-                onClick = { index = item.key }) {
+                onClick = {
+                    index = item.key
+                    onClick(item.key)
+                }) {
                 if (index == item.key) {
                     Icon(
                         imageVector = Icons.Rounded.CheckCircle,
