@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,25 +39,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onScroll
+import com.bootx.yysc.model.service.SettingEntity
 import com.bootx.yysc.ui.components.CardTitle
-import com.bootx.yysc.ui.components.Item0
 import com.bootx.yysc.ui.components.RightIcon
 import com.bootx.yysc.ui.components.SoftIcon
 import com.bootx.yysc.ui.components.SoftIcon4
+import com.bootx.yysc.ui.components.SoftIcon6
 import com.bootx.yysc.ui.components.SoftIcon8
 import com.bootx.yysc.ui.components.TopBarTitle
-import com.bootx.yysc.ui.components.item0List
 import com.bootx.yysc.ui.theme.fontSize10
+import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
+import com.bootx.yysc.util.StoreManager
+import com.google.gson.Gson
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MineScreen(navController: NavHostController) {
+    var gson = Gson()
+    val storeManager: StoreManager = StoreManager(LocalContext.current)
     var showTopBar by remember {
         mutableStateOf(false)
     }
@@ -66,7 +72,12 @@ fun MineScreen(navController: NavHostController) {
         showTopBar = index > 0
     })
 
+    val setting = remember {
+        mutableStateOf(SettingEntity())
+    }
+
     Surface {
+        setting.value = gson.fromJson(storeManager.get("setting").collectAsState(initial = gson.toJson(SettingEntity())).value,SettingEntity::class.java)
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -170,8 +181,17 @@ fun MineScreen(navController: NavHostController) {
                         verticalArrangement = Arrangement.Center,
                         maxItemsInEachRow = 4,
                     ) {
-                        item0List.forEach { item ->
-                            Item0(item)
+                        setting.value.userMenus.forEach { item ->
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.clickable {
+
+                                }.width(80.dp).padding(vertical = 16.dp, horizontal = 4.dp),
+                            ) {
+                                SoftIcon6(item.icon)
+                                Text(text = item.title, fontSize = fontSize12)
+                            }
                         }
                     }
                 }
