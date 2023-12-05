@@ -56,7 +56,7 @@ import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.CoilImageEngine
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.SystemInfoUtils
-import com.bootx.yysc.viewmodel.ComplaintsModel
+import com.bootx.yysc.viewmodel.ComplaintsViewModel
 import github.leavesczy.matisse.DefaultMediaFilter
 import github.leavesczy.matisse.Matisse
 import github.leavesczy.matisse.MatisseContract
@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ComplaintsScreen(navController: NavHostController, id: String,complaintsModel: ComplaintsModel = viewModel()) {
+fun ComplaintsScreen(navController: NavHostController, id: String, complaintsViewModel: ComplaintsViewModel = viewModel()) {
     var context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var imageCount = 50
@@ -89,7 +89,6 @@ fun ComplaintsScreen(navController: NavHostController, id: String,complaintsMode
     }
     val mediaPickerLauncher =
         rememberLauncherForActivityResult(contract = MatisseContract()) { images: List<MediaResource>? ->
-
             if (!images.isNullOrEmpty()) {
                 val mediaResource = images[0]
                 val uri = mediaResource.uri
@@ -116,7 +115,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String,complaintsMode
                 actions = {
                     Button(onClick = {
                         coroutineScope.launch {
-                            complaintsModel.save(context,SharedPreferencesUtils(context).get("token"),list,type,reason)
+                            complaintsViewModel.save(context,SharedPreferencesUtils(context).get("token"),list,type,reason,id)
                         }
                     }, enabled = isCommit) {
                         Text(text = "提交")
@@ -128,6 +127,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String,complaintsMode
         Surface(
             modifier = Modifier.padding(it)
         ) {
+            Text(text = "${complaintsViewModel.msg}")
             LazyColumn(
                 Modifier
                     .padding(8.dp)

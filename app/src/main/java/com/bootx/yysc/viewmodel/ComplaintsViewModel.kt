@@ -11,7 +11,7 @@ import com.bootx.yysc.model.service.ComplaintsService
 import com.bootx.yysc.util.UploadUtils
 import github.leavesczy.matisse.MediaResource
 
-class ComplaintsModel:ViewModel() {
+class ComplaintsViewModel:ViewModel() {
 
     var complaintsService = ComplaintsService.instance()
 
@@ -22,7 +22,7 @@ class ComplaintsModel:ViewModel() {
         private set
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    suspend fun save(context: Context, token: String, list: List<MediaResource>, type: Int, reason: String) {
+    suspend fun save(context: Context, token: String, list: List<MediaResource>, type: Int, reason: String,softId: String) {
         progress = 0
         val rate = 100/list.size
 
@@ -36,6 +36,6 @@ class ComplaintsModel:ViewModel() {
             }
         }
         // 保存数据
-        complaintsService.save(token,type,reason,urls.joinToString(","))
+        complaintsService.save(token,type,reason,urls.joinToString(","),softId)
     }
 }
