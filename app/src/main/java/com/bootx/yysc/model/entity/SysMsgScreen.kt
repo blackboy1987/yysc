@@ -106,15 +106,23 @@ fun SysMsgScreen(navController: NavHostController) {
         }
     }
     MyBottomSheet(open = show.value, onClose = {
-        show.value=it
-    }){
+        show.value = it
+    }) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(modifier = Modifier.padding(vertical = 16.dp), text = "提示", textAlign = TextAlign.Center,)
-            Text(modifier = Modifier.padding(vertical = 16.dp),text = title.value, textAlign = TextAlign.Center,)
+            Text(
+                modifier = Modifier.padding(vertical = 16.dp),
+                text = "提示",
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                modifier = Modifier.padding(vertical = 16.dp),
+                text = title.value,
+                textAlign = TextAlign.Center,
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,7 +136,8 @@ fun SysMsgScreen(navController: NavHostController) {
                     verticalArrangement = Arrangement.Center,
                 ) {
                     OutlinedButton(
-                        contentPadding = PaddingValues(horizontal = 32.dp),onClick = { show.value=false }) {
+                        contentPadding = PaddingValues(horizontal = 32.dp),
+                        onClick = { show.value = false }) {
                         Text(text = "取消")
                     }
                 }
@@ -139,7 +148,7 @@ fun SysMsgScreen(navController: NavHostController) {
                 ) {
                     Button(
                         contentPadding = PaddingValues(horizontal = 32.dp),
-                        onClick = { show.value=false }) {
+                        onClick = { show.value = false }) {
                         Text(text = "已读")
                     }
                 }

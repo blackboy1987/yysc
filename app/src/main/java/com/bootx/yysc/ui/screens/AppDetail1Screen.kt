@@ -27,6 +27,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftDetailEntity
+import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.SoftViewModel
 
@@ -57,12 +59,10 @@ fun AppDetail1Screen(
             TopAppBar(
                 title = { if (showTitle.value) Text(text = softDetail.value.name) },
                 navigationIcon = {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()
-                        }, imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = ""
-                    )
-                },
+                    LeftIcon {
+                        navController.popBackStack()
+                    }
+                }
             )
         },
     ) {

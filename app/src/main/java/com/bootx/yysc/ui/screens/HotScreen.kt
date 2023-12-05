@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.bootx.yysc.ui.components.LeftIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +39,7 @@ fun HotScreen(navController: NavHostController) {
             title = {
                 Row(
                     modifier = Modifier.clickable {
-                        expanded=!expanded
+                        expanded = !expanded
                     },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
@@ -48,10 +49,9 @@ fun HotScreen(navController: NavHostController) {
                 }
             },
             navigationIcon = {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = ""
-                )
+                LeftIcon {
+                    navController.popBackStack()
+                }
             })
     }) {
         Column(

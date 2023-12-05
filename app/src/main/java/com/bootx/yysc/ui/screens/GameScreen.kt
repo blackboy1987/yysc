@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.ui.components.ListItem3
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.AppViewModel
@@ -58,7 +59,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("游戏类别") },
+                title = { TopBarTitle("游戏类别") },
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(Destinations.SearchFrame.route)

@@ -76,14 +76,11 @@ import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterialApi::class, ExperimentalLayoutApi::class
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalLayoutApi::class
 )
 @Composable
 fun AppDetailScreen(
-    navController: NavHostController,
-    id: String,
-    softViewModel: SoftViewModel = viewModel()
+    navController: NavHostController, id: String, softViewModel: SoftViewModel = viewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -93,54 +90,47 @@ fun AppDetailScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        softViewModel.detail(SharedPreferencesUtils(context).get("token"),id)
-        Log.e("AppDetailScreen", "AppDetailScreen: ${softViewModel.softDetail.toString()}", )
+        softViewModel.detail(SharedPreferencesUtils(context).get("token"), id)
+        Log.e("AppDetailScreen", "AppDetailScreen: ${softViewModel.softDetail.toString()}")
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { TopBarTitle(text = softViewModel.softDetail.name) },
-                navigationIcon = {
-                    LeftIcon{
-                        navController.popBackStack()
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            BottomAppBar {
-                TextButton(onClick = { /*TODO*/ }) {
-                    Column(
-                        modifier = Modifier.clickable {
-                            coroutineScope.launch {
-                                state.show()
-                            }
-                        }
-                    ) {
-                        Icon(imageVector = Icons.Filled.CurrencyBitcoin, contentDescription = "")
-                        Text(text = "投币")
-                    }
+    Scaffold(topBar = {
+        TopAppBar(
+            title = { TopBarTitle(text = softViewModel.softDetail.name) },
+            navigationIcon = {
+                LeftIcon {
+                    navController.popBackStack()
                 }
-                Button(modifier = Modifier.weight(1.0f), onClick = { /*TODO*/ }) {
-                    Text(text = "下载")
-                }
-                TextButton(onClick = {
-                    val shareAppList = ShareUtils.getShareAppList(context)
-                    Log.e("shareAppList", "AppDetailScreen: ${shareAppList.toString()}")
+            },
+        )
+    }, bottomBar = {
+        BottomAppBar {
+            TextButton(onClick = { /*TODO*/ }) {
+                Column(modifier = Modifier.clickable {
+                    coroutineScope.launch {
+                        state.show()
+                    }
                 }) {
-                    Column(
-                        modifier = Modifier.clickable {
-                            ShareUtils.shareText(context,"abc")
-                        }
-                    )  {
-                        Icon(imageVector = Icons.Filled.Share, contentDescription = "")
-                        Text(text = "分享")
-                    }
+                    Icon(imageVector = Icons.Filled.CurrencyBitcoin, contentDescription = "")
+                    Text(text = "投币")
+                }
+            }
+            Button(modifier = Modifier.weight(1.0f), onClick = { /*TODO*/ }) {
+                Text(text = "下载")
+            }
+            TextButton(onClick = {
+                val shareAppList = ShareUtils.getShareAppList(context)
+                Log.e("shareAppList", "AppDetailScreen: ${shareAppList.toString()}")
+            }) {
+                Column(modifier = Modifier.clickable {
+                    ShareUtils.shareText(context, "abc")
+                }) {
+                    Icon(imageVector = Icons.Filled.Share, contentDescription = "")
+                    Text(text = "分享")
                 }
             }
         }
-    ) {
+    }) {
 
         Box(
             modifier = Modifier.padding(it)
@@ -151,27 +141,23 @@ fun AppDetailScreen(
                     .padding(8.dp),
             ) {
                 item {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = softViewModel.softDetail.name,
-                                maxLines = 1,
-                                color = MaterialTheme.colorScheme.primary,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = softViewModel.softDetail.fullName ?:"",
-                                maxLines = 1,
-                                color = MaterialTheme.colorScheme.secondary,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        leadingContent = {
-                            SoftIcon6(url = softViewModel.softDetail.logo)
-                        }
-                    )
+                    ListItem(headlineContent = {
+                        Text(
+                            text = softViewModel.softDetail.name,
+                            maxLines = 1,
+                            color = MaterialTheme.colorScheme.primary,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }, supportingContent = {
+                        Text(
+                            text = softViewModel.softDetail.fullName ?: "",
+                            maxLines = 1,
+                            color = MaterialTheme.colorScheme.secondary,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }, leadingContent = {
+                        SoftIcon6(url = softViewModel.softDetail.logo)
+                    })
                 }
                 item {
                     Row(
@@ -186,34 +172,40 @@ fun AppDetailScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Item(softViewModel.softDetail.score,"${softViewModel.softDetail.reviewCount}条评论")
+                            Item(
+                                softViewModel.softDetail.score,
+                                "${softViewModel.softDetail.reviewCount}条评论"
+                            )
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Item(softViewModel.softDetail.size,"大小")
+                            Item(softViewModel.softDetail.size, "大小")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Item(softViewModel.softDetail.downloads,"下载")
+                            Item(softViewModel.softDetail.downloads, "下载")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Item("${softViewModel.softDetail.donationIcon}","${softViewModel.softDetail.donationMember}人投币")
+                            Item(
+                                "${softViewModel.softDetail.donationIcon}",
+                                "${softViewModel.softDetail.donationMember}人投币"
+                            )
                         }
                     }
                 }
                 item {
                     val tabs = listOf("详情", "讨论", "版本")
-                    MyTabRow(tabs, onClick = {index->
+                    MyTabRow(tabs, onClick = { index ->
 
                     })
                 }
@@ -227,13 +219,14 @@ fun AppDetailScreen(
                                     .padding(horizontal = 8.dp, vertical = 16.dp)
                                     .clip(RoundedCornerShape(8.dp)),
                                 contentScale = ContentScale.FillBounds,
-                                model = image, contentDescription = ""
+                                model = image,
+                                contentDescription = ""
                             )
                         }
                     }
                 }
-                if(softViewModel.softDetail.updatedContent!=null){
-                    item{
+                if (softViewModel.softDetail.updatedContent != null) {
+                    item {
                         Text(
                             text = "更新内容",
                             fontWeight = FontWeight.Bold,
@@ -246,8 +239,8 @@ fun AppDetailScreen(
                         })
                     }
                 }
-                if(softViewModel.softDetail.introduce!=null){
-                    item{
+                if (softViewModel.softDetail.introduce != null) {
+                    item {
                         Text(
                             text = "关于应用",
                             fontWeight = FontWeight.Bold,
@@ -268,76 +261,67 @@ fun AppDetailScreen(
                     }
                 }
                 item {
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "分享者")
-                        },
-                        trailingContent = {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .clip(CircleShape),
-                                    model = "https://profile-avatar.csdnimg.cn/9848118595564203baa263ac8ec3459a_ozhuimeng123.jpg",
-                                    contentDescription = ""
-                                )
-                                Text(text = "湯姆")
-                            }
+                    ListItem(headlineContent = {
+                        Text(text = "分享者")
+                    }, trailingContent = {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape),
+                                model = "https://profile-avatar.csdnimg.cn/9848118595564203baa263ac8ec3459a_ozhuimeng123.jpg",
+                                contentDescription = ""
+                            )
+                            Text(text = "湯姆")
                         }
-                    )
+                    })
                 }
                 item {
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "应用详情")
-                        },
-                        trailingContent = {
-                            Row(
-                                modifier = Modifier.clickable {
-                                    navController.navigate(Destinations.AppDetail1Frame.route + "/1234")
-                                },
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(text = "详情")
-                                RightIcon {
+                    ListItem(headlineContent = {
+                        Text(text = "应用详情")
+                    }, trailingContent = {
+                        Row(
+                            modifier = Modifier.clickable {
+                                navController.navigate(Destinations.AppDetail1Frame.route + "/1234")
+                            },
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = "详情")
+                            RightIcon {
 
-                                }
                             }
                         }
-                    )
+                    })
                 }
 
                 item {
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "举报它")
-                        },
-                        trailingContent = {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(text = "去举报")
-                                RightIcon {
-                                    navController.navigate(Destinations.ComplaintsFrame.route+"/${softViewModel.softDetail.id}")
-                                }
+                    ListItem(headlineContent = {
+                        Text(text = "举报它")
+                    }, trailingContent = {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = "去举报")
+                            RightIcon {
+                                navController.navigate(Destinations.ComplaintsFrame.route + "/${softViewModel.softDetail.id}")
                             }
                         }
-                    )
+                    })
                 }
-                item{
+                item {
                     Spacer(modifier = Modifier.height(100.dp))
                 }
             }
         }
     }
-    ModalBottomSheetLayout(
-        sheetShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-        sheetState = state, sheetContent = {
+    ModalBottomSheetLayout(sheetShape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+        sheetState = state,
+        sheetContent = {
             Column {
                 FlowRow(
                     horizontalArrangement = Arrangement.Start,
@@ -358,8 +342,7 @@ fun AppDetailScreen(
                 ) {
                     item {
                         Text(text = "留言信息")
-                        OutlinedTextField(
-                            shape = MaterialTheme.shapes.small,
+                        OutlinedTextField(shape = MaterialTheme.shapes.small,
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = { Text(text = "选填，留下你想说的话把~") },
                             value = "",
@@ -383,7 +366,15 @@ fun AppDetailScreen(
 }
 
 @Composable
-fun Item(title1: String,title2: String){
-    Text(text = title1, color = MaterialTheme.colorScheme.primary, fontSize = MaterialTheme.typography.titleMedium.fontSize)
-    Text(text = title2, color = MaterialTheme.colorScheme.secondary, fontSize = MaterialTheme.typography.titleSmall.fontSize)
+fun Item(title1: String, title2: String) {
+    Text(
+        text = title1,
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = MaterialTheme.typography.titleMedium.fontSize
+    )
+    Text(
+        text = title2,
+        color = MaterialTheme.colorScheme.secondary,
+        fontSize = MaterialTheme.typography.titleSmall.fontSize
+    )
 }

@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -62,6 +60,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
 import kotlinx.coroutines.launch
@@ -119,9 +118,9 @@ fun TouGaoListScreen(
                     }
                 },
                 navigationIcon = {
-                    Icon(modifier = Modifier.clickable {
+                    LeftIcon {
                         navController.popBackStack()
-                    }, imageVector = Icons.Default.ArrowBackIosNew, contentDescription = "")
+                    }
                 },
                 actions = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = "")
