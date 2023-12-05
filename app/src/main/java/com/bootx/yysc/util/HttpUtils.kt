@@ -1,6 +1,6 @@
 package com.bootx.yysc.util
 
-import androidx.collection.SimpleArrayMap
+import com.bootx.yysc.config.Config
 import com.google.gson.Gson
 import okhttp3.Cache
 import okhttp3.CacheControl
@@ -17,7 +17,6 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object HttpUtils {
-    private var baseUrl = "https://965z2991e.oicp.vip"
     private val mClient = OkHttpClient.Builder()
         .callTimeout(10, TimeUnit.SECONDS)//完整请求超时时长，从发起到接收返回数据，默认值0，不限定,
         .connectTimeout(10, TimeUnit.SECONDS)//与服务器建立连接的时长，默认10s

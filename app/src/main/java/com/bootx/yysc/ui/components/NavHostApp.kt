@@ -5,7 +5,10 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -35,12 +38,23 @@ import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
 import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.util.StoreManager
+import com.bootx.yysc.viewmodel.SettingViewModel
+import com.google.gson.Gson
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun NavHostApp() {
+fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
     val navController = rememberNavController()
-    val token = SharedPreferencesUtils(LocalContext.current).get("token")
+    var context = LocalContext.current
+    val storeManager: StoreManager = StoreManager(context)
+
+    LaunchedEffect(Unit){
+        val gson = Gson()
+        val setting = settingViewModel.initApp(context)
+        storeManager.save("setting",gson.toJson(setting))
+    }
+
     NavHost(
         navController = navController,
         startDestination = Destinations.HomeFrame.route,

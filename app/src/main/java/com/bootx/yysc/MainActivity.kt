@@ -11,7 +11,11 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.bootx.yysc.config.Config
+import com.bootx.yysc.model.service.SettingService
 import com.bootx.yysc.util.ActivityStackManager
+import com.bootx.yysc.util.HttpUtils
+import com.bootx.yysc.util.IHttpCallback
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.youxiao.ssp.ad.bean.NextAdInfo
 import com.youxiao.ssp.ad.bean.SSPAd
 import com.youxiao.ssp.ad.core.AdClient
@@ -49,7 +53,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityStackManager.pushActivity(this@MainActivity)
         super.onCreate(savedInstanceState)
-
 
         SSPSdk.attachBaseContext(this@MainActivity)
         SSPSdk.init(this@MainActivity, Config.MEDIA_ID, true);

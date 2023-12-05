@@ -2,7 +2,6 @@ package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -43,7 +42,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.Tag
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.theme.fontSize14
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
@@ -57,16 +58,12 @@ fun FanScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "我的关注和粉丝")
+                    TopBarTitle(text = "我的关注和粉丝")
                 },
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "",
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()
-                        }
-                    )
+                    LeftIcon {
+                        navController.popBackStack()
+                    }
                 }
             )
         }

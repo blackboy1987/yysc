@@ -56,8 +56,10 @@ import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.ui.components.Item3
+import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.Loading302
 import com.bootx.yysc.ui.components.Loading404
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.util.SharedPreferencesUtils
@@ -86,7 +88,7 @@ fun AppScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("应用类别") },
+                title = { TopBarTitle(text = "签到") },
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(Destinations.SearchFrame.route)

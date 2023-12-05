@@ -2,7 +2,6 @@ package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +14,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,6 +42,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.PointLogViewModel
 import kotlinx.coroutines.launch
@@ -68,16 +66,12 @@ fun MyIconListScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "硬币明细")
+                    TopBarTitle(text = "硬币明细")
                 },
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "",
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()
-                        }
-                    )
+                    LeftIcon {
+                        navController.popBackStack()
+                    }
                 }
             )
         }
