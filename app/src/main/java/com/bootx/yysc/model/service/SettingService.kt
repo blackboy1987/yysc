@@ -15,6 +15,7 @@ data class SettingEntity(
 data class UserMenu(
     var icon: String,
     var title: String,
+    var url: String,
 )
 data class SettingEntityResponse(val data: SettingEntity) : BaseResponse()
 

@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
+import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.requestInteractionAd
 import com.bootx.yysc.ui.components.ad.requestRewardAd
 import com.bootx.yysc.ui.navigation.Destinations
@@ -52,15 +54,11 @@ fun SupportScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "支持奇妙应用",
-                        fontSize = fontSize14,
-                        color = Color(0xFF505050)
-                    )
-                },
+                title = { TopBarTitle(text = "支持应用")},
                 navigationIcon = {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
+                    LeftIcon {
+                        navController.popBackStack()
+                    }
                 }
             )
         }

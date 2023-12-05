@@ -186,7 +186,9 @@ fun MineScreen(navController: NavHostController) {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
                                 modifier = Modifier.clickable {
-
+                                    if(item.url.isNotBlank()){
+                                        navController.navigate(item.url)
+                                    }
                                 }.width(80.dp).padding(vertical = 16.dp, horizontal = 4.dp),
                             ) {
                                 SoftIcon6(item.icon)

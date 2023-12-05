@@ -50,6 +50,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SignInEntity
+import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -74,16 +76,12 @@ fun SignInScreen(navController: NavHostController,userViewModel: UserViewModel= 
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "签到")
+                    TopBarTitle(text = "签到")
                 },
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "",
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()
-                        }
-                    )
+                    LeftIcon {
+                        navController.popBackStack()
+                    }
                 }
             )
         }
