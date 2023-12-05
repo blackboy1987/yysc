@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.util.ActivityStackManager
+import com.bootx.yysc.util.HttpUtils
+import com.bootx.yysc.util.IHttpCallback
 import com.youxiao.ssp.ad.bean.NextAdInfo
 import com.youxiao.ssp.ad.bean.SSPAd
 import com.youxiao.ssp.ad.core.AdClient
@@ -50,6 +52,8 @@ class MainActivity : ComponentActivity() {
         ActivityStackManager.pushActivity(this@MainActivity)
         super.onCreate(savedInstanceState)
 
+        initApp()
+
 
         SSPSdk.attachBaseContext(this@MainActivity)
         SSPSdk.init(this@MainActivity, Config.MEDIA_ID, true);
@@ -76,6 +80,23 @@ class MainActivity : ComponentActivity() {
         } else {
             requestSplashAd()
         }
+
+    }
+
+    private fun initApp() {
+        var maps: Map<String, Any>  = HashMap()
+        HttpUtils.post(maps,Config.baseUrl+"/api/setting", object: IHttpCallback{
+            override fun onSuccess(data: Any?) {
+                println("onSuccess")
+                println(data)
+            }
+
+            override fun onFailed(error: Any?) {
+                println("onFailed")
+                println(error)
+            }
+
+        })
 
     }
 
