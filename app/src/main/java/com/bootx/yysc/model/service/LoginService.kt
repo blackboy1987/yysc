@@ -1,13 +1,9 @@
 package com.bootx.yysc.model.service
 
-import com.bootx.yysc.model.entity.BaseResponse
-import com.bootx.yysc.model.entity.LoginEntity
 import com.bootx.yysc.model.entity.LoginEntityResponse
-import com.bootx.yysc.repository.entity.UserEntity
 import com.bootx.yysc.util.HiRetrofit
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Header
 import retrofit2.http.POST
 
 

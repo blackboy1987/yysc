@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -29,36 +30,54 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.SoftIcon6
 import com.bootx.yysc.ui.components.Tag
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.theme.fontSize14
+import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.viewmodel.FanViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class
 )
 @Composable
-fun FanScreen(navController: NavHostController) {
+fun FanScreen(navController: NavHostController,type:Int,fanViewModel: FanViewModel= viewModel()) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("我的关注", "我的粉丝")
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by remember { mutableIntStateOf(type) }
+
+    LaunchedEffect(Unit){
+        // 加载粉丝列表
+        fanViewModel.list(SharedPreferencesUtils(context).get("token"),selectedTabIndex)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    TopBarTitle(text = "我的关注和粉丝")
+                    TopBarTitle(text = "我的关注和粉丝${selectedTabIndex}")
                 },
                 navigationIcon = {
                     LeftIcon {
@@ -71,16 +90,19 @@ fun FanScreen(navController: NavHostController) {
         Surface(
             modifier = Modifier.padding(it)
         ) {
-            
+
             Column {
                 SecondaryTabRow(
                     selectedTabIndex = selectedTabIndex,
                     modifier = Modifier.focusRestorer(),
                     tabs = {
                         tabs.forEachIndexed { index, item ->
-                            Tab(selected = selectedTabIndex == index, onClick = {
-                                selectedTabIndex = index
-                            }) {
+                            Tab(
+                                modifier = Modifier.padding(vertical = 16.dp),
+                                selected = selectedTabIndex == index,
+                                onClick = {
+                                    selectedTabIndex = index
+                                }) {
                                 Text(
                                     text = item,
                                     fontSize = fontSize14,
@@ -97,20 +119,14 @@ fun FanScreen(navController: NavHostController) {
                         (slideInVertically { height -> height } + fadeIn()).togetherWith(
                             slideOutVertically { height -> -height } + fadeOut())
                     },
-                ) {index->
+                ) { index ->
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
-                    ){
-                        items(100){ index->
+                    ) {
+                        items(fanViewModel.list) { item ->
                             ListItem(
                                 leadingContent = {
-                                    AsyncImage(
-                                        modifier = Modifier
-                                            .size(60.dp)
-                                            .clip(CircleShape),
-                                        model = "https://www.iprompt.art/images/1.jpg",
-                                        contentDescription = "",
-                                    )
+                                    SoftIcon6(url = "${item.avatar}")
                                 },
                                 headlineContent = {
                                     Row(
@@ -118,16 +134,20 @@ fun FanScreen(navController: NavHostController) {
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         Text(
-                                            text = "奇谈君",
+                                            text = "${item.username}",
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                         )
                                         Tag(text = "lv.1")
                                     }
                                 },
-                                supportingContent = { Text(text = "坐拥91枚硬币") },
+                                supportingContent = { Text(text = "坐拥${item.point}枚硬币") },
                                 trailingContent = {
-                                    Button(onClick = { /*TODO*/ }) {
+                                    Button(onClick = {
+                                        coroutineScope.launch {
+                                            fanViewModel.delete(SharedPreferencesUtils(context).get("token"),item.id,selectedTabIndex)
+                                        }
+                                    }) {
                                         Text(text = "取关")
                                     }
                                 }

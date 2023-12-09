@@ -8,7 +8,10 @@ data class AppInfo(
     var versionName: String="",
     var packageName: String="",
     var versionCode: String="",
-    var appBytes: Long?=0L,
+    var appBytes: Long=0L,
     var targetSdkVersion: Int=0,
     var minSdkVersion: Int=0,
+    var memo: String="",
+    var introduce: String="",
+    var updatedContent: String="",
 )

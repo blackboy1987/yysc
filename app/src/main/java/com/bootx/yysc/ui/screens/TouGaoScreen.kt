@@ -1,15 +1,14 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -23,9 +22,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +59,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -64,14 +67,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.config.Config
+import com.bootx.yysc.extension.onScroll
 import com.bootx.yysc.model.entity.AppInfo
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.util.AppInfoUtils
+import com.bootx.yysc.util.CoilImageEngine
+import com.bootx.yysc.util.CommonUtils
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.TouGaoViewModel
+import github.leavesczy.matisse.DefaultMediaFilter
+import github.leavesczy.matisse.Matisse
+import github.leavesczy.matisse.MatisseContract
+import github.leavesczy.matisse.MediaResource
+import github.leavesczy.matisse.MimeType
+import github.leavesczy.matisse.NothingCaptureStrategy
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -85,48 +98,98 @@ fun TouGaoScreen(
     packageName: String,
     touGaoViewModel: TouGaoViewModel = viewModel()
 ) {
+    var imageCount = 9
     val context = LocalContext.current
-    val appInfo by remember {
-        mutableStateOf<AppInfo>(
-            AppInfoUtils.getAppInfo(
-                context,
-                packageName
-            )
-        )
+    var showTopBar by remember {
+        mutableStateOf(false)
     }
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("基本信息", "详细信息", "应用基因")
-    var selectedTabIndex by remember { mutableIntStateOf(1) }
-    var categoryId0 by remember {
-        mutableStateOf(0)
-    }
+    val quDaoList = listOf("官方版", "国际版", "测试版本", "汉化版")
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
     var category1 by remember {
         mutableStateOf(listOf<CategoryEntity>())
     }
+
+
+    // 类别
+    var categoryId0 by remember {
+        mutableStateOf(0)
+    }
+    // 渠道
+    var quDaoIndex by remember { mutableIntStateOf(0) }
+    //分区
     var categoryId1 by remember {
         mutableStateOf(0)
     }
-    var images by remember {
-        mutableStateOf(listOf<Uri?>())
+
+    // 应用标题
+    var title by remember { mutableStateOf("") }
+    // 投稿说明
+    var memo by remember { mutableStateOf("") }
+    // 应用介绍
+    var introduce by remember { mutableStateOf("") }
+    // 更新内容
+    var updatedContent by remember { mutableStateOf("") }
+    // 广告
+    var adType0 by remember { mutableIntStateOf(0) }
+    // 付费内容
+    var adType1 by remember { mutableIntStateOf(0) }
+    // 运营方式
+    var adType2 by remember { mutableIntStateOf(0) }
+    // 闪光点
+    var adType3 by remember { mutableIntStateOf(0) }
+    // 应用logo
+    var appLogo by remember {
+        mutableStateOf("")
     }
-    val storeManager: StoreManager = StoreManager(LocalContext.current)
-    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
+
+
+
 
     LaunchedEffect(Unit) {
-        touGaoViewModel.categoryList(token,)
+        touGaoViewModel.categoryList(SharedPreferencesUtils(context).get("token"))
+        touGaoViewModel.getAppInfo(context, packageName)
         categoryId0 = touGaoViewModel.categories[0].id
         category1 = touGaoViewModel.categories[0].children
         categoryId1 = category1[0].id
+
+        // 应用标题
+        title = touGaoViewModel.appInfo.appName
+        // 应用logo
+        appLogo = CommonUtils.drawable2Base64(touGaoViewModel.appInfo.appIcon)
+
     }
 
     var imageType by remember { mutableIntStateOf(0) }
-
+    val lazyListState = rememberLazyListState()
+    lazyListState.onScroll(callback = { index ->
+        showTopBar = index > 0
+    })
+    var list by remember {
+        mutableStateOf(listOf<MediaResource>())
+    }
+    val mediaPickerLauncher =
+        rememberLauncherForActivityResult(contract = MatisseContract()) { images: List<MediaResource>? ->
+            if (!images.isNullOrEmpty()) {
+                val mediaResource = images[0]
+                val uri = mediaResource.uri
+                val path = mediaResource.path
+                val name = mediaResource.name
+                val mimeType = mediaResource.mimeType
+                list = images
+            } else {
+                list = listOf()
+            }
+        }
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 title = {
-                    TopBarTitle(text = "为止")
+                    if (showTopBar) {
+                        TopBarTitle(text = "${touGaoViewModel.appInfo.appName}")
+                    }
                 },
                 navigationIcon = {
                     LeftIcon {
@@ -140,26 +203,59 @@ fun TouGaoScreen(
                 }
             )
         },
+        bottomBar = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                    onClick = {
+                        coroutineScope.launch {
+                            touGaoViewModel.upload(
+                                context,
+                                title,
+                                memo,
+                                introduce,
+                                updatedContent,
+                                adType0,
+                                adType1,
+                                adType2,
+                                adType3,
+                                appLogo,
+                                categoryId0,
+                                categoryId1,
+                                quDaoIndex,
+                                list
+                            )
+                        }
+                    }) {
+                    Text(text = "投稿")
+                }
+            }
+        }
     ) {
         Surface(
             modifier = Modifier.padding(it)
         ) {
             Column {
                 LazyColumn(
+                    state = lazyListState,
                     modifier = Modifier.padding(8.dp)
                 ) {
-                    item{
+                    item {
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = appInfo.appName,
+                                    text = touGaoViewModel.appInfo.appName,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             },
                             supportingContent = {
                                 Text(
-                                    text = appInfo.packageName,
+                                    text = touGaoViewModel.appInfo.packageName,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
@@ -167,13 +263,13 @@ fun TouGaoScreen(
                             leadingContent = {
                                 AsyncImage(
                                     modifier = Modifier.size(80.dp),
-                                    model = appInfo.appIcon,
+                                    model = touGaoViewModel.appInfo.appIcon,
                                     contentDescription = ""
                                 )
                             }
                         )
                     }
-                    item{
+                    item {
                         SecondaryTabRow(
                             divider = @Composable {
 
@@ -193,14 +289,14 @@ fun TouGaoScreen(
                                         Text(
                                             text = item,
                                             fontSize = fontSize14,
-                                            modifier = Modifier.padding(4.dp),
+                                            modifier = Modifier.padding(8.dp),
                                         )
                                     }
                                 }
                             }
                         )
                     }
-                    if(selectedTabIndex==0){
+                    if (selectedTabIndex == 0) {
                         item {
                             Text(text = "类别")
                             Spacer(modifier = Modifier.height(8.dp))
@@ -214,17 +310,20 @@ fun TouGaoScreen(
                                     .padding(8.dp)
                             ) {
                                 touGaoViewModel.categories.forEach { item ->
-                                    CategoryItem(text = item.name, selected = categoryId0 == item.id, onClick = {
-                                        coroutineScope.launch {
-                                            categoryId0 = item.id
-                                            category1 = item.children
-                                            categoryId1 = category1[0].id
-                                        }
-                                    })
+                                    CategoryItem(
+                                        text = item.name,
+                                        selected = categoryId0 == item.id,
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                categoryId0 = item.id
+                                                category1 = item.children
+                                                categoryId1 = category1[0].id
+                                            }
+                                        })
                                 }
                             }
                         }
-                        item{
+                        item {
                             Text(text = "渠道")
                             Spacer(modifier = Modifier.height(8.dp))
                             FlowRow(
@@ -236,13 +335,15 @@ fun TouGaoScreen(
                                     .background(Color(0xFFf4f4f4))
                                     .padding(8.dp)
                             ) {
-                                touGaoViewModel.categories.forEach { item ->
-                                    CategoryItem(text = item.name, selected = categoryId0 == item.id, onClick = {
-                                        coroutineScope.launch {
-                                            categoryId0 = item.id
-                                            category1 = item.children
-                                        }
-                                    })
+                                quDaoList.forEachIndexed { index, s ->
+                                    CategoryItem(
+                                        text = s,
+                                        selected = quDaoIndex == index,
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                quDaoIndex = index
+                                            }
+                                        })
                                 }
                             }
                         }
@@ -259,16 +360,19 @@ fun TouGaoScreen(
                                     .padding(8.dp)
                             ) {
                                 category1.forEach { item ->
-                                    CategoryItem(text = item.name, selected = categoryId1 == item.id, onClick = {
-                                        coroutineScope.launch {
-                                            categoryId1 = item.id
-                                        }
-                                    })
+                                    CategoryItem(
+                                        text = item.name,
+                                        selected = categoryId1 == item.id,
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                categoryId1 = item.id
+                                            }
+                                        })
                                 }
                             }
                         }
-                    }else if(selectedTabIndex==1){
-                        item{
+                    } else if (selectedTabIndex == 1) {
+                        item {
                             FlowRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -278,153 +382,181 @@ fun TouGaoScreen(
                                     .background(Color(0xFFf4f4f4))
                                     .padding(8.dp)
                             ) {
-                                CategoryItem("竖屏",imageType == 0, onClick = {
+                                CategoryItem("竖屏", imageType == 0, onClick = {
                                     coroutineScope.launch {
                                         imageType = 0
                                     }
                                 })
-                                CategoryItem("横屏",imageType == 1, onClick = {
+                                CategoryItem("横屏", imageType == 1, onClick = {
                                     coroutineScope.launch {
                                         imageType = 1
                                     }
                                 })
                             }
                         }
-                        item{
+                        item {
                             Spacer(modifier = Modifier.height(16.dp))
                         }
-                        item{
-                            LazyRow(){
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
+                        item {
+                            LazyRow() {
+                                items(list) { item ->
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(horizontal = 8.dp, vertical = 16.dp)
+                                            .clickable {
+                                                val matisse = Matisse(
+                                                    maxSelectable = 9,
+                                                    mediaFilter = DefaultMediaFilter(
+                                                        supportedMimeTypes = MimeType.ofImage(),
+                                                        selectedResourceUri = list
+                                                            .map { item -> item.uri }
+                                                            .toSet(),
+                                                    ),
+                                                    imageEngine = CoilImageEngine(),
+                                                    captureStrategy = NothingCaptureStrategy
+                                                )
+                                                mediaPickerLauncher.launch(matisse)
+                                            }
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color(0xfff4f4f4))
+                                            .width(162.dp)
+                                            .height(288.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        AsyncImage(
+                                            contentScale = ContentScale.FillBounds,
+                                            model = item.uri,
+                                            contentDescription = ""
+                                        )
+                                    }
                                 }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                }
-                                item{
-                                    ImageView1(context)
-                                    Spacer(modifier = Modifier.width(16.dp))
+                                if (list.size < imageCount) {
+                                    item {
+                                        Box(
+                                            modifier = Modifier
+                                                .clickable {
+                                                    val matisse = Matisse(
+                                                        maxSelectable = 9,
+                                                        mediaFilter = DefaultMediaFilter(
+                                                            supportedMimeTypes = MimeType.ofImage(),
+                                                            selectedResourceUri = list
+                                                                .map { item -> item.uri }
+                                                                .toSet(),
+                                                        ),
+                                                        imageEngine = CoilImageEngine(),
+                                                        captureStrategy = NothingCaptureStrategy
+                                                    )
+                                                    mediaPickerLauncher.launch(matisse)
+                                                }
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xfff4f4f4))
+                                                .width(162.dp)
+                                                .height(288.dp)
+                                                .padding(horizontal = 8.dp, vertical = 16.dp),
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier.size(40.dp),
+                                                imageVector = Icons.Filled.Add,
+                                                contentDescription = ""
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
-                        item{
+                        item {
                             Text(text = "应用标题")
-                            OutlinedTextField(value = "abc", onValueChange = {})
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = title, onValueChange = { value ->
+                                    title = value
+                                }
+                            )
                         }
-                        item{
+                        item {
                             Text(text = "投稿说明")
                             OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                value = "abc",
-                                onValueChange = {},
+                                value = memo,
+                                onValueChange = { value ->
+                                    memo = value
+                                },
                                 maxLines = 8,
                                 minLines = 8,
 
-                            )
+                                )
                         }
-                        item{
+                        item {
                             Text(text = "应用介绍")
                             OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                value = "abc",
-                                onValueChange = {},
+                                value = introduce,
+                                onValueChange = { value ->
+                                    introduce = value
+                                },
                                 maxLines = 8,
                                 minLines = 8,
 
                                 )
                         }
-                        item{
-                            Text(text = "投稿说明")
+                        item {
+                            Text(text = "更新内容")
                             OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                value = "abc",
-                                onValueChange = {},
+                                value = updatedContent,
+                                onValueChange = { value ->
+                                    updatedContent = value
+                                },
                                 maxLines = 8,
                                 minLines = 8,
 
                                 )
                         }
-                    }else if(selectedTabIndex==2){
-                        item{
+                    } else if (selectedTabIndex == 2) {
+                        item {
                             Text(text = "该应用是否包含广告")
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "无广告")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "少量广告")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "超过广告")
+                                MyRadio(title="无广告",adType0==0, onClick = {adType0=0})
+                                MyRadio(title="少量广告",adType0==1, onClick = {adType0=1})
+                                MyRadio(title="超过广告",adType0==2, onClick = {adType0=2})
                             }
 
                         }
-                        item{
+                        item {
                             Text(text = "该应用是否有付费内容")
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "完全免费")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "会员制")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "没钱不给用")
+                                MyRadio(title="完全免费",adType1==0, onClick = {adType1=0})
+                                MyRadio(title="会员制",adType1==1, onClick = {adType1=1})
+                                MyRadio(title="没钱不给用",adType1==2, onClick = {adType1=2})
                             }
                         }
-                        item{
+                        item {
                             Text(text = "该应用的运营方式")
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "企业开发")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "独立开发")
+                                MyRadio(title="企业开发",adType2==0, onClick = {adType2=0})
+                                MyRadio(title="独立开发",adType2==1, onClick = {adType2=1})
                             }
                         }
-                        item{
+                        item {
                             Text(text = "该应用有什么闪光点")
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "白嫖")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "Material Design")
-                                RadioButton(selected = true, onClick = { /*TODO*/ })
-                                Text(text = "神作")
+                                MyRadio(title="白嫖",adType3==0, onClick = {adType3=0})
+                                MyRadio(title="Material Design",adType3==1, onClick = {adType3=1})
+                                MyRadio(title="神作",adType3==2, onClick = {adType3=2})
                             }
                         }
                     }
 
-                    item{
+                    item {
                         Spacer(modifier = Modifier.height(64.dp))
                     }
                 }
@@ -434,7 +566,7 @@ fun TouGaoScreen(
 }
 
 @Composable
-fun CategoryItem(text: String,selected: Boolean,onClick:()->Unit){
+fun CategoryItem(text: String, selected: Boolean, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(
@@ -452,50 +584,24 @@ fun CategoryItem(text: String,selected: Boolean,onClick:()->Unit){
     ) {
         Text(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 2.dp),
+                .padding(horizontal = 24.dp, vertical = 8.dp),
             text = text,
         )
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun ImageView1(context: Context){
-    var image by remember {
-        mutableStateOf<Uri?>(null)
-    }
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            image = uri
-            Log.e("ImageView1", "ImageView1: ${uri.toString()}", )
-        }
-    )
-
-    /*if (imageUrlList.value.isNotEmpty()) {
-        coroutineScope.launch {
-            val file = UploadUtils.uri2File(imageUrlList.value[0], context)
-            if (file != null) {
-                val url = UploadUtils.uploadImage(file)
-                Log.e("TouGaoScreen", "TouGaoScreen: $url")
-            } else {
-                Log.e("TouGaoScreen", "TouGaoScreen: file is null")
-            }
-        }
-    }*/
-    Box(
-        modifier = Modifier
+fun MyRadio(title: String,selected: Boolean=false,onClick: () -> Unit){
+    Row(
+        Modifier
             .clickable {
-                galleryLauncher.launch("image/*")
+                onClick()
             }
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xfff4f4f4))
-            .width(162.dp)
-            .height(288.dp)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
-        contentAlignment = Alignment.Center,
-    ){
-        Icon(modifier = Modifier.size(40.dp), imageVector = Icons.Filled.Add, contentDescription = "")
-        AsyncImage(contentScale= ContentScale.FillBounds, model = image, contentDescription = "")
+            .padding(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = { onClick() })
+        Text(text = title, fontSize = MaterialTheme.typography.titleSmall.fontSize)
     }
 }

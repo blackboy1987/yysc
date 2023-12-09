@@ -1,6 +1,7 @@
 package com.bootx.yysc.model.service
 
 import com.bootx.yysc.model.entity.SignInEntity
+import com.bootx.yysc.model.entity.SignInEntityResponse
 import com.bootx.yysc.model.entity.SoftListResponse
 import com.bootx.yysc.util.HiRetrofit
 import retrofit2.http.Header
@@ -16,7 +17,7 @@ interface SignInService {
     suspend fun isSign(@Header("token") token: String): Boolean
 
     @POST("/api/member/signIn")
-    suspend fun signIn(@Header("token") token: String): SignInEntity
+    suspend fun signIn(@Header("token") token: String): SignInEntityResponse
 
     companion object {
         fun instance(): SignInService {

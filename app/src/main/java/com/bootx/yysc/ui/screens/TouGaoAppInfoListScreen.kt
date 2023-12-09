@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Search
@@ -101,11 +102,13 @@ fun TouGaoAppInfoListScreen(
                             )
                         },
                         supportingContent = {
-                            Text(
-                                text = it.packageName,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            SelectionContainer{
+                                Text(
+                                    text = it.packageName,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         },
                         leadingContent = {
                             AsyncImage(

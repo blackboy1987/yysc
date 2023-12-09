@@ -54,7 +54,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
 
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.TouGaoListFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -215,7 +215,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         }
 
         composable(
-            Destinations.FanFrame.route,
+            Destinations.FanFrame.route+"/{type}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -227,7 +227,8 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
                 )
             },
         ) {
-            FanScreen(navController)
+            val type = it.arguments?.getInt("type") ?: 0
+            FanScreen(navController,type)
         }
         composable(
             Destinations.MyIconFrame.route,

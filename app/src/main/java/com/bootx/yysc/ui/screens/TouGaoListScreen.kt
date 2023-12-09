@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,12 +56,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
 import kotlinx.coroutines.launch
@@ -105,11 +108,7 @@ fun TouGaoListScreen(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 title = {
                     Column {
-                        Text(
-                            text = "应用投稿",
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+                        TopBarTitle(text = "应用投稿")
                         Text(
                             text = "欢迎投稿",
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
@@ -157,16 +156,14 @@ fun TouGaoListScreen(
                     Item(title = "15", title2 = "投币数量", modifier = Modifier.weight(1.0f))
                 }
                 SecondaryTabRow(
-                    divider = @Composable {
-
-                    },
                     selectedTabIndex = selectedTabIndex,
                     modifier = Modifier
                         .focusRestorer()
                         .padding(8.dp),
                     tabs = {
                         tabs.forEachIndexed { index, item ->
-                            Tab(selected = selectedTabIndex == index, onClick = {
+                            Tab(
+                                selected = selectedTabIndex == index, onClick = {
                                 selectedTabIndex = index
                                 coroutineScope.launch {
                                     lazyListState.animateScrollToItem(1)
@@ -175,7 +172,7 @@ fun TouGaoListScreen(
                                 Text(
                                     text = item,
                                     fontSize = fontSize14,
-                                    modifier = Modifier.padding(4.dp),
+                                    modifier = Modifier.padding(8.dp),
                                 )
                             }
                         }

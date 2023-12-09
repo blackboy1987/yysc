@@ -1,6 +1,7 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -102,7 +103,7 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
 
     LaunchedEffect(Unit) {
         mineViewModel.load(context, SharedPreferencesUtils(context).get("token"))
-        userInfo = userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
+        userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
     }
 
     Surface {
@@ -204,13 +205,29 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
                             .fillMaxWidth()
                             .height(60.dp),
                     ) {
-                        Item(title = "15", title2 = "硬币", modifier = Modifier.weight(1.0f))
+                        Item(title = "${userInfo.point ?: 0}", title2 = "硬币", modifier = Modifier
+                            .clickable {
+
+                            }
+                            .weight(1.0f))
                         MyDivider1()
-                        Item(title = "15", title2 = "关注", modifier = Modifier.weight(1.0f))
+                        Item(title = "${userInfo.concernCount ?: 0}", title2 = "关注", modifier = Modifier
+                            .clickable {
+                                navController.navigate(Destinations.FanFrame.route + "/0")
+                            }
+                            .weight(1.0f))
                         MyDivider1()
-                        Item(title = "15", title2 = "粉丝", modifier = Modifier.weight(1.0f))
+                        Item(title = "${userInfo.fanCount ?: 0}", title2 = "粉丝", modifier = Modifier
+                            .clickable {
+                                navController.navigate(Destinations.FanFrame.route + "/1")
+                            }
+                            .weight(1.0f))
                         MyDivider1()
-                        Item(title = "15", title2 = "付费", modifier = Modifier.weight(1.0f))
+                        Item(title = "${userInfo.payCount ?: 0}", title2 = "付费", modifier = Modifier
+                            .clickable {
+
+                            }
+                            .weight(1.0f))
                     }
                 }
                 item {
@@ -229,6 +246,8 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
                                 modifier = Modifier
                                     .clickable {
                                         if (item.url.isNotBlank()) {
+                                            Log.e("MineScreen", "MineScreen: ${Destinations.TouGaoFrame.route}", )
+                                            Log.e("MineScreen", "MineScreen: ${item.url}", )
                                             navController.navigate(item.url)
                                         }
                                     }

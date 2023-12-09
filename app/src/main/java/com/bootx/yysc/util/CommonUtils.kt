@@ -1,7 +1,13 @@
 package com.bootx.yysc.util
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
+import java.io.ByteArrayOutputStream
+import java.util.Base64
 import java.util.Date
 
 
@@ -28,4 +34,26 @@ object CommonUtils {
         }
         return "1天前"
     }
+    fun drawable2Bitmap(context: Context,drawable: Drawable): Bitmap{
+        return drawable.toBitmap()
+    }
+    fun res2Drawable(context: Context,resId: Int): Drawable{
+        return context.resources.getDrawable(resId)
+    }
+    fun bitmap2Drawable(context: Context,bitmap: Bitmap): Drawable{
+        return BitmapDrawable(context.resources,bitmap)
+    }
+
+    fun drawable2Base64(drawable: Drawable?): String{
+        if(drawable==null){
+            return "";
+        }
+        val bitMap = drawable.toBitmap()
+        val baos = ByteArrayOutputStream()
+        bitMap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val bytes = baos.toByteArray()
+        return Base64.getEncoder().encodeToString(bytes)
+    }
+
+
 }

@@ -10,7 +10,7 @@ import com.bootx.yysc.repository.entity.HistoryEntity
 import com.bootx.yysc.repository.entity.UserEntity
 
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         UserEntity::class,
         HistoryEntity::class],

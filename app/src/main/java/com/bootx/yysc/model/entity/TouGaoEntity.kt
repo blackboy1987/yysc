@@ -1,5 +1,7 @@
 package com.bootx.yysc.model.entity
 
+import android.graphics.drawable.Drawable
+
 data class TouGaoEntity(
     var categoryId0: Int=0,
     var quDaoId: Int=0,
@@ -13,4 +15,6 @@ data class TouGaoEntity(
     var paidType: Int=0,
     var operationType: Int=0,
     var featuresType: Int=0,
+    var packageName: String="",
+    var appIcon: Drawable?=null,
 )
