@@ -1,5 +1,6 @@
 package com.bootx.yysc.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -10,7 +11,13 @@ import com.bootx.yysc.model.entity.DownloadEntityResponse
 import com.bootx.yysc.model.entity.SoftDetailEntity
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.model.service.SoftService
+import com.bootx.yysc.repository.DataBase
+import com.bootx.yysc.repository.entity.HistoryEntity
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class SoftViewModel:ViewModel() {
     private val softService = SoftService.instance()
@@ -80,11 +87,35 @@ class SoftViewModel:ViewModel() {
         }
     }
 
-    suspend fun detail(token: String,id: String): SoftDetailEntity {
+    suspend fun detail(context:Context,token: String,id: String): SoftDetailEntity {
+        val historyDao = DataBase.getDb(context)?.getHistoryDao()
         val res = softService.detail(token,id)
         if (res.code == 0 && res.data != null) {
             softDetail = res.data
+            // 写入历史记录
+            CoroutineScope(Dispatchers.IO).launch {
+                if (historyDao != null) {
+                    val byId = historyDao.getById(res.data.id)
+                    if(byId.isEmpty()){
+                        historyDao.insert(HistoryEntity(
+                            id=res.data.id,
+                            name=res.data.name,
+                            logo=res.data.logo,
+                            packageName = "${res.data.fullName}",
+                        ))
+                    }else{
+                        historyDao.update(HistoryEntity(
+                            id=res.data.id,
+                            name=res.data.name,
+                            logo=res.data.logo,
+                            packageName = "${res.data.fullName}",
+                            updateDate = Date().time,
+                        ))
+                    }
+                }
+            }
         }
+
         return SoftDetailEntity()
     }
 

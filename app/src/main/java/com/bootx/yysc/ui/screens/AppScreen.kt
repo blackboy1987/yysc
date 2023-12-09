@@ -88,7 +88,7 @@ fun AppScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { TopBarTitle(text = "签到") },
+                title = { TopBarTitle(text = "应用分类") },
                 actions = {
                     IconButton(onClick = {
                         navController.navigate(Destinations.SearchFrame.route)
@@ -196,7 +196,7 @@ fun AppScreen(
         }
     }
 
-    Dialog(onDismissRequest = { /*TODO*/ }) {
+    /*Dialog(onDismissRequest = { *//*TODO*//* }) {
         Box(
             modifier = Modifier
                 .width(100.dp)
@@ -205,7 +205,7 @@ fun AppScreen(
         ) {
             Text(text = "aaaa")
         }
-    }
+    }*/
 }
 
 @Composable

@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -115,120 +116,132 @@ fun HomeScreen(
         // 活动
         activityList.value = homeViewModel.activity(token);
 
+        // 今日下载
         todayDownloadList.value = softViewModel.orderBy(token, 1, 30, "00")
+        // 今日评论
         todayCommentList.value = softViewModel.orderBy(token, 1, 30, "01")
+        //随心看
         randomList.value = softViewModel.orderBy(token, 1, 30, "2")
     }
-
 
     Surface(
         modifier = Modifier
             .fillMaxHeight()
             .background(MaterialTheme.colorScheme.primary),
     ) {
-        LazyColumn() {
-            item {
-                if (carouselViewModel.listLoaded) {
-                    SwiperItem(carouselViewModel.carousels)
+        LazyColumn {
+            if(carouselViewModel.carousels.isNotEmpty()){
+                item {
+                    if (carouselViewModel.listLoaded) {
+                        SwiperItem(carouselViewModel.carousels)
+                    }
                 }
             }
-            item {
-                CenterBar(homeCenterBarList.value, navigate = {
-                    navController.navigate(it)
-                })
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(padding8)
-                        .clip(RoundedCornerShape(shape8)),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(padding8)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        CardTitle(text = "好评如潮")
-                        RightIcon {
-                            navController.navigate(Destinations.ListFrame.route+"/好评如潮/01")
-                        }
-                    }
-                    ListItem1(todayCommentList.value, onDownload = { id ->
-                        coroutineScope.launch {
-                            download(token, context, id, softViewModel)
-                        }
-                    }, onClick = { id ->
-                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+            if(homeCenterBarList.value.isNotEmpty()){
+                item {
+                    CenterBar(homeCenterBarList.value, navigate = {
+                        navController.navigate(it)
                     })
                 }
             }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(padding8)
-                        .clip(RoundedCornerShape(shape8)),
-                ) {
-                    Row(
+            if(todayCommentList.value.isNotEmpty()){
+                item {
+                    Column(
                         modifier = Modifier
                             .padding(padding8)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                            .clip(RoundedCornerShape(shape8)),
                     ) {
-                        CardTitle(text = "最新活动")
+                        Row(
+                            modifier = Modifier
+                                .padding(padding8)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            CardTitle(text = "好评如潮")
+                            RightIcon {
+                                navController.navigate(Destinations.ListFrame.route+"/好评如潮/01")
+                            }
+                        }
+                        ListItem1(todayCommentList.value, onDownload = { id ->
+                            coroutineScope.launch {
+                                download(token, context, id, softViewModel)
+                            }
+                        }, onClick = { id ->
+                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                        })
                     }
-                    AdData(activityList.value)
                 }
             }
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(padding8)
-                        .clip(RoundedCornerShape(shape8)),
-                ) {
-                    Row(
+            if(activityList.value.isNotEmpty()){
+                item {
+                    Column(
                         modifier = Modifier
                             .padding(padding8)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                            .clip(RoundedCornerShape(shape8)),
                     ) {
-                        CardTitle(text = "随心看看")
-                        RightIcon {
-                            navController.navigate(Destinations.ListFrame.route+"/随心看看/2")
+                        Row(
+                            modifier = Modifier
+                                .padding(padding8)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            CardTitle(text = "最新活动")
                         }
+                        AdData(activityList.value)
                     }
-                    ListItem2(randomList.value, onDownload = { id ->
-                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                    }, onClick = { id ->
-                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                    })
                 }
             }
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(padding8)
-                        .clip(RoundedCornerShape(shape8)),
-                ) {
-                    Row(
+            if(randomList.value.isNotEmpty()){
+                item {
+                    Column(
                         modifier = Modifier
                             .padding(padding8)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                            .clip(RoundedCornerShape(shape8)),
                     ) {
-                        CardTitle(text = "今日下载")
-                        RightIcon {
-                            navController.navigate(Destinations.ListFrame.route+"/今日下载/00")
+                         Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            CardTitle(text = "随心看看")
+                            RightIcon {
+                                navController.navigate(Destinations.ListFrame.route+"/随心看看/2")
+                            }
                         }
+                        ListItem2(randomList.value, onDownload = { id ->
+                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                        }, onClick = { id ->
+                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                        })
                     }
-                    ListItem3(list = todayDownloadList.value, onDownload = { id ->
-                        coroutineScope.launch {
-                            download(token, context, id, softViewModel)
+                }
+            }
+            if(todayDownloadList.value.isNotEmpty()){
+                item {
+                    Column(
+                        modifier = Modifier
+                            .padding(padding8)
+                            .clip(RoundedCornerShape(shape8)),
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(padding8)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            CardTitle(text = "今日下载")
+                            RightIcon {
+                                navController.navigate(Destinations.ListFrame.route+"/今日下载/00")
+                            }
                         }
-                    }, onClick = { id ->
-                        navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                    })
+                        ListItem3(list = todayDownloadList.value, onDownload = { id ->
+                            coroutineScope.launch {
+                                download(token, context, id, softViewModel)
+                            }
+                        }, onClick = { id ->
+                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                        })
+                    }
                 }
             }
             item {
@@ -291,7 +304,9 @@ suspend fun download(token: String, context: Context, id: Int, softViewModel: So
 
         val manager = DownloadManager.Builder(context as Activity).run {
             apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
-            apkName(data.name + ".apk").onDownloadListener(object : OnDownloadListener {
+            apkName(data.name + ".apk").onDownloadListener(onDownloadListener = object : OnDownloadListener {
+
+
                 override fun cancel() {
                     NotificationUtil.cancelNotification(context)
                 }
@@ -333,7 +348,7 @@ suspend fun download(token: String, context: Context, id: Int, softViewModel: So
                     )
                 }
 
-            }).showNewerToast(true).showBgdToast(true).showNotification(true)
+            })
             apkVersionName(data.versionName)
             apkSize(data.size)
             apkDescription("更新描述信息(取服务端返回数据)")

@@ -48,16 +48,7 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean = true, onDownload: 
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SubcomposeAsyncImage(
-                    loading = {
-                        CircularProgressIndicator() // 圆形进度条
-                    },
-                    model = item.logo,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                )
+                SoftIcon6_8(url = item.logo)
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(
                     modifier = Modifier.weight(1f)
@@ -102,7 +93,9 @@ fun ListItem3(list: List<SoftEntity>, showDownload: Boolean = true, onDownload: 
                                 .background(Color(0xFF2196f3)),
                         ) {
                             Icon(
-                                modifier = Modifier.size(12.dp).padding(start = 4.dp),
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .padding(start = 4.dp),
                                 imageVector = Icons.Filled.Star,
                                 contentDescription = "",
                                 tint = Color(0xFFFFFFFF),

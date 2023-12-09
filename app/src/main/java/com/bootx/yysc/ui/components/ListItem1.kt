@@ -43,13 +43,7 @@ fun ListItem1(list: List<SoftEntity>, onDownload: (id: Int) -> Unit, onClick: (i
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    model = softEntity.logo,
-                    contentDescription = ""
-                )
+                SoftIcon6_8(url = softEntity.logo)
                 Text(
                     text = softEntity.name,
                     maxLines = 1,

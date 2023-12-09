@@ -85,14 +85,7 @@ fun ListItem2(list: List<SoftEntity>, onDownload: (id: Int) -> Unit, onClick: (i
                             .fillMaxWidth()
                             .padding(vertical = 16.dp),
                     ) {
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(RoundedCornerShape(50.dp)),
-                            model = item.logo,
-                            contentDescription = "",
-                            contentScale = ContentScale.Crop,
-                        )
+                        SoftIcon8(url = item.logo)
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = item.name,

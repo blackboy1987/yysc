@@ -7,7 +7,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,7 +14,6 @@ import androidx.navigation.compose.rememberNavController
 import com.bootx.yysc.model.entity.SysMsgScreen
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.screens.AboutScreen
-import com.bootx.yysc.ui.screens.AppDetail1Screen
 import com.bootx.yysc.ui.screens.AppDetailScreen
 import com.bootx.yysc.ui.screens.ComplaintsScreen
 import com.bootx.yysc.ui.screens.FanScreen
@@ -37,7 +35,6 @@ import com.bootx.yysc.ui.screens.SupportScreen
 import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
-import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.SettingViewModel
 import com.google.gson.Gson
@@ -340,22 +337,6 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             SettingScreen(navController)
-        }
-        composable(
-            Destinations.AppDetail1Frame.route+"/1234",
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left
-                )
-            },
-        ) {
-            val id = it.arguments?.getString("id") ?: ""
-            AppDetail1Screen(navController,id)
         }
         composable(
             Destinations.NotifyFrame.route,

@@ -82,6 +82,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                             val sharedPreferencesUtils = SharedPreferencesUtils(context)
                             sharedPreferencesUtils.set("token",loginViewModel.data.token)
                             navController.navigate(Destinations.HomeFrame.route)
+
                         }
                     }
                 },

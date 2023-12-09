@@ -90,7 +90,7 @@ fun AppDetailScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        softViewModel.detail(SharedPreferencesUtils(context).get("token"), id)
+        softViewModel.detail(context,SharedPreferencesUtils(context).get("token"), id)
         Log.e("AppDetailScreen", "AppDetailScreen: ${softViewModel.softDetail.toString()}")
     }
 
@@ -285,7 +285,7 @@ fun AppDetailScreen(
                     }, trailingContent = {
                         Row(
                             modifier = Modifier.clickable {
-                                navController.navigate(Destinations.AppDetail1Frame.route + "/1234")
+                                navController.navigate(Destinations.AppDetailFrame.route + "/${124}")
                             },
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
