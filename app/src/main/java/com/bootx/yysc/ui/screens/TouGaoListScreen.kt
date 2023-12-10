@@ -1,14 +1,12 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +16,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.ModalBottomSheetDefaults
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -36,7 +34,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
@@ -46,6 +46,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -56,16 +57,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize14
+import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.viewmodel.TouGaoListViewModel
 import kotlinx.coroutines.launch
 
 
@@ -76,32 +80,38 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun TouGaoListScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    touGaoListViewModel: TouGaoListViewModel = viewModel()
 ) {
     val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
-
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     fun refresh() = refreshScope.launch {
-        Log.e("refresh", "refresh: ")
-        refreshing = true
-        //reload()
-        refreshing = false
+        touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), 1, 20, selectedTabIndex);
     }
-
     val state = rememberPullRefreshState(refreshing, ::refresh)
     val lazyListState = rememberLazyListState()
+
     lazyListState.onBottomReached(buffer = 3) {
         coroutineScope.launch {
-            //loadMore()
+            touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), touGaoListViewModel.pageNumber, 20, selectedTabIndex);
         }
     }
     val tabs = listOf("全部", "已上架", "审核中", "未通过", "草稿箱")
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
+
+    LaunchedEffect(Unit) {
+        // 加载数据
+        touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), 1, 20, selectedTabIndex);
+    }
+
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -164,11 +174,12 @@ fun TouGaoListScreen(
                         tabs.forEachIndexed { index, item ->
                             Tab(
                                 selected = selectedTabIndex == index, onClick = {
-                                selectedTabIndex = index
-                                coroutineScope.launch {
-                                    lazyListState.animateScrollToItem(1)
-                                }
-                            }) {
+                                    selectedTabIndex = index
+                                    coroutineScope.launch {
+                                        lazyListState.animateScrollToItem(1)
+                                        touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), 1, 20, index);
+                                    }
+                                }) {
                                 Text(
                                     text = item,
                                     fontSize = fontSize14,
@@ -183,30 +194,40 @@ fun TouGaoListScreen(
                         .pullRefresh(state)
                         .padding(8.dp)
                 ) {
-                    if (refreshing) {
+                    if (touGaoListViewModel.listLoaded) {
                         CircularProgressIndicator()
-                    } else {
-                        AnimatedContent(
-                            targetState = selectedTabIndex,
-                            label = "AnimatedContent",
-                            transitionSpec = {
-                                (slideInHorizontally { width -> width } + fadeIn()).togetherWith(
-                                    slideOutVertically { height -> -height } + fadeOut())
-                            },
+                    }
+                    AnimatedContent(
+                        targetState = selectedTabIndex,
+                        label = "AnimatedContent",
+                        transitionSpec = {
+                            (slideInHorizontally { width -> width } + fadeIn()).togetherWith(
+                                slideOutVertically { height -> -height } + fadeOut())
+                        },
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyListState,
                         ) {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                state = lazyListState,
-                            ) {
-                                items(100) {
-
-                                    Text(text = "aa $it")
-
-                                }
+                            items(touGaoListViewModel.list) { item ->
+                                ListItem(
+                                    leadingContent = {
+                                        SoftIcon4(url = item.logo ?: "")
+                                    },
+                                    headlineContent = {
+                                        Text(text = item.name ?: "")
+                                    },
+                                    supportingContent = {
+                                        Text(text = item.versionName ?:"")
+                                    },
+                                    trailingContent = {
+                                        Text(text = item.createdDate ?:"")
+                                    }
+                                )
                             }
                         }
-                        PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.Center))
                     }
+                    PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.Center))
                 }
             }
         }

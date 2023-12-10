@@ -95,7 +95,7 @@ fun LoginScreen23(navController: NavHostController, loginViewModel: LoginViewMod
                             cursorColor = color2,
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                            painter = painterResource(id = R.drawable.logo),
                             contentDescription = ""
                         )
                         Spacer(modifier = Modifier.height(16.dp))
