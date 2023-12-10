@@ -15,6 +15,7 @@ import com.bootx.yysc.model.entity.SysMsgScreen
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.screens.AboutScreen
 import com.bootx.yysc.ui.screens.AppDetailScreen
+import com.bootx.yysc.ui.screens.AppMoreScreen
 import com.bootx.yysc.ui.screens.ComplaintsScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
@@ -32,6 +33,7 @@ import com.bootx.yysc.ui.screens.SettingScreen
 import com.bootx.yysc.ui.screens.SignInScreen
 import com.bootx.yysc.ui.screens.SupportRankScreen
 import com.bootx.yysc.ui.screens.SupportScreen
+import com.bootx.yysc.ui.screens.TestScreen
 import com.bootx.yysc.ui.screens.TouGaoAppInfoListScreen
 import com.bootx.yysc.ui.screens.TouGaoListScreen
 import com.bootx.yysc.ui.screens.TouGaoScreen
@@ -51,10 +53,9 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         val setting = settingViewModel.initApp(context)
         storeManager.save("setting",gson.toJson(setting))
     }
-
     NavHost(
         navController = navController,
-        startDestination = Destinations.TouGaoListFrame.route,
+        startDestination = Destinations.HomeFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -414,6 +415,41 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         ) {
             val id = it.arguments?.getString("id") ?: ""
             ComplaintsScreen(navController,id)
+        }
+        composable(
+            Destinations.AppMoreFrame.route+"/{id}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val id = it.arguments?.getString("id") ?: ""
+            AppMoreScreen(navController,id)
+        }
+
+
+
+
+        composable(
+            Destinations.TestFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            TestScreen(navController)
         }
     }
 }

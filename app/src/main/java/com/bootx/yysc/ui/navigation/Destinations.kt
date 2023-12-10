@@ -23,6 +23,8 @@ sealed class Destinations(val route: String) {
     object AppRankFrame : Destinations("AppRankFrame")
     //应用详情
     object AppDetailFrame : Destinations("AppDetailFrame")
+    //应用更多信息
+    object AppMoreFrame : Destinations("AppMoreFrame")
     //应用投稿列表
     object TouGaoListFrame : Destinations("TouGaoListFrame")
     object TouGaoAppInfoListFrame : Destinations("TouGaoAppInfoListFrame")
@@ -71,5 +73,18 @@ sealed class Destinations(val route: String) {
     object ListFrame : Destinations("ListFrame")
     //投诉
     object ComplaintsFrame : Destinations("ComplaintsFrame")
+
+
+
+
+
+
+
+
+
+
+
+    //测试
+    object TestFrame : Destinations("TestFrame")
 
 }

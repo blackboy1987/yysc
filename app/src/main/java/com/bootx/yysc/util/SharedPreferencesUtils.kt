@@ -15,6 +15,9 @@ class SharedPreferencesUtils(private val context: Context) {
 
     fun get(key: String): String {
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        if(key=="homeIndex"){
+            return sharedPreferences.getString(key,"0") ?: "0"
+        }
         return sharedPreferences.getString(key,"") ?: ""
     }
 

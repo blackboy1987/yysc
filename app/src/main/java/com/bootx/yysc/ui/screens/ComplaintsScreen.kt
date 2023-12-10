@@ -52,6 +52,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.Loading
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.CoilImageEngine
 import com.bootx.yysc.util.SharedPreferencesUtils
@@ -74,6 +75,9 @@ import kotlinx.coroutines.launch
 fun ComplaintsScreen(navController: NavHostController, id: String, complaintsViewModel: ComplaintsViewModel = viewModel()) {
     var context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    var loading by remember {
+        mutableStateOf(false)
+    }
     var imageCount = 50
     var list by remember {
         mutableStateOf(listOf<MediaResource>())
@@ -115,7 +119,10 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
                 actions = {
                     Button(onClick = {
                         coroutineScope.launch {
+                            loading = true
                             complaintsViewModel.save(context,SharedPreferencesUtils(context).get("token"),list,type,reason,id)
+                            loading = false
+                            navController.popBackStack()
                         }
                     }, enabled = isCommit) {
                         Text(text = "提交")
@@ -127,7 +134,6 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
         Surface(
             modifier = Modifier.padding(it)
         ) {
-            Text(text = "${complaintsViewModel.msg}")
             LazyColumn(
                 Modifier
                     .padding(8.dp)
@@ -240,6 +246,9 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
                 }
             }
         }
+    }
+    if(loading){
+        Loading("提交中")
     }
 }
 

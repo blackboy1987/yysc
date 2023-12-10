@@ -15,11 +15,15 @@ data class SoftDetailEntity(
     val downloads: String="",
     var images: List<String> = listOf(),
     var versionName: String="",
+    var versionCode: String="",
     var introduce: String="",
     var donationMember: Int=0,
     var donationIcon: Int = 0,
     var reviewCount: Int = 0,
     var updatedContent: String = "",
+    var packageName: String = "",
+    var targetSdkVersion: String="",
+    var minSdkVersion: String="",
 )
 
-data class SoftDetailResponse(val data: SoftDetailEntity?) : BaseResponse()
+data class SoftDetailResponse(val data: SoftDetailEntity) : BaseResponse()

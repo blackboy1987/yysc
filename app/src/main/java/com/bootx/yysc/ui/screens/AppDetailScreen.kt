@@ -47,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -64,6 +65,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.Loading
 import com.bootx.yysc.ui.components.MyTabRow
 import com.bootx.yysc.ui.components.RightIcon
 import com.bootx.yysc.ui.components.SoftIcon6
@@ -72,6 +74,7 @@ import com.bootx.yysc.ui.components.ad.RequestBannerAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.ShareUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.viewmodel.AppDetailViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 
@@ -80,17 +83,26 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun AppDetailScreen(
-    navController: NavHostController, id: String, softViewModel: SoftViewModel = viewModel()
+    navController: NavHostController,
+    id: String,
+    softViewModel: SoftViewModel = viewModel(),
+    appDetailViewModel: AppDetailViewModel = viewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    var selectedIndex by remember {
+    var loading by remember {
+        mutableStateOf(false)
+    }
+    var point by remember {
         mutableIntStateOf(1)
+    }
+    var memo by remember {
+        mutableStateOf("")
     }
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        softViewModel.detail(context,SharedPreferencesUtils(context).get("token"), id)
+        softViewModel.detail(context, SharedPreferencesUtils(context).get("token"), id)
     }
 
     Scaffold(topBar = {
@@ -326,11 +338,11 @@ fun AppDetailScreen(
                     horizontalArrangement = Arrangement.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    listOf<Int>(1, 5, 10, 20, 66, 99, 999).forEach { count ->
+                    listOf(1, 5, 10, 20, 66, 99, 999).forEach { count ->
                         ElevatedButton(colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = if (selectedIndex == count) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                            containerColor = if (point == count) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
                         ), modifier = Modifier.padding(4.dp), onClick = {
-                            selectedIndex = count
+                            point = count
                         }) {
                             Text(text = "${count}枚")
                         }
@@ -344,23 +356,31 @@ fun AppDetailScreen(
                         OutlinedTextField(shape = MaterialTheme.shapes.small,
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = { Text(text = "选填，留下你想说的话把~") },
-                            value = "",
+                            value = memo,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Text,
                             ),
                             onValueChange = {
-
+                                memo = it
                             })
                     }
                     item {
-                        Button(modifier = Modifier.fillMaxWidth(), onClick = { /*TODO*/ }) {
+                        Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                            coroutineScope.launch {
+                                loading = true
+                                appDetailViewModel.reward(SharedPreferencesUtils(context).get("token"),id,point,memo)
+                                loading = false
+                            }
+                        }) {
                             Text(text = "送上硬币")
                         }
                     }
                 }
             }
         }) {
-
+    }
+    if(loading){
+        Loading("提交中...")
     }
 }
 

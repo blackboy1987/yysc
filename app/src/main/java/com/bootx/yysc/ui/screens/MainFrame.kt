@@ -24,7 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.bootx.yysc.util.SharedPreferencesUtils
 
 data class NavigationItem(
     val title: String, //底部导航栏的标题
@@ -33,6 +35,7 @@ data class NavigationItem(
 
 @Composable
 fun MainFrame(navController: NavHostController) {
+    var context = LocalContext.current
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
         NavigationItem(title = "应用", icon = Icons.Filled.Apps),
@@ -42,7 +45,7 @@ fun MainFrame(navController: NavHostController) {
     )
 
     var currentNavigationIndex by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(SharedPreferencesUtils(context).get("homeIndex").toInt())
     }
 
     Scaffold(
@@ -75,11 +78,26 @@ fun MainFrame(navController: NavHostController) {
     ) {
         Box(modifier = Modifier.padding(it)) {
             when(currentNavigationIndex){
-                0-> HomeScreen(navController = navController)
-                1-> AppScreen(navController = navController)
-                2-> GameScreen(navController = navController)
-                3-> PlazaScreen(navController = navController)
-                4-> MineScreen(navController = navController)
+                0-> {
+                    SharedPreferencesUtils(context).set("homeIndex","0")
+                    HomeScreen(navController = navController)
+                }
+                1-> {
+                    SharedPreferencesUtils(context).set("homeIndex","1")
+                    AppScreen(navController = navController)
+                }
+                2-> {
+                    SharedPreferencesUtils(context).set("homeIndex","2")
+                    GameScreen(navController = navController)
+                }
+                3-> {
+                    SharedPreferencesUtils(context).set("homeIndex","3")
+                    PlazaScreen(navController = navController)
+                }
+                4-> {
+                    SharedPreferencesUtils(context).set("homeIndex","4")
+                    MineScreen(navController = navController)
+                }
             }
         }
     }

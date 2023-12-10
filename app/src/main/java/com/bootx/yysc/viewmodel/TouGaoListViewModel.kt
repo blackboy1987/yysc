@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.AppInfo
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.model.service.TouGaoEntity
+import com.bootx.yysc.model.service.TouGaoInfo
 import com.bootx.yysc.model.service.TouGaoService
 import com.bootx.yysc.util.AppInfoUtils
 
@@ -35,6 +36,15 @@ class TouGaoListViewModel : ViewModel() {
      */
 
     var list = mutableListOf<TouGaoEntity>()
+    /**
+     * 列表加载完的数据
+     */
+
+    var touGaoInfo by mutableStateOf(
+        TouGaoInfo(
+
+        )
+    )
 
     /**
      * 页码
@@ -65,6 +75,25 @@ class TouGaoListViewModel : ViewModel() {
         }catch (e: Throwable){
             listLoaded = false
             Log.e("touGaoService", "list: ${e.message}", )
+        }
+    }
+
+    suspend fun loadInfo(token: String) {
+        try {
+            val res = touGaoService.loadInfo(token)
+            if (res.code == 0) {
+                touGaoInfo = res.data
+            }
+        }catch (e: Throwable){
+            Log.e("touGaoService", "list: ${e.message}", )
+        }
+    }
+
+    suspend fun update(token: String, touGaoInfoId: Int, type: Int) {
+        try {
+            val res = touGaoService.update(token,touGaoInfoId,type)
+
+        }catch (e: Throwable){
         }
     }
 

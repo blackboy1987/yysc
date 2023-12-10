@@ -7,6 +7,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,12 +60,17 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.Loading
 import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
@@ -84,33 +91,80 @@ fun TouGaoListScreen(
     touGaoListViewModel: TouGaoListViewModel = viewModel()
 ) {
     val context = LocalContext.current
-
+    var loading by remember {
+        mutableStateOf(false)
+    }
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     fun refresh() = refreshScope.launch {
-        touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), 1, 20, selectedTabIndex);
+        touGaoListViewModel.list(
+            SharedPreferencesUtils(context).get("token"),
+            1,
+            20,
+            selectedTabIndex
+        );
     }
+
     val state = rememberPullRefreshState(refreshing, ::refresh)
     val lazyListState = rememberLazyListState()
 
     lazyListState.onBottomReached(buffer = 3) {
         coroutineScope.launch {
-            touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), touGaoListViewModel.pageNumber, 20, selectedTabIndex);
+            touGaoListViewModel.list(
+                SharedPreferencesUtils(context).get("token"),
+                touGaoListViewModel.pageNumber,
+                20,
+                selectedTabIndex
+            );
         }
     }
     val tabs = listOf("全部", "已上架", "审核中", "未通过", "草稿箱")
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var sheetStateType by remember {
+        mutableStateOf(0)
+    }
 
+    var touGaoInfoId by remember {
+        mutableStateOf(0)
+    }
+    var touGaoInfoStatus by remember {
+        mutableStateOf(-1)
+    }
 
     LaunchedEffect(Unit) {
         // 加载数据
-        touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), 1, 20, selectedTabIndex);
+        touGaoListViewModel.list(
+            SharedPreferencesUtils(context).get("token"),
+            1,
+            20,
+            selectedTabIndex
+        );
+        // 加载统计信息
+        touGaoListViewModel.loadInfo(SharedPreferencesUtils(context).get("token"))
     }
 
-
+    fun update(type: Int) {
+        coroutineScope.launch {
+            loading = true
+            touGaoListViewModel.update(
+                SharedPreferencesUtils(context).get("token"),
+                touGaoInfoId,
+                type
+            )
+            sheetState.hide()
+            sheetStateType = 0
+            touGaoListViewModel.list(
+                SharedPreferencesUtils(context).get("token"),
+                1,
+                20,
+                selectedTabIndex,
+            )
+            loading = false
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -139,6 +193,7 @@ fun TouGaoListScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 coroutineScope.launch {
+                    sheetStateType = 0
                     if (sheetState.isVisible) sheetState.hide() else sheetState.show()
                 }
             }) {
@@ -151,19 +206,34 @@ fun TouGaoListScreen(
             modifier = Modifier.padding(it)
         ) {
             Column {
-                Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(60.dp),
                 ) {
-                    Item(title = "15", title2 = "总下载", modifier = Modifier.weight(1.0f))
+                    Item(
+                        title = "${touGaoListViewModel.touGaoInfo.downloads ?: "0"}",
+                        title2 = "总下载",
+                        modifier = Modifier.weight(1.0f)
+                    )
                     MyDivider1()
-                    Item(title = "15", title2 = "评价数", modifier = Modifier.weight(1.0f))
+                    Item(
+                        title = "${touGaoListViewModel.touGaoInfo.reviewCount ?: "0"}",
+                        title2 = "评价数",
+                        modifier = Modifier.weight(1.0f)
+                    )
                     MyDivider1()
-                    Item(title = "15", title2 = "五星好评", modifier = Modifier.weight(1.0f))
+                    Item(
+                        title = "${touGaoListViewModel.touGaoInfo.reviewCount1 ?: "0"}",
+                        title2 = "五星好评",
+                        modifier = Modifier.weight(1.0f)
+                    )
                     MyDivider1()
-                    Item(title = "15", title2 = "投币数量", modifier = Modifier.weight(1.0f))
+                    Item(
+                        title = "${touGaoListViewModel.touGaoInfo.donationIcon ?: "0"}",
+                        title2 = "投币数量",
+                        modifier = Modifier.weight(1.0f)
+                    )
                 }
                 SecondaryTabRow(
                     selectedTabIndex = selectedTabIndex,
@@ -177,7 +247,11 @@ fun TouGaoListScreen(
                                     selectedTabIndex = index
                                     coroutineScope.launch {
                                         lazyListState.animateScrollToItem(1)
-                                        touGaoListViewModel.list(SharedPreferencesUtils(context).get("token"), 1, 20, index);
+                                        touGaoListViewModel.list(
+                                            SharedPreferencesUtils(context).get(
+                                                "token"
+                                            ), 1, 20, index
+                                        );
                                     }
                                 }) {
                                 Text(
@@ -195,7 +269,13 @@ fun TouGaoListScreen(
                         .padding(8.dp)
                 ) {
                     if (touGaoListViewModel.listLoaded) {
-                        CircularProgressIndicator()
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                     AnimatedContent(
                         targetState = selectedTabIndex,
@@ -211,6 +291,14 @@ fun TouGaoListScreen(
                         ) {
                             items(touGaoListViewModel.list) { item ->
                                 ListItem(
+                                    modifier = Modifier.clickable {
+                                        coroutineScope.launch {
+                                            sheetStateType = 1
+                                            touGaoInfoId = item.id
+                                            touGaoInfoStatus = item.status
+                                            if (sheetState.isVisible) sheetState.hide() else sheetState.show()
+                                        }
+                                    },
                                     leadingContent = {
                                         SoftIcon4(url = item.logo ?: "")
                                     },
@@ -218,10 +306,28 @@ fun TouGaoListScreen(
                                         Text(text = item.name ?: "")
                                     },
                                     supportingContent = {
-                                        Text(text = item.versionName ?:"")
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                                                    )
+                                                ) {
+                                                    append(item.versionName ?: "")
+                                                }
+                                                append(" - ")
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                                    )
+                                                ) {
+                                                    append(item.createdDate)
+                                                }
+                                            }
+                                        )
                                     },
                                     trailingContent = {
-                                        Text(text = item.createdDate ?:"")
+                                        Text(text = item.statusInfo ?: "")
                                     }
                                 )
                             }
@@ -232,50 +338,148 @@ fun TouGaoListScreen(
             }
         }
     }
+
     ModalBottomSheetLayout(
         sheetElevation = 0.dp,
         sheetState = sheetState,
         sheetContent = {
             Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "应用投稿",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = "选择安装包位置",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            TextButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+            if (sheetStateType == 0) {
                 Text(
-                    text = "手机存储",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Left
+                    text = "应用投稿",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            }
-            TextButton(onClick = {
-                navController.navigate(Destinations.TouGaoAppInfoListFrame.route)
-            }, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "已安装应用",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Left
+                    text = "选择安装包位置",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = {
-                coroutineScope.launch {
-                    sheetState.hide()
+                TextButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "手机存储",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Left
+                    )
                 }
-            }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "取消", modifier = Modifier.fillMaxWidth())
+                TextButton(onClick = {
+                    navController.navigate(Destinations.TouGaoAppInfoListFrame.route)
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "已安装应用",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Left
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(onClick = {
+                    coroutineScope.launch {
+                        sheetState.hide()
+                    }
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "取消",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            } else if (sheetStateType == 1) {
+                Text(
+                    text = "内容下载管理器",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TextButton(
+                    onClick = {
+                        sheetStateType = 0
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = "更新版本",
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+                TextButton(onClick = {
+                    sheetStateType = 0
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = "更新信息",
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+                if (touGaoInfoStatus == 100 || touGaoInfoStatus == 2) {
+                    // 草稿，未通过
+                    TextButton(onClick = {
+                        update(0)
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                text = "重新提交",
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                } else if (touGaoInfoStatus == 0 || touGaoInfoStatus == 1) {
+                    TextButton(onClick = {
+                        // 全部，已上架，审核中
+                        update(1)
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                text = "取消审核",
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+                TextButton(onClick = {
+                    coroutineScope.launch {
+                        update(2)
+                    }
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = "删除应用",
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
             }
+
         },
         modifier = Modifier.fillMaxWidth(),
         sheetShape = RoundedCornerShape(4.dp),
         scrimColor = ModalBottomSheetDefaults.scrimColor
     ) {
 
+    }
+
+    if (loading) {
+        Loading("加载中");
     }
 }

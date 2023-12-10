@@ -76,7 +76,9 @@ class TouGaoViewModel : ViewModel() {
         categoryId0: Int,
         categoryId1: Int,
         quDaoIndex: Int,
-        list: List<MediaResource>
+        list: List<MediaResource>,
+        downloadUrl: String,
+        password: String,
     ) {
         // 先上传图片
         progress = 0
@@ -111,6 +113,9 @@ class TouGaoViewModel : ViewModel() {
             appInfo.minSdkVersion,
             appInfo.targetSdkVersion,
             appInfo.appBytes,
+            appInfo.packageName,
+            downloadUrl,
+            password,
 
         )
 

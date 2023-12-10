@@ -1,6 +1,7 @@
 package com.bootx.yysc.model.service
 
 import com.bootx.yysc.model.entity.BaseResponse
+import com.bootx.yysc.model.entity.CommonResponse
 import com.bootx.yysc.model.entity.DownloadEntityResponse
 import com.bootx.yysc.model.entity.SoftDetailEntity
 import com.bootx.yysc.model.entity.SoftDetailResponse
@@ -49,6 +50,13 @@ interface SoftService {
         @Header("token") token: String,
         @Field("id") id: Int,
     ): DownloadEntityResponse
+
+    @POST("/api/soft/more")
+    @FormUrlEncoded
+    suspend fun more(
+        @Header("token") token: String,
+        @Field("id") id: String,
+    ): SoftDetailResponse
 
     companion object {
         fun instance(): SoftService {

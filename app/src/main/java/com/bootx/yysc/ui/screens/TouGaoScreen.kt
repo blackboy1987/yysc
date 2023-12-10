@@ -1,9 +1,7 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -25,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -45,7 +44,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -59,25 +57,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onScroll
-import com.bootx.yysc.model.entity.AppInfo
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.TopBarTitle
+import com.bootx.yysc.ui.components.touGao.TouGaoModalBottomSheet
 import com.bootx.yysc.ui.theme.fontSize14
-import com.bootx.yysc.util.AppInfoUtils
 import com.bootx.yysc.util.CoilImageEngine
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
-import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.TouGaoViewModel
 import github.leavesczy.matisse.DefaultMediaFilter
 import github.leavesczy.matisse.Matisse
@@ -90,7 +86,8 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.Q)
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class, ExperimentalLayoutApi::class
+    ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class, ExperimentalLayoutApi::class,
+    ExperimentalMaterialApi::class
 )
 @Composable
 fun TouGaoScreen(
@@ -143,9 +140,18 @@ fun TouGaoScreen(
     var appLogo by remember {
         mutableStateOf("")
     }
+    // 网盘地址
+    var downloadUrl by remember {
+        mutableStateOf("")
+    }
+    // 网盘密码
+    var password by remember {
+        mutableStateOf("")
+    }
 
-
-
+    var isOpen by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(Unit) {
         touGaoViewModel.categoryList(SharedPreferencesUtils(context).get("token"))
@@ -197,7 +203,9 @@ fun TouGaoScreen(
                     }
                 },
                 actions = {
-                    TextButton(onClick = { /*TODO*/ }) {
+                    TextButton(onClick = {
+                        isOpen = true
+                    }) {
                         Text(text = "添加网盘地址")
                     }
                 }
@@ -227,7 +235,9 @@ fun TouGaoScreen(
                                 categoryId0,
                                 categoryId1,
                                 quDaoIndex,
-                                list
+                                list,
+                                downloadUrl,
+                                password,
                             )
                         }
                     }) {
@@ -563,6 +573,41 @@ fun TouGaoScreen(
             }
         }
     }
+
+    if(isOpen){
+        TouGaoModalBottomSheet(onClose = {
+            isOpen = false
+        }){
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp,end = 8.dp, top=16.dp, bottom = 8.dp),
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "添加安装包",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                )
+                Text(text = "分享地址")
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(), value = downloadUrl, onValueChange = { downloadUrl = it })
+                Text(text = "密码")
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(), value = password, onValueChange = { password = it })
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        isOpen = false
+                    }
+                ) {
+                    Text("保存")
+                }
+            }
+        }
+    }
+
 }
 
 @Composable

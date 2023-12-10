@@ -53,22 +53,6 @@ class SoftViewModel:ViewModel() {
         return listOf()
     }
 
-    suspend fun reload(token: String,orderBy: String) {
-        softListLoaded = false
-        pageNumber = 1
-        val res = softService.orderBy(token,1,20,orderBy)
-        val gson = Gson()
-        if (res.code == 0 && res.data != null) {
-            val tmpList = mutableListOf<SoftEntity>()
-            tmpList.addAll(res.data)
-            softList = tmpList
-            softListLoaded = true
-            pageNumber += 1
-        } else {
-            Log.e("fetchList",gson.toJson(res))
-        }
-    }
-
     suspend fun loadMore(token: String,orderBy: String) {
         softListLoaded = false
         val res = softService.orderBy(token,pageNumber,20,orderBy)
@@ -121,5 +105,12 @@ class SoftViewModel:ViewModel() {
 
     suspend fun download(token: String,id: Int): DownloadEntityResponse {
         return softService.download(token,id)
+    }
+
+    suspend fun more(token: String, id: String) {
+        val res = softService.more(token,id)
+        if (res.code == 0) {
+            softDetail = res.data
+        }
     }
 }

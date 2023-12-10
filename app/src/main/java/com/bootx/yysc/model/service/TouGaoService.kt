@@ -36,7 +36,10 @@ interface TouGaoService {
         @Field("versionName") versionName: String,
         @Field("minSdkVersion") minSdkVersion: Int,
         @Field("targetSdkVersion") targetSdkVersion: Int,
-        @Field("size") size: Long
+        @Field("size") size: Long,
+        @Field("packageName") packageName: String,
+        @Field("downloadUrl") downloadUrl: String,
+        @Field("password") password: String
     )
 
     @POST("/api/member/touGao/list")
@@ -47,6 +50,12 @@ interface TouGaoService {
         @Field("pageSize") pageSize: Int,
         @Field("type") type: Int
     ): TouGaoEntityListResponse
+
+    @POST("/api/member/touGao/update")
+    @FormUrlEncoded
+    suspend fun update(@Header("token") token: String, @Field("softId") touGaoInfoId: Int,@Field("type") type: Int): Any
+    @POST("/api/member/touGao/loadInfo")
+    suspend fun loadInfo(@Header("token") token: String): TouGaoInfoResponse
 
     companion object {
         fun instance(): TouGaoService {
@@ -63,6 +72,19 @@ data class TouGaoEntity(
     var logo: String = "",
     var versionName: String = "",
     var createdDate: String ="",
+    var statusInfo: String = "",
+    var status: Int = -1,
 )
 
 data class TouGaoEntityListResponse(val data: List<TouGaoEntity>?) : BaseResponse()
+
+
+
+@JsonClass(generateAdapter = true)
+data class TouGaoInfo(
+    var downloads: String = "0",
+    var reviewCount: String = "0",
+    var donationIcon: String = "0",
+    var reviewCount1: String = "0",
+)
+data class TouGaoInfoResponse(val data: TouGaoInfo) : BaseResponse()

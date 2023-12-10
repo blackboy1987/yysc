@@ -74,7 +74,11 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = viewModel(),userViewModel: UserViewModel= viewModel()) {
+fun MineScreen(
+    navController: NavHostController,
+    mineViewModel: MineViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel()
+) {
     var gson = Gson()
     val storeManager: StoreManager = StoreManager(LocalContext.current)
     var showTopBar by remember {
@@ -94,11 +98,13 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
     }
 
     var userInfo by remember {
-        mutableStateOf(UserEntity(
-            id=0,
-            avatar="",
-            username = "",
-        ))
+        mutableStateOf(
+            UserEntity(
+                id = 0,
+                avatar = "",
+                username = "",
+            )
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -146,7 +152,7 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
                         ) {
                             Text(
                                 modifier = Modifier.clickable {
-                                    if(userInfo.id==0){
+                                    if (userInfo.id == 0) {
                                         navController.navigate(Destinations.LoginFrame.route)
                                     }
                                 },
@@ -166,7 +172,7 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 LinearProgressIndicator(
-                                    progress = { (userInfo.point+0.0f)/userInfo.nextPoint },
+                                    progress = { (userInfo.point + 0.0f) / userInfo.nextPoint },
                                     strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
                                 )
                             }
@@ -211,23 +217,29 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
                             }
                             .weight(1.0f))
                         MyDivider1()
-                        Item(title = "${userInfo.concernCount ?: 0}", title2 = "关注", modifier = Modifier
-                            .clickable {
-                                navController.navigate(Destinations.FanFrame.route + "/0")
-                            }
-                            .weight(1.0f))
+                        Item(title = "${userInfo.concernCount ?: 0}",
+                            title2 = "关注",
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate(Destinations.FanFrame.route + "/0")
+                                }
+                                .weight(1.0f))
                         MyDivider1()
-                        Item(title = "${userInfo.fanCount ?: 0}", title2 = "粉丝", modifier = Modifier
-                            .clickable {
-                                navController.navigate(Destinations.FanFrame.route + "/1")
-                            }
-                            .weight(1.0f))
+                        Item(title = "${userInfo.fanCount ?: 0}",
+                            title2 = "粉丝",
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate(Destinations.FanFrame.route + "/1")
+                                }
+                                .weight(1.0f))
                         MyDivider1()
-                        Item(title = "${userInfo.payCount ?: 0}", title2 = "付费", modifier = Modifier
-                            .clickable {
+                        Item(title = "${userInfo.payCount ?: 0}",
+                            title2 = "付费",
+                            modifier = Modifier
+                                .clickable {
 
-                            }
-                            .weight(1.0f))
+                                }
+                                .weight(1.0f))
                     }
                 }
                 item {
@@ -246,8 +258,11 @@ fun MineScreen(navController: NavHostController, mineViewModel: MineViewModel = 
                                 modifier = Modifier
                                     .clickable {
                                         if (item.url.isNotBlank()) {
-                                            Log.e("MineScreen", "MineScreen: ${Destinations.TouGaoFrame.route}", )
-                                            Log.e("MineScreen", "MineScreen: ${item.url}", )
+                                            Log.e(
+                                                "MineScreen",
+                                                "MineScreen: ${Destinations.TouGaoFrame.route}",
+                                            )
+                                            Log.e("MineScreen", "MineScreen: ${item.url}")
                                             navController.navigate(item.url)
                                         }
                                     }
@@ -296,7 +311,7 @@ fun Item(title: String, title2: String, modifier: Modifier) {
             color = MaterialTheme.colorScheme.primary,
         )
         Text(
-            text = title2, fontSize = MaterialTheme.typography.titleSmall.fontSize,
+            text = title2, fontSize = MaterialTheme.typography.labelSmall.fontSize,
             color = MaterialTheme.colorScheme.secondary
         )
     }
