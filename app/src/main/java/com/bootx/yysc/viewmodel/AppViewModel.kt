@@ -1,12 +1,9 @@
 package com.bootx.yysc.viewmodel
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.model.entity.SoftEntity

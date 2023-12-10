@@ -6,10 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.PointLogEntity
-import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.model.service.PointLogService
-import com.bootx.yysc.model.service.SoftService
-import com.google.gson.Gson
 
 class PointLogViewModel:ViewModel() {
     private val pointLogService = PointLogService.instance()

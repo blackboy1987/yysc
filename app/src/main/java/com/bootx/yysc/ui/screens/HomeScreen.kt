@@ -29,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,8 +37,6 @@ import coil.compose.AsyncImage
 import com.azhon.appupdate.config.Constant
 import com.azhon.appupdate.listener.OnDownloadListener
 import com.azhon.appupdate.manager.DownloadManager
-import com.azhon.appupdate.service.DownloadService
-import com.azhon.appupdate.util.LogUtil
 import com.azhon.appupdate.util.NotificationUtil
 import com.bootx.yysc.R
 import com.bootx.yysc.config.Config

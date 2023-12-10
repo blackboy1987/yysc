@@ -1,12 +1,10 @@
 package com.bootx.yysc.repository.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.bootx.yysc.repository.entity.HistoryEntity
-import com.bootx.yysc.repository.entity.UserEntity
 
 @Dao
 interface HistoryDao {

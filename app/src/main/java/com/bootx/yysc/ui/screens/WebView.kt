@@ -1,8 +1,6 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
-import android.text.Html
-import android.util.Log
 import android.webkit.WebView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidView
-import kotlin.math.log
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable

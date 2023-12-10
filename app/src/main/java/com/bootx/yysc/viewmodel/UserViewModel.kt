@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.SignInEntity
 import com.bootx.yysc.model.service.SignInService
-import com.bootx.yysc.model.service.UserEntityResponse
 import com.bootx.yysc.model.service.UserService
 import com.bootx.yysc.repository.entity.UserEntity
 

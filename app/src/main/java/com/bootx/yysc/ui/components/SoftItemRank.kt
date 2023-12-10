@@ -17,9 +17,7 @@ import androidx.compose.material.icons.filled.Anchor
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,19 +26,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
-import com.bootx.yysc.model.entity.DownloadManager
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.theme.fontSize10
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape4
-import kotlinx.coroutines.launch
-import java.io.File
 
 @Composable
 fun SoftItemRank(soft: SoftEntity, index: Int,onClick:()->Unit,onDownload:()->Unit,showRank: Boolean=true) {

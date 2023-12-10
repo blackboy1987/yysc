@@ -1,6 +1,5 @@
 package com.bootx.yysc.model.service
 
-import com.bootx.yysc.model.entity.SignInEntity
 import com.bootx.yysc.model.entity.SignInEntityResponse
 import com.bootx.yysc.model.entity.SoftListResponse
 import com.bootx.yysc.util.HiRetrofit

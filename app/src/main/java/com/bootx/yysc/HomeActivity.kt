@@ -8,14 +8,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bootx.yysc.config.Config
 import com.bootx.yysc.ui.components.NavHostApp
 import com.bootx.yysc.ui.theme.YYSCTheme
-import com.bootx.yysc.util.StoreManager
 
 
 /**
