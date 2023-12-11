@@ -1,6 +1,7 @@
 package com.bootx.yysc
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,16 +23,16 @@ class MainActivity : ComponentActivity() {
 
 
     // 广告区域容器
-    var mAdLayout: ViewGroup? = null
+    private var mAdLayout: ViewGroup? = null
 
     // 自定义宣传内容
-    var customLayout: FrameLayout? = null
+    private var customLayout: FrameLayout? = null
 
     // 展示样式
     var showStyle = 0
 
     // 展示样式示例：全屏、非全屏，底部自定义内容样式
-    val SHOW_STYLE = "SHOW_STYLE"
+    private val SHOW_STYLE = "SHOW_STYLE"
 
     // 非全屏
     val SHOW_STYLE_NOT_FULL = 0x11
@@ -40,22 +41,25 @@ class MainActivity : ComponentActivity() {
     val SHOW_STYLE_CUSTOM_SCREEN = 0x12
 
     // 动态权限
-    var mDynamicPermissions: List<String> = listOf()
+    private var mDynamicPermissions: List<String> = listOf()
 
 
     // 动态权限请求吗
-    var REQUEST_CODE = 0x02
+    private var REQUEST_CODE = 0x02
+
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SSPSdk.attachBaseContext(base);
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ActivityStackManager.pushActivity(this@MainActivity)
         super.onCreate(savedInstanceState)
 
-        SSPSdk.attachBaseContext(this@MainActivity)
         SSPSdk.init(this@MainActivity, Config.MEDIA_ID, true);
-        SSPSdk.init(this@MainActivity, Config.MEDIA_ID, null, true)
-        /**
-         * 设置是否动态请求权限（默认开启，建议开启提高广告收益）
-         **/
+        SSPSdk.init(this@MainActivity, Config.MEDIA_ID, null, true);
+
         SSPSdk.setReqPermission(true);
 
         // 启动页广告
@@ -67,14 +71,7 @@ class MainActivity : ComponentActivity() {
             showStyle = intent.getIntExtra(SHOW_STYLE, 0)
         }
 
-        // 版本判断，6.0以上进行动态权限申请
-
-        // 版本判断，6.0以上进行动态权限申请
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermission()
-        } else {
-            requestSplashAd()
-        }
+        requestPermission()
 
     }
 
@@ -91,7 +88,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestPermission() {
-        mDynamicPermissions = listOf<String>(
+        mDynamicPermissions = listOf(
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

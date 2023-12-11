@@ -75,7 +75,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.9.0")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
-    implementation(files("/libs/ssp_sdk_v5.1.9.1035.aar"))
+    implementation(files("/libs/ssp_sdk_v5.1.9.1089.aar"))
 
     implementation("androidx.datastore:datastore-preferences:1.1.0-alpha07")
 

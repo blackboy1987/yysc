@@ -215,7 +215,7 @@ fun MineScreen(
                             title2 = "硬币",
                             modifier = Modifier
                                 .clickable {
-
+                                    navController.navigate(Destinations.MyIconFrame.route)
                                 }
                                 .weight(1.0f))
                         MyDivider1()
