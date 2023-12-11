@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,9 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,7 +57,9 @@ import com.bootx.yysc.ui.components.CardTitle
 import com.bootx.yysc.ui.components.ListItem1
 import com.bootx.yysc.ui.components.ListItem2
 import com.bootx.yysc.ui.components.ListItem3
+import com.bootx.yysc.ui.components.MySearchBar
 import com.bootx.yysc.ui.components.RightIcon
+import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.height4
@@ -60,6 +71,7 @@ import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.CarouselViewModel
 import com.bootx.yysc.viewmodel.HomeViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
+import com.bootx.yysc.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -68,13 +80,15 @@ data class ItemList(
     val title: String,
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("InvalidColorHexValue")
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     carouselViewModel: CarouselViewModel = viewModel(),
     homeViewModel: HomeViewModel = viewModel(),
-    softViewModel: SoftViewModel = viewModel()
+    softViewModel: SoftViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -97,15 +111,12 @@ fun HomeScreen(
     val activityList = remember {
         mutableStateOf(listOf<ActivityEntity>())
     }
-
-    val storeManager: StoreManager = StoreManager(LocalContext.current)
-    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
-
+    val sharedPreferencesUtils = SharedPreferencesUtils(context)
+    val token = sharedPreferencesUtils.get("token")
     LaunchedEffect(Unit) {
-        val sharedPreferencesUtils = SharedPreferencesUtils(context)
-        val token = sharedPreferencesUtils.get("token")
         Log.e("sharedPreferencesUtils", "HomeScreen: $token")
-
+        // 获取用户信息
+        userViewModel.loadUserInfo(token)
         //获取轮播数据
         carouselViewModel.fetchList(token);
         // 中间工具栏
@@ -120,133 +131,168 @@ fun HomeScreen(
         //随心看
         randomList.value = softViewModel.orderBy(token, 1, 30, "2")
     }
+    Scaffold(
+        topBar = {
+            TopAppBar(title = {
+                MySearchBar()
+            }, navigationIcon = {
+                Log.e("HomeScreen", "HomeScreen: ${userViewModel.userInfo.id}")
+                if (userViewModel.userInfo.id > 0) {
+                    SoftIcon4(
+                        url = "${userViewModel.userInfo.avatar}?x-oss-process=style/size_100",
+                        modifier = Modifier.clickable {
+                            navController.navigate(Destinations.MineFrame.route)
+                        })
+                } else {
+                    SoftIcon4(
+                        url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/0.png?x-oss-process=style/size_100",
+                        modifier = Modifier.clickable {
+                            navController.navigate(Destinations.LoginFrame.route)
+                        })
+                }
+            }, actions = {
+                Box {
+                    Box() {
+                        Icon(imageVector = Icons.Default.Download, contentDescription = "")
+                    }
+                    Box(
+                        Modifier.align(Alignment.TopEnd)
+                    ) {
+                        Text(text = "2", fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                    }
+                }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(MaterialTheme.colorScheme.primary),
+                Icon(imageVector = Icons.Default.Notifications, contentDescription = "")
+            })
+        }
     ) {
-        LazyColumn {
-            if(carouselViewModel.carousels.isNotEmpty()){
-                item {
-                    if (carouselViewModel.listLoaded) {
-                        SwiperItem(carouselViewModel.carousels)
+        Surface(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.primary),
+        ) {
+            LazyColumn {
+                if (carouselViewModel.carousels.isNotEmpty()) {
+                    item {
+                        if (carouselViewModel.listLoaded) {
+                            SwiperItem(carouselViewModel.carousels)
+                        }
                     }
                 }
-            }
-            if(homeCenterBarList.value.isNotEmpty()){
-                item {
-                    CenterBar(homeCenterBarList.value, navigate = {
-                        navController.navigate(it)
-                    })
-                }
-            }
-            if(todayCommentList.value.isNotEmpty()){
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(padding8)
-                            .clip(RoundedCornerShape(shape8)),
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .padding(padding8)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            CardTitle(text = "好评如潮")
-                            RightIcon {
-                                navController.navigate(Destinations.ListFrame.route+"/好评如潮/01")
-                            }
-                        }
-                        ListItem1(todayCommentList.value, onDownload = { id ->
-                            coroutineScope.launch {
-                                download(token, context, id, softViewModel)
-                            }
-                        }, onClick = { id ->
-                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                if (homeCenterBarList.value.isNotEmpty()) {
+                    item {
+                        CenterBar(homeCenterBarList.value, navigate = {
+                            navController.navigate(it)
                         })
                     }
                 }
-            }
-            if(activityList.value.isNotEmpty()){
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(padding8)
-                            .clip(RoundedCornerShape(shape8)),
-                    ) {
-                        Row(
+                if (todayCommentList.value.isNotEmpty()) {
+                    item {
+                        Column(
                             modifier = Modifier
                                 .padding(padding8)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                                .clip(RoundedCornerShape(shape8)),
                         ) {
-                            CardTitle(text = "最新活动")
-                        }
-                        AdData(activityList.value)
-                    }
-                }
-            }
-            if(randomList.value.isNotEmpty()){
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(padding8)
-                            .clip(RoundedCornerShape(shape8)),
-                    ) {
-                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            CardTitle(text = "随心看看")
-                            RightIcon {
-                                navController.navigate(Destinations.ListFrame.route+"/随心看看/2")
+                            Row(
+                                modifier = Modifier
+                                    .padding(padding8)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                CardTitle(text = "好评如潮")
+                                RightIcon {
+                                    navController.navigate(Destinations.ListFrame.route + "/好评如潮/01")
+                                }
                             }
+                            ListItem1(todayCommentList.value, onDownload = { id ->
+                                coroutineScope.launch {
+                                    download(token, context, id, softViewModel)
+                                }
+                            }, onClick = { id ->
+                                navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                            })
                         }
-                        ListItem2(randomList.value, onDownload = { id ->
-                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                        }, onClick = { id ->
-                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                        })
                     }
                 }
-            }
-            if(todayDownloadList.value.isNotEmpty()){
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(padding8)
-                            .clip(RoundedCornerShape(shape8)),
-                    ) {
-                        Row(
+                if (activityList.value.isNotEmpty()) {
+                    item {
+                        Column(
                             modifier = Modifier
                                 .padding(padding8)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                                .clip(RoundedCornerShape(shape8)),
                         ) {
-                            CardTitle(text = "今日下载")
-                            RightIcon {
-                                navController.navigate(Destinations.ListFrame.route+"/今日下载/00")
+                            Row(
+                                modifier = Modifier
+                                    .padding(padding8)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                CardTitle(text = "最新活动")
                             }
+                            AdData(activityList.value)
                         }
-                        ListItem3(list = todayDownloadList.value, onDownload = { id ->
-                            coroutineScope.launch {
-                                download(token, context, id, softViewModel)
-                            }
-                        }, onClick = { id ->
-                            navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
-                        })
                     }
                 }
-            }
-            item {
-                Spacer(modifier = Modifier.height(32.dp))
+                if (randomList.value.isNotEmpty()) {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .padding(padding8)
+                                .clip(RoundedCornerShape(shape8)),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                CardTitle(text = "随心看看")
+                                RightIcon {
+                                    navController.navigate(Destinations.ListFrame.route + "/随心看看/2")
+                                }
+                            }
+                            ListItem2(randomList.value, onDownload = { id ->
+                                navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                            }, onClick = { id ->
+                                navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                            })
+                        }
+                    }
+                }
+                if (todayDownloadList.value.isNotEmpty()) {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .padding(padding8)
+                                .clip(RoundedCornerShape(shape8)),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(padding8)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                CardTitle(text = "今日下载")
+                                RightIcon {
+                                    navController.navigate(Destinations.ListFrame.route + "/今日下载/00")
+                                }
+                            }
+                            ListItem3(list = todayDownloadList.value, onDownload = { id ->
+                                coroutineScope.launch {
+                                    download(token, context, id, softViewModel)
+                                }
+                            }, onClick = { id ->
+                                navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
+                            })
+                        }
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
         }
     }
-
 }
 
 
@@ -301,7 +347,8 @@ suspend fun download(token: String, context: Context, id: Int, softViewModel: So
 
         val manager = DownloadManager.Builder(context as Activity).run {
             apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
-            apkName(data.name + ".apk").onDownloadListener(onDownloadListener = object : OnDownloadListener {
+            apkName(data.name + ".apk").onDownloadListener(onDownloadListener = object :
+                OnDownloadListener {
 
 
                 override fun cancel() {

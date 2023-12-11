@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -139,11 +140,11 @@ fun SoftIcon6_8(url: String) {
     )
 }
 @Composable
-fun SoftIcon4(url: String) {
+fun SoftIcon4(url: String,modifier: Modifier=Modifier) {
     AsyncImage(
         modifier = Modifier
             .size(40.dp)
-            .clip(CircleShape),
+            .clip(CircleShape).then(modifier),
         model = url,
         contentDescription = ""
     )

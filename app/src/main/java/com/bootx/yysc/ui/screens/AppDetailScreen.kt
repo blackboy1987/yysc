@@ -303,7 +303,7 @@ fun AppDetailScreen(
                         ) {
                             Text(text = "详情")
                             RightIcon {
-
+                                navController.navigate(Destinations.AppMoreFrame.route+"/${softViewModel.softDetail.id}")
                             }
                         }
                     })

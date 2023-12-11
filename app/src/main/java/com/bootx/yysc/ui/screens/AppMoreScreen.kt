@@ -32,7 +32,6 @@ fun AppMoreScreen(
     LaunchedEffect(Unit) {
         softViewModel.more(SharedPreferencesUtils(context).get("token"), id)
     }
-
     Scaffold(topBar = {
         TopAppBar(
             title = { TopBarTitle(text = softViewModel.softDetail.name) },
