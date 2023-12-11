@@ -1,6 +1,7 @@
 package com.bootx.yysc.ui.components
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,6 +109,7 @@ fun SoftIcon12(url: String) {
 }
 @Composable
 fun SoftIcon8(url: String) {
+    Log.e("SoftIcon8", "SoftIcon8: $url", )
     AsyncImage(
         modifier = Modifier
             .size(80.dp)

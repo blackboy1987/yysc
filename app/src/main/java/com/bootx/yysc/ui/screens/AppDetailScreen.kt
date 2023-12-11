@@ -383,17 +383,3 @@ fun AppDetailScreen(
         Loading("提交中...")
     }
 }
-
-@Composable
-fun Item(title1: String, title2: String) {
-    Text(
-        text = title1,
-        color = MaterialTheme.colorScheme.primary,
-        fontSize = MaterialTheme.typography.titleMedium.fontSize
-    )
-    Text(
-        text = title2,
-        color = MaterialTheme.colorScheme.secondary,
-        fontSize = MaterialTheme.typography.titleSmall.fontSize
-    )
-}

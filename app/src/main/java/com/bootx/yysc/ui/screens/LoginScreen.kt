@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.bootx.yysc.ui.components.Loading
 import com.bootx.yysc.ui.components.MyInput
 import com.bootx.yysc.ui.components.MyPasswordInput
 import com.bootx.yysc.ui.components.toast
@@ -95,6 +96,9 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                 Text(text = "账号注册")
             }
         }
+    }
+    if(loginViewModel.loading){
+        Loading("登录中...")
     }
 }
 

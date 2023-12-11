@@ -97,19 +97,10 @@ fun MineScreen(
         mutableStateOf(SettingEntity())
     }
 
-    var userInfo by remember {
-        mutableStateOf(
-            UserEntity(
-                id = 0,
-                avatar = "",
-                username = "",
-            )
-        )
-    }
-
     LaunchedEffect(Unit) {
         mineViewModel.load(context, SharedPreferencesUtils(context).get("token"))
-        userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
+        // 获取用户信息
+       userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
     }
 
     Surface {
@@ -122,10 +113,10 @@ fun MineScreen(
             topBar = {
                 TopAppBar(
                     title = {
-                        if (showTopBar) TopBarTitle(text = "${userInfo.username}")
+                        if (showTopBar) TopBarTitle(text = "${userViewModel.userInfo.username}")
                     },
                     navigationIcon = {
-                        if (showTopBar) SoftIcon4("${userInfo.avatar}")
+                        if (showTopBar) SoftIcon4("${userViewModel.userInfo.avatar}")
                     },
                     actions = {
                         Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
@@ -144,7 +135,7 @@ fun MineScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        SoftIcon8("${userInfo.avatar}")
+                        SoftIcon8("${userViewModel.userInfo.avatar}")
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -152,11 +143,11 @@ fun MineScreen(
                         ) {
                             Text(
                                 modifier = Modifier.clickable {
-                                    if (userInfo.id == 0) {
+                                    if (userViewModel.userInfo.id == 0) {
                                         navController.navigate(Destinations.LoginFrame.route)
                                     }
                                 },
-                                text = "${userInfo.username}"
+                                text = "${userViewModel.userInfo.username}"
                             )
                             Row(
                                 Modifier.fillMaxWidth(),
@@ -164,7 +155,7 @@ fun MineScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(text = "lv.0")
-                                Text(text = "${userInfo.point}/${userInfo.nextPoint}")
+                                Text(text = "${userViewModel.userInfo.point}/${userViewModel.userInfo.nextPoint}")
                             }
                             Row(
                                 Modifier.fillMaxWidth(),
@@ -172,7 +163,7 @@ fun MineScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 LinearProgressIndicator(
-                                    progress = { (userInfo.point + 0.0f) / userInfo.nextPoint },
+                                    progress = { (userViewModel.userInfo.point + 0.0f) / userViewModel.userInfo.nextPoint },
                                     strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
                                 )
                             }
@@ -211,13 +202,13 @@ fun MineScreen(
                             .fillMaxWidth()
                             .height(60.dp),
                     ) {
-                        Item(title = "${userInfo.point ?: 0}", title2 = "硬币", modifier = Modifier
+                        Item(title = "${userViewModel.userInfo.point ?: 0}", title2 = "硬币", modifier = Modifier
                             .clickable {
 
                             }
                             .weight(1.0f))
                         MyDivider1()
-                        Item(title = "${userInfo.concernCount ?: 0}",
+                        Item(title = "${userViewModel.userInfo.concernCount ?: 0}",
                             title2 = "关注",
                             modifier = Modifier
                                 .clickable {
@@ -225,7 +216,7 @@ fun MineScreen(
                                 }
                                 .weight(1.0f))
                         MyDivider1()
-                        Item(title = "${userInfo.fanCount ?: 0}",
+                        Item(title = "${userViewModel.userInfo.fanCount ?: 0}",
                             title2 = "粉丝",
                             modifier = Modifier
                                 .clickable {
@@ -233,7 +224,7 @@ fun MineScreen(
                                 }
                                 .weight(1.0f))
                         MyDivider1()
-                        Item(title = "${userInfo.payCount ?: 0}",
+                        Item(title = "${userViewModel.userInfo.payCount ?: 0}",
                             title2 = "付费",
                             modifier = Modifier
                                 .clickable {
@@ -300,7 +291,7 @@ fun MineScreen(
 }
 
 @Composable
-fun Item(title: String, title2: String, modifier: Modifier) {
+fun Item(title: String, title2: String, modifier: Modifier=Modifier) {
     Column(
         modifier = Modifier.then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,

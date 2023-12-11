@@ -2,8 +2,8 @@ package com.bootx.yysc.config
 
 object Config {
 
-    //var baseUrl = "http://yysc.igomall.xin"
-    var baseUrl = "http://192.168.31.214:9901"
+    var baseUrl = "http://yysc.igomall.xin"
+    //var baseUrl = "http://192.168.31.214:9901"
     //var baseUrl = "http://172.16.0.222:9901"
     var initToken = ""
     var MEDIA_ID: String = "6862";
