@@ -13,21 +13,19 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.TopBarTitle
-import com.bootx.yysc.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(navController: NavHostController,homeViewModel: HomeViewModel= viewModel()) {
+fun SettingScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(title = { TopBarTitle(text = "设置") }, navigationIcon = {
                 LeftIcon {
-                    
+                    navController.popBackStack()
                 }
             })
         }
@@ -36,119 +34,119 @@ fun SettingScreen(navController: NavHostController,homeViewModel: HomeViewModel=
             modifier = Modifier.padding(it)
         ) {
 
-            LazyColumn(){
-                item{
+            LazyColumn() {
+                item {
                     Text(text = "用户头像")
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             SoftIcon4(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/120.png")
                         },
-                        headlineContent = { Text(text = "头像")}
+                        headlineContent = { Text(text = "头像") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "blackboy")
                         },
-                        headlineContent = { Text(text = "昵称")}
+                        headlineContent = { Text(text = "昵称") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "已授权")
                         },
-                        headlineContent = { Text(text = "蓝奏云")}
+                        headlineContent = { Text(text = "蓝奏云") }
                     )
                 }
-                item{
+                item {
                     Divider()
                 }
-                item{
+                item {
                     Text(text = "界面显示")
                 }
 
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "自行切换")
                         },
-                        headlineContent = { Text(text = "夜间模式")}
+                        headlineContent = { Text(text = "夜间模式") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "白天")
                         },
-                        headlineContent = { Text(text = "暗黑界面")}
+                        headlineContent = { Text(text = "暗黑界面") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "显示")
                         },
-                        headlineContent = { Text(text = "消息通知")}
+                        headlineContent = { Text(text = "消息通知") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "隐藏")
                         },
-                        headlineContent = { Text(text = "评分提醒")}
+                        headlineContent = { Text(text = "评分提醒") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "开启")
                         },
-                        headlineContent = { Text(text = "后台下载")}
+                        headlineContent = { Text(text = "后台下载") }
                     )
                 }
-                item{
+                item {
                     Divider()
                 }
-                item{
+                item {
                     Text(text = "软件相关")
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "关闭")
                         },
-                        headlineContent = { Text(text = "始终外置下载")}
+                        headlineContent = { Text(text = "始终外置下载") }
                     )
                 }
-                item{
+                item {
                     ListItem(
-                        headlineContent = { Text(text = "分享爱尚应用")}
+                        headlineContent = { Text(text = "分享爱尚应用") }
                     )
                 }
-                item{
+                item {
                     ListItem(
                         trailingContent = {
                             Text(text = "77.47MB")
                         },
-                        headlineContent = { Text(text = "清理缓存")}
+                        headlineContent = { Text(text = "清理缓存") }
                     )
                 }
-                item{
+                item {
                     ListItem(
-                        headlineContent = { Text(text = "奔溃日志")}
+                        headlineContent = { Text(text = "奔溃日志") }
                     )
                 }
-                item{
+                item {
                     ListItem(
-                        headlineContent = { Text(text = "关于应用")}
+                        headlineContent = { Text(text = "关于应用") }
                     )
                 }
-                item{
+                item {
                     TextButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { /*TODO*/ }

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -100,7 +101,7 @@ fun MineScreen(
     LaunchedEffect(Unit) {
         mineViewModel.load(context, SharedPreferencesUtils(context).get("token"))
         // 获取用户信息
-       userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
+        userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
     }
 
     Surface {
@@ -119,8 +120,16 @@ fun MineScreen(
                         if (showTopBar) SoftIcon4("${userViewModel.userInfo.avatar}")
                     },
                     actions = {
-                        Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        Icon(imageVector = Icons.Filled.ArtTrack, contentDescription = "")
+                        IconButton(onClick = {
+                            navController.navigate(Destinations.NotifyFrame.route)
+                        }) {
+                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
+                        }
+                        IconButton(onClick = {
+                            navController.navigate(Destinations.SettingFrame.route)
+                        }) {
+                            Icon(imageVector = Icons.Filled.ArtTrack, contentDescription = "")
+                        }
                     }
                 )
             }
@@ -202,11 +211,13 @@ fun MineScreen(
                             .fillMaxWidth()
                             .height(60.dp),
                     ) {
-                        Item(title = "${userViewModel.userInfo.point ?: 0}", title2 = "硬币", modifier = Modifier
-                            .clickable {
+                        Item(title = "${userViewModel.userInfo.point ?: 0}",
+                            title2 = "硬币",
+                            modifier = Modifier
+                                .clickable {
 
-                            }
-                            .weight(1.0f))
+                                }
+                                .weight(1.0f))
                         MyDivider1()
                         Item(title = "${userViewModel.userInfo.concernCount ?: 0}",
                             title2 = "关注",
@@ -291,7 +302,7 @@ fun MineScreen(
 }
 
 @Composable
-fun Item(title: String, title2: String, modifier: Modifier=Modifier) {
+fun Item(title: String, title2: String, modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier.then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
