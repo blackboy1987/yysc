@@ -40,12 +40,12 @@ import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.AppViewModel
-import com.bootx.yysc.viewmodel.SoftViewModel
+import com.bootx.yysc.viewmodel.DownloadViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),sofViewModel: SoftViewModel= viewModel()) {
+fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),downloadViewModel: DownloadViewModel= viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val storeManager: StoreManager = StoreManager(LocalContext.current)
@@ -120,7 +120,7 @@ fun GameScreen(navController: NavHostController, vm: AppViewModel = viewModel(),
                 ) {
                     ListItem3(list = vm.softList, onDownload = {id->
                         coroutineScope.launch {
-                            download(token,context,id, sofViewModel)
+                            downloadViewModel.download(context, id)
                         }
                     }, onClick = {id ->
                         navController.navigate("${Destinations.AppDetailFrame.route}/$id")

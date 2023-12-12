@@ -17,6 +17,7 @@ import com.bootx.yysc.ui.screens.AboutScreen
 import com.bootx.yysc.ui.screens.AppDetailScreen
 import com.bootx.yysc.ui.screens.AppMoreScreen
 import com.bootx.yysc.ui.screens.ComplaintsScreen
+import com.bootx.yysc.ui.screens.DownloadManagerScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
 import com.bootx.yysc.ui.screens.HotScreen
@@ -55,7 +56,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.DownloadManagerFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -433,9 +434,21 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             AppMoreScreen(navController,id)
         }
 
-
-
-
+        composable(
+            Destinations.DownloadManagerFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            DownloadManagerScreen(navController)
+        }
         composable(
             Destinations.TestFrame.route,
             enterTransition = {

@@ -36,12 +36,13 @@ import com.bootx.yysc.ui.components.ServerError
 import com.bootx.yysc.ui.components.SoftItemRank
 import com.bootx.yysc.util.NetWorkUtils
 import com.bootx.yysc.util.StoreManager
+import com.bootx.yysc.viewmodel.DownloadViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun ListScreen(navController: NavHostController,title: String,orderBy: String,softViewModel: SoftViewModel = viewModel()) {
+fun ListScreen(navController: NavHostController,title: String,orderBy: String,softViewModel: SoftViewModel = viewModel(),downloadViewModel:DownloadViewModel= viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val connected = remember {
         mutableStateOf(true)
@@ -105,7 +106,7 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,so
                                     Log.e("onClick", "ListScreen: ", )
                                 }, onDownload = {
                                     coroutineScope.launch {
-                                        download(token,context,soft.id, softViewModel)
+                                        downloadViewModel.download(context, soft.id)
                                     }
                                 },showRank=(orderBy!="2"))
                             }

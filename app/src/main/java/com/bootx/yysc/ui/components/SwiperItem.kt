@@ -27,16 +27,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.CarouselEntity
-import com.bootx.yysc.ui.screens.download
 import com.bootx.yysc.ui.theme.fontSize10
 import com.bootx.yysc.util.StoreManager
+import com.bootx.yysc.viewmodel.DownloadViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwiperItem(items: List<CarouselEntity>,softViewModel: SoftViewModel= viewModel()) {
+fun SwiperItem(items: List<CarouselEntity>,softViewModel: SoftViewModel= viewModel(),downloadViewModel: DownloadViewModel= viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val pagerState = rememberPagerState(pageCount = {
@@ -111,7 +111,7 @@ fun SwiperItem(items: List<CarouselEntity>,softViewModel: SoftViewModel= viewMod
             ) {
                 DownloadButton {
                     coroutineScope.launch {
-                        download(token,context,items[page].id, softViewModel)
+                        downloadViewModel.download(context, items[page].id)
                     }
                 }
             }

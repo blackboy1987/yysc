@@ -57,7 +57,7 @@ import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.AppViewModel
-import com.bootx.yysc.viewmodel.SoftViewModel
+import com.bootx.yysc.viewmodel.DownloadViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 fun AppScreen(
     navController: NavHostController,
     vm: AppViewModel = viewModel(),
-    softViewModel: SoftViewModel = viewModel()
+    downloadViewModel: DownloadViewModel = viewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -170,12 +170,7 @@ fun AppScreen(
                         items(vm.softList) { item ->
                             Item3(item, false, onDownload = { id ->
                                 coroutineScope.launch {
-                                    download(
-                                        SharedPreferencesUtils(context).get("token"),
-                                        context,
-                                        id,
-                                        softViewModel
-                                    )
+                                    downloadViewModel.download(context, id)
                                 }
                             }, onClick = { id ->
                                 navController.navigate("${Destinations.AppDetailFrame.route}/$id")
