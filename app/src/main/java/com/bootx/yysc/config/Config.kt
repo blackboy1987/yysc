@@ -2,7 +2,8 @@ package com.bootx.yysc.config
 
 object Config {
 
-    var baseUrl = "http://yysc.igomall.xin"
+    //var baseUrl = "http://yysc.igomall.xin"
+    var baseUrl = "https://965z2991e.oicp.vip"
     //var baseUrl = "http://192.168.31.214:9901"
     //var baseUrl = "http://172.16.0.222:9901"
     var initToken = ""

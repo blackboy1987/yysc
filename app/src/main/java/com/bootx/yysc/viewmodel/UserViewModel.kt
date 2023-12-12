@@ -1,5 +1,6 @@
 package com.bootx.yysc.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,7 +24,7 @@ class UserViewModel:ViewModel() {
     }
 
     suspend fun signIn(token: String,) {
-        var res = signInService.signIn(token);
+        val res = signInService.signIn(token);
         if(res.code==0){
             signInInfo = res.data
         }
@@ -34,6 +35,7 @@ class UserViewModel:ViewModel() {
             val res = userService.currentUser(token)
             if (res.code == 0) {
                 userInfo = res.data
+                Log.e("loadUserInfo", "loadUserInfo: ${userInfo.toString()}", )
             }
         } catch (_: Throwable) {
         }

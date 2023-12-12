@@ -1,12 +1,17 @@
 package com.bootx.yysc.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -51,49 +56,66 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
     Surface() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            verticalArrangement = Arrangement.Center,
         ) {
-            Text(
-                text = "爱尚应用",
-                fontSize = 32.sp,
-                modifier = Modifier.padding(top = 64.dp)
-            )
-            Text(
-                text = "欢迎回来，共聚此刻",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
-            MyInput(value = username, onChange = {
-                username = it
-            })
-            Spacer(modifier = Modifier.height(8.dp))
-            MyPasswordInput(value = password, onChange = {
-                password = it
-            })
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "忘记密码", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
-            Button(
-                enabled = username.isNotEmpty() && password.isNotEmpty() && !loginViewModel.loading,
-                onClick = {
-                    coroutineScope.launch {
-                        loginViewModel.login(username, password)
-                        if (loginViewModel.data.token.isBlank()) {
-                            toast(context, "用户不存在！")
-                        }else{
-                            val sharedPreferencesUtils = SharedPreferencesUtils(context)
-                            sharedPreferencesUtils.set("token",loginViewModel.data.token)
-                            navController.navigate(Destinations.HomeFrame.route)
-
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
+            Card(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 20.dp
+                ),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxHeight(0.6f)
+                    .fillMaxWidth(0.8f)
             ) {
-                Text(text = "登录")
-            }
-            Text(text = "或者", modifier = Modifier.padding(vertical = 16.dp))
-            OutlinedButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "账号注册")
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "爱尚应用",
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(top = 32.dp)
+                    )
+                    Text(
+                        text = "欢迎回来，共聚此刻",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)
+                    )
+                    MyInput(value = username, onChange = {
+                        username = it
+                    })
+                    Spacer(modifier = Modifier.height(8.dp))
+                    MyPasswordInput(value = password, onChange = {
+                        password = it
+                    })
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "忘记密码", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
+                    Button(
+                        enabled = username.isNotEmpty() && password.isNotEmpty() && !loginViewModel.loading,
+                        onClick = {
+                            coroutineScope.launch {
+                                loginViewModel.login(context,username, password)
+                                if (loginViewModel.data.token.isBlank()) {
+                                    toast(context, "用户不存在！")
+                                }else{
+                                    val sharedPreferencesUtils = SharedPreferencesUtils(context)
+                                    sharedPreferencesUtils.set("token",loginViewModel.data.token)
+                                    navController.navigate(Destinations.HomeFrame.route)
+
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "登录")
+                    }
+                    Text(text = "或者", modifier = Modifier.padding(vertical = 16.dp))
+                    OutlinedButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "账号注册")
+                    }
+                }
             }
         }
     }

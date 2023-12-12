@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,7 +47,6 @@ import com.azhon.appupdate.listener.OnDownloadListener
 import com.azhon.appupdate.manager.DownloadManager
 import com.azhon.appupdate.util.NotificationUtil
 import com.bootx.yysc.R
-import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
@@ -62,12 +60,12 @@ import com.bootx.yysc.ui.components.RightIcon
 import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.SwiperItem
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.ui.theme.height4
 import com.bootx.yysc.ui.theme.padding8
 import com.bootx.yysc.ui.theme.shape8
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
-import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.CarouselViewModel
 import com.bootx.yysc.viewmodel.HomeViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
@@ -114,7 +112,6 @@ fun HomeScreen(
     val sharedPreferencesUtils = SharedPreferencesUtils(context)
     val token = sharedPreferencesUtils.get("token")
     LaunchedEffect(Unit) {
-        Log.e("sharedPreferencesUtils", "HomeScreen: $token")
         // 获取用户信息
         userViewModel.loadUserInfo(token)
         //获取轮播数据
@@ -136,7 +133,6 @@ fun HomeScreen(
             TopAppBar(title = {
                 MySearchBar()
             }, navigationIcon = {
-                Log.e("HomeScreen", "HomeScreen: ${userViewModel.userInfo.id}")
                 if (userViewModel.userInfo.id > 0) {
                     SoftIcon4(
                         url = "${userViewModel.userInfo.avatar}?x-oss-process=style/size_100",
@@ -194,16 +190,8 @@ fun HomeScreen(
                                 .padding(padding8)
                                 .clip(RoundedCornerShape(shape8)),
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(padding8)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                CardTitle(text = "好评如潮")
-                                RightIcon {
-                                    navController.navigate(Destinations.ListFrame.route + "/好评如潮/01")
-                                }
+                            CardTitle(text = "好评如潮"){
+                                navController.navigate(Destinations.ListFrame.route + "/好评如潮/01")
                             }
                             ListItem1(todayCommentList.value, onDownload = { id ->
                                 coroutineScope.launch {
@@ -222,13 +210,8 @@ fun HomeScreen(
                                 .padding(padding8)
                                 .clip(RoundedCornerShape(shape8)),
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(padding8)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                CardTitle(text = "最新活动")
+                            CardTitle(text = "最新活动", showIcon = false){
+
                             }
                             AdData(activityList.value)
                         }
@@ -241,15 +224,8 @@ fun HomeScreen(
                                 .padding(padding8)
                                 .clip(RoundedCornerShape(shape8)),
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                CardTitle(text = "随心看看")
-                                RightIcon {
-                                    navController.navigate(Destinations.ListFrame.route + "/随心看看/2")
-                                }
+                            CardTitle(text = "随心看看"){
+                                navController.navigate(Destinations.ListFrame.route + "/随心看看/2")
                             }
                             ListItem2(randomList.value, onDownload = { id ->
                                 navController.navigate("${Destinations.AppDetailFrame.route}/${id}")
@@ -266,16 +242,8 @@ fun HomeScreen(
                                 .padding(padding8)
                                 .clip(RoundedCornerShape(shape8)),
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(padding8)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                CardTitle(text = "今日下载")
-                                RightIcon {
-                                    navController.navigate(Destinations.ListFrame.route + "/今日下载/00")
-                                }
+                            CardTitle(text = "今日下载"){
+                                navController.navigate(Destinations.ListFrame.route + "/今日下载/00")
                             }
                             ListItem3(list = todayDownloadList.value, onDownload = { id ->
                                 coroutineScope.launch {
@@ -391,7 +359,6 @@ suspend fun download(token: String, context: Context, id: Int, softViewModel: So
                         "可稍后查看 ${data.name} 下载进度"
                     )
                 }
-
             })
             apkVersionName(data.versionName)
             apkSize(data.size)

@@ -52,8 +52,6 @@ import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onScroll
 import com.bootx.yysc.model.service.SettingEntity
 import com.bootx.yysc.repository.entity.HistoryEntity
-import com.bootx.yysc.repository.entity.UserEntity
-import com.bootx.yysc.ui.components.CardTitle
 import com.bootx.yysc.ui.components.RightIcon
 import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.SoftIcon6
@@ -284,7 +282,7 @@ fun MineScreen(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        CardTitle(text = "浏览历史")
+                        Text(text = "浏览历史", fontSize = fontSize14)
                         RightIcon {
                             navController.navigate("ListFrame/好评如潮/01")
                         }
