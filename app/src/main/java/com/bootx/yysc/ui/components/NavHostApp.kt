@@ -27,6 +27,7 @@ import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainFrame
 import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
+import com.bootx.yysc.ui.screens.NotifyListScreen
 import com.bootx.yysc.ui.screens.NotifyScreen
 import com.bootx.yysc.ui.screens.QunZuScreen
 import com.bootx.yysc.ui.screens.SearchScreen
@@ -56,7 +57,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.DownloadManagerFrame.route,
+        startDestination = Destinations.NotifyFrame.route,
     ) {
         composable(
             Destinations.HomeFrame.route,
@@ -356,6 +357,24 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         ) {
             NotifyScreen(navController)
         }
+        composable(
+            Destinations.NotifyListFrame.route+"/{type}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val type = it.arguments?.getString("type") ?: "0"
+            NotifyListScreen(navController,type)
+        }
+
+
         composable(
             Destinations.SysMsgFrame.route,
             enterTransition = {

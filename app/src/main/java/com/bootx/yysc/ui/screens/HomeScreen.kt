@@ -156,7 +156,9 @@ fun HomeScreen(
                     }
                 }
 
-                Icon(imageVector = Icons.Default.Notifications, contentDescription = "")
+                Icon(modifier = Modifier.clickable {
+                    navController.navigate(Destinations.NotifyFrame.route)
+                }, imageVector = Icons.Default.Notifications, contentDescription = "")
             })
         }
     ) {

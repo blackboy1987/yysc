@@ -63,6 +63,8 @@ sealed class Destinations(val route: String) {
     object SettingFrame : Destinations("SettingFrame")
     //通知信息
     object NotifyFrame : Destinations("NotifyFrame")
+    //信息列表
+    object NotifyListFrame : Destinations("NotifyListFrame")
     //系统消息
     object SysMsgFrame : Destinations("SysMsgFrame")
     //硬币明细

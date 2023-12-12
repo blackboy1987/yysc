@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,11 +23,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,13 +40,16 @@ import com.bootx.yysc.ui.components.MyBottomSheet
 import com.bootx.yysc.ui.components.RightIcon
 import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.TopBarTitle
-import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.viewmodel.NotifyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotifyScreen(navController: NavHostController, notifyViewModel: NotifyViewModel = viewModel()) {
-
+fun NotifyListScreen(
+    navController: NavHostController,
+    type: String,
+    notifyViewModel: NotifyViewModel = viewModel(),
+) {
+    var context = LocalContext.current
     val show = remember {
         mutableStateOf(false)
     }
@@ -54,10 +58,14 @@ fun NotifyScreen(navController: NavHostController, notifyViewModel: NotifyViewMo
         mutableStateOf("是否全部已读")
     }
 
+    LaunchedEffect(Unit) {
+        notifyViewModel.list(context, type)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { TopBarTitle(text = "通知消息") },
+                title = { TopBarTitle(text = Config.messageTypeList[type.toInt()]) },
                 navigationIcon = {
                     LeftIcon {
                         navController.popBackStack()
@@ -93,12 +101,13 @@ fun NotifyScreen(navController: NavHostController, notifyViewModel: NotifyViewMo
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                itemsIndexed(Config.messageTypeList) { index, item ->
+                itemsIndexed(notifyViewModel.list) { index, item ->
                     ListItem(
                         modifier = Modifier.clickable {
-                            navController.navigate(Destinations.NotifyListFrame.route + "/${index}")
+
                         },
-                        headlineContent = { Text(text = item) },
+                        headlineContent = { Text(text = item.title) },
+                        supportingContent = { Text(text = item.memo) },
                         leadingContent = {
                             SoftIcon4(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/${index + 10}.png")
                         },
