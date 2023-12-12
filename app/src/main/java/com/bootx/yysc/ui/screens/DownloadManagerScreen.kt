@@ -1,6 +1,7 @@
 package com.bootx.yysc.ui.screens
 
 import android.text.Layout.Alignment
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ import com.bootx.yysc.ui.components.DownloadButton
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.SoftIcon6
 import com.bootx.yysc.ui.components.TopBarTitle
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.viewmodel.DownloadManagerViewModel
 import com.bootx.yysc.viewmodel.DownloadViewModel
 import kotlinx.coroutines.launch
@@ -83,7 +85,9 @@ fun DownloadManagerScreen(
                     .padding(8.dp),
             ) {
                 items(downloadManagerViewModel.list) { item ->
-                    ListItem(headlineContent = {
+                    ListItem(modifier = Modifier.clickable {
+                        navController.navigate(Destinations.AppDetailFrame.route + "/${item.id}")
+                    }, headlineContent = {
                         Text(text = "${item.name ?: ""}")
                     }, leadingContent = {
                         SoftIcon6(url = "${item.logo ?: ""}")
