@@ -40,6 +40,7 @@ import androidx.navigation.NavHostController
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.TopBarTitle
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -178,6 +179,9 @@ fun SettingScreen(navController: NavHostController, userViewModel: UserViewModel
                         headlineContent = { Text(text = "奔溃日志") }
                     )
                     ListItem(
+                        modifier = Modifier.clickable {
+                            navController.navigate(Destinations.AboutFrame.route)
+                        },
                         headlineContent = { Text(text = "关于应用") }
                     )
                 }
@@ -243,9 +247,9 @@ fun SettingScreen(navController: NavHostController, userViewModel: UserViewModel
                         }
                     }
                     Box(modifier = Modifier.weight(1.0f), contentAlignment = Alignment.CenterEnd) {
-                        Button(enabled = username.isNotEmpty(),onClick = {
+                        Button(enabled = username.isNotEmpty(), onClick = {
                             coroutineScope.launch {
-                                userViewModel.update(context,token,username)
+                                userViewModel.update(context, token, username)
                                 userViewModel.loadUserInfo(token)
                                 sheetState.hide()
                             }

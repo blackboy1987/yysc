@@ -29,6 +29,7 @@ import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
 import com.bootx.yysc.ui.screens.NotifyListScreen
 import com.bootx.yysc.ui.screens.NotifyScreen
+import com.bootx.yysc.ui.screens.OtherScreen
 import com.bootx.yysc.ui.screens.QunZuScreen
 import com.bootx.yysc.ui.screens.SearchScreen
 import com.bootx.yysc.ui.screens.SettingScreen
@@ -57,7 +58,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.SettingFrame.route,
+        startDestination = Destinations.AboutFrame.route,
     ) {
         composable(
             Destinations.MainFrame.route+"/{type}",
@@ -483,6 +484,21 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             TestScreen(navController)
+        }
+        composable(
+            Destinations.OtherFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            OtherScreen(navController)
         }
     }
 }

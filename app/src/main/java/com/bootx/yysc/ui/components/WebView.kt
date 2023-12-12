@@ -1,4 +1,4 @@
-package com.bootx.yysc.ui.screens
+package com.bootx.yysc.ui.components
 
 import android.annotation.SuppressLint
 import android.webkit.WebView

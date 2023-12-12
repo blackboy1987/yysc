@@ -1,35 +1,56 @@
 package com.bootx.yysc.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import com.bootx.yysc.model.entity.AppInfo
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.RightIcon
-import com.bootx.yysc.ui.components.SoftIcon12
+import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.util.AppInfoUtils
 import com.bootx.yysc.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {
+
+    val context = LocalContext.current
+
+    var appInfo by remember {
+        mutableStateOf(AppInfo())
+    }
+
+    LaunchedEffect(Unit) {
+        appInfo = AppInfoUtils.getAppInfo(context, "com.bootx.yysc")
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(title = { }, navigationIcon = {
                 LeftIcon {
-
+                    navController.popBackStack()
                 }
             })
         }
@@ -43,18 +64,23 @@ fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel =
             ) {
                 item {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
-                        SoftIcon12(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/198.png")
-                        Text(text = "爱尚应用")
-                        Text(text = "1.0.1(101)")
+                        AsyncImage(model = appInfo.appIcon, contentDescription = "")
+                        Text(text = appInfo.appName)
+                        Text(text = "${appInfo.versionName}(${appInfo.versionCode})")
                     }
                 }
                 item {
-                    Divider()
+                    HorizontalDivider()
                     ListItem(
+                        modifier = Modifier.clickable {
+                            navController.navigate(Destinations.OtherFrame.route)
+                        },
                         trailingContent = {
                             RightIcon {
 
@@ -62,7 +88,7 @@ fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel =
                         },
                         headlineContent = { Text(text = "全站规则") }
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
                 item {
                     ListItem(
@@ -73,10 +99,13 @@ fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel =
                         },
                         headlineContent = { Text(text = "设计理念") }
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
                 item {
                     ListItem(
+                        modifier = Modifier.clickable {
+                            navController.navigate(Destinations.QunZuFrame.route)
+                        },
                         trailingContent = {
                             RightIcon {
 
@@ -84,7 +113,7 @@ fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel =
                         },
                         headlineContent = { Text(text = "交流群组") }
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
                 item {
                     ListItem(
@@ -95,7 +124,7 @@ fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel =
                         },
                         headlineContent = { Text(text = "联系作责") }
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
                 item {
                     ListItem(
@@ -106,7 +135,7 @@ fun AboutScreen(navController: NavHostController, homeViewModel: HomeViewModel =
                         },
                         headlineContent = { Text(text = "酷盾安全") }
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
             }
         }
