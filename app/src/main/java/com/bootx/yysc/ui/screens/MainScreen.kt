@@ -34,7 +34,7 @@ data class NavigationItem(
 )
 
 @Composable
-fun MainFrame(navController: NavHostController) {
+fun MainScreen(navController: NavHostController,type: String="0") {
     var context = LocalContext.current
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
@@ -45,7 +45,7 @@ fun MainFrame(navController: NavHostController) {
     )
 
     var currentNavigationIndex by remember {
-        mutableIntStateOf(SharedPreferencesUtils(context).get("homeIndex").toInt())
+        mutableIntStateOf(type.toInt())
     }
 
     Scaffold(

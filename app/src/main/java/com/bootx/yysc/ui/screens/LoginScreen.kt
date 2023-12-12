@@ -40,7 +40,6 @@ import com.bootx.yysc.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ShowToast")
 @Composable
 fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
@@ -75,13 +74,17 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                         text = "爱尚应用",
                         fontSize = 32.sp,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(top = 32.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp)
                     )
                     Text(
                         text = "欢迎回来，共聚此刻",
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 32.dp)
                     )
                     MyInput(value = username, onChange = {
                         username = it
@@ -91,18 +94,22 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                         password = it
                     })
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "忘记密码", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
+                    Text(
+                        text = "忘记密码",
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     Button(
                         enabled = username.isNotEmpty() && password.isNotEmpty() && !loginViewModel.loading,
                         onClick = {
                             coroutineScope.launch {
-                                loginViewModel.login(context,username, password)
+                                loginViewModel.login(context, username, password)
                                 if (loginViewModel.data.token.isBlank()) {
                                     toast(context, "用户不存在！")
-                                }else{
+                                } else {
                                     val sharedPreferencesUtils = SharedPreferencesUtils(context)
-                                    sharedPreferencesUtils.set("token",loginViewModel.data.token)
-                                    navController.navigate(Destinations.HomeFrame.route)
+                                    sharedPreferencesUtils.set("token", loginViewModel.data.token)
+                                    navController.navigate(Destinations.MainFrame.route)
 
                                 }
                             }
@@ -119,7 +126,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
             }
         }
     }
-    if(loginViewModel.loading){
+    if (loginViewModel.loading) {
         Loading("登录中...")
     }
 }

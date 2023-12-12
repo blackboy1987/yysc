@@ -24,7 +24,7 @@ import com.bootx.yysc.ui.screens.HotScreen
 import com.bootx.yysc.ui.screens.IconDetailScreen
 import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
-import com.bootx.yysc.ui.screens.MainFrame
+import com.bootx.yysc.ui.screens.MainScreen
 import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
 import com.bootx.yysc.ui.screens.NotifyListScreen
@@ -57,10 +57,10 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.HomeFrame.route,
+        startDestination = Destinations.MainFrame.route+"/0",
     ) {
         composable(
-            Destinations.HomeFrame.route,
+            Destinations.MainFrame.route+"/{type}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -72,7 +72,8 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
                 )
             },
         ) {
-            MainFrame(navController)
+            val type = it.arguments?.getString("type") ?: "0"
+            MainScreen(navController,type)
         }
         composable(
             Destinations.LoginFrame.route,

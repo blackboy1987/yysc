@@ -2,7 +2,7 @@ package com.bootx.yysc.ui.navigation
 
 sealed class Destinations(val route: String) {
     //首页
-    object HomeFrame : Destinations("HomeFrame")
+    object MainFrame : Destinations("MainFrame")
     //精选
     object JingXuanFrame : Destinations("JingXuanFrame")
     //关注

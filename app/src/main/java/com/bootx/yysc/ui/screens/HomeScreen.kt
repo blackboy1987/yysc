@@ -126,7 +126,7 @@ fun HomeScreen(
                     SoftIcon4(
                         url = "${userViewModel.userInfo.avatar}?x-oss-process=style/size_100",
                         modifier = Modifier.clickable {
-                            navController.navigate(Destinations.MineFrame.route)
+                            navController.navigate(Destinations.MainFrame.route+"/4")
                         })
                 } else {
                     SoftIcon4(
