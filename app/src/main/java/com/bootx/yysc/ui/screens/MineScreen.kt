@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArtTrack
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -126,7 +127,7 @@ fun MineScreen(
                         IconButton(onClick = {
                             navController.navigate(Destinations.SettingFrame.route)
                         }) {
-                            Icon(imageVector = Icons.Filled.ArtTrack, contentDescription = "")
+                            Icon(imageVector = Icons.Filled.Settings, contentDescription = "")
                         }
                     }
                 )

@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun MySearchBar() {
@@ -41,14 +42,7 @@ fun MySearchBar() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(imageVector = Icons.Default.Search, contentDescription = "")
-            Text(text = "搜索全网应用", modifier = Modifier.padding(start = 16.dp))
+            Text(text = "搜索全网应用",fontSize=12.sp, modifier = Modifier.padding(start = 16.dp))
         }
     }
-}
-
-
-@Preview
-@Composable
-fun PreviewSearchBar() {
-    MySearchBar()
 }

@@ -1,5 +1,6 @@
 package com.bootx.yysc.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,7 @@ import com.bootx.yysc.model.entity.SignInEntity
 import com.bootx.yysc.model.service.SignInService
 import com.bootx.yysc.model.service.UserService
 import com.bootx.yysc.repository.entity.UserEntity
+import com.bootx.yysc.util.CommonUtils
 
 class UserViewModel:ViewModel() {
     private val signInService = SignInService.instance()
@@ -37,6 +39,14 @@ class UserViewModel:ViewModel() {
                 userInfo = res.data
                 Log.e("loadUserInfo", "loadUserInfo: ${userInfo.toString()}", )
             }
+        } catch (_: Throwable) {
+        }
+    }
+
+    suspend fun update(context:Context,token: String, username: String) {
+        try {
+            val res = userService.update(token,username)
+            CommonUtils.toast(context,res.msg)
         } catch (_: Throwable) {
         }
     }

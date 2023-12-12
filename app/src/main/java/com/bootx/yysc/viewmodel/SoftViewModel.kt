@@ -74,7 +74,7 @@ class SoftViewModel:ViewModel() {
     suspend fun detail(context:Context,token: String,id: String): SoftDetailEntity {
         val historyDao = DataBase.getDb(context)?.getHistoryDao()
         val res = softService.detail(token,id)
-        if (res.code == 0 && res.data != null) {
+        if (res.code == 0) {
             softDetail = res.data
             // 写入历史记录
             CoroutineScope(Dispatchers.IO).launch {
