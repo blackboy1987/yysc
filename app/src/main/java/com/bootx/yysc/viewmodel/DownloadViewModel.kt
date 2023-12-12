@@ -1,7 +1,10 @@
 package com.bootx.yysc.viewmodel
 
+import android.R.attr
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.azhon.appupdate.config.Constant
 import com.azhon.appupdate.listener.OnDownloadListener
@@ -14,6 +17,7 @@ import com.bootx.yysc.repository.entity.DownloadManagerEntity
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
 import java.io.File
+
 
 class DownloadViewModel:ViewModel() {
 
@@ -85,5 +89,15 @@ class DownloadViewModel:ViewModel() {
         }else{
             CommonUtils.toast(context, "暂无下载地址")
         }
+    }
+
+    suspend fun install(context: Context,path: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.setDataAndType(
+            Uri.parse("file://" + path),
+            "application/vnd.android.package-archive"
+        )
+        context.startActivity(intent)
     }
 }

@@ -22,4 +22,14 @@ class DownloadManagerViewModel:ViewModel() {
         }
 
     }
+
+    suspend fun removeAll(context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val downloadManagerDao = DataBase.getDb(context)?.getDownloadManagerDao()
+            if (downloadManagerDao != null) {
+                downloadManagerDao.removeAll()
+            }
+        }
+
+    }
 }

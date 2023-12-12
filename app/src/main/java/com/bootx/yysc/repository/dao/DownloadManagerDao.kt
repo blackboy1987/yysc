@@ -21,5 +21,5 @@ interface DownloadManagerDao {
     fun getById(id: Int): List<DownloadManagerEntity>
 
     @Query("delete from downloadManager where 1=1")
-    fun delete()
+    fun removeAll()
 }

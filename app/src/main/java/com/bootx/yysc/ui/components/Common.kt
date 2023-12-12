@@ -71,7 +71,7 @@ fun LeftIcon(onClick:()->Unit) {
 }
 
 @Composable
-fun DownloadButton(onClick:()->Unit) {
+fun DownloadButton(title: String="下载",onClick:()->Unit) {
     Button(
         modifier = Modifier
             .padding(0.dp)
@@ -80,7 +80,7 @@ fun DownloadButton(onClick:()->Unit) {
         onClick = onClick,
     ) {
         Text(
-            text = "下载",
+            text = title,
             fontSize = fontSize12,
         )
     }
