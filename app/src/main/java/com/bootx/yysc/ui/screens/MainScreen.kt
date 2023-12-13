@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.SharedPreferencesUtils
 
 data class NavigationItem(
@@ -58,7 +59,10 @@ fun MainScreen(navController: NavHostController,type: String="0") {
                     BottomNavigationItem(
                         selected = currentNavigationIndex == index,
                         onClick = {
-                            currentNavigationIndex = index
+                            if(currentNavigationIndex!=index){
+                                currentNavigationIndex = index
+                                navController.navigate(Destinations.MainFrame.route+"/${index}")
+                            }
                         },
                         icon = {
                             Icon(

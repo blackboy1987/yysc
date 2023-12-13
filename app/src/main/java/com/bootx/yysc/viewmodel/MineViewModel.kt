@@ -21,4 +21,12 @@ class MineViewModel:ViewModel() {
             list = historyDao?.getAll()!!
         }
     }
+
+    suspend fun clearHistory(context: Context) {
+        val historyDao = DataBase.getDb(context)?.getHistoryDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            historyDao?.delete()!!
+            list = historyDao.getAll()
+        }
+    }
 }

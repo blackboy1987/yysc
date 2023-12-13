@@ -81,7 +81,6 @@ fun FanScreen(navController: NavHostController,type:Int,fanViewModel: FanViewMod
         Surface(
             modifier = Modifier.padding(it)
         ) {
-
             Column {
                 SecondaryTabRow(
                     selectedTabIndex = selectedTabIndex,

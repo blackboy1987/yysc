@@ -20,6 +20,7 @@ import com.bootx.yysc.ui.screens.ComplaintsScreen
 import com.bootx.yysc.ui.screens.DownloadManagerScreen
 import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
+import com.bootx.yysc.ui.screens.HistoryScreen
 import com.bootx.yysc.ui.screens.HotScreen
 import com.bootx.yysc.ui.screens.IconDetailScreen
 import com.bootx.yysc.ui.screens.ListScreen
@@ -58,7 +59,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.AboutFrame.route,
+        startDestination = Destinations.FanFrame.route+"/0",
     ) {
         composable(
             Destinations.MainFrame.route+"/{type}",
@@ -470,6 +471,26 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         ) {
             DownloadManagerScreen(navController)
         }
+        composable(
+            Destinations.HistoryFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            HistoryScreen(navController)
+        }
+
+
+
+
+
         composable(
             Destinations.TestFrame.route,
             enterTransition = {

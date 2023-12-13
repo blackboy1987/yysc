@@ -285,7 +285,7 @@ fun MineScreen(
                     ) {
                         Text(text = "浏览历史", fontSize = fontSize14)
                         RightIcon {
-                            navController.navigate("ListFrame/好评如潮/01")
+                            navController.navigate(Destinations.HistoryFrame.route)
                         }
                     }
                     HistoryItem(mineViewModel.list, onClick = { id ->
@@ -353,8 +353,6 @@ fun HistoryItem(list: List<HistoryEntity>, onClick: (id: Int) -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
             },
-            tonalElevation = 5.dp,
-            shadowElevation = 10.dp,
         )
     }
 }
