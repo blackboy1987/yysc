@@ -1,5 +1,6 @@
 package com.bootx.yysc.model.service
 
+import androidx.compose.foundation.pager.PageSize
 import com.bootx.yysc.model.entity.BaseResponse
 import com.bootx.yysc.util.HiRetrofit
 import retrofit2.http.Field
@@ -12,6 +13,8 @@ data class FanEntity(
     var username: String,
     var point: Int,
     var avatar: String,
+    var rankName: String,
+    var count: Int=0,
 )
 
 data class FanEntityListResponse(val data: List<FanEntity>) : BaseResponse()
@@ -23,6 +26,8 @@ interface FanService {
     suspend fun list(
         @Header("token") token: String,
         @Field("type") type: Int,
+        @Field("pageNumber") pageNumber: Int,
+        @Field("pageSize") pageSize: Int,
     ): FanEntityListResponse
 
     @POST("/api/member/fan/delete")
@@ -31,6 +36,13 @@ interface FanService {
         @Header("token") token: String,
         @Field("fanId") fanId: Int,
         @Field("type") type: Int
+    ): FanEntityListResponse
+
+    @POST("/api/member/fan/save")
+    @FormUrlEncoded
+    suspend fun add(
+        @Header("token") token: String,
+        @Field("fanId") fanId: Int,
     ): FanEntityListResponse
 
     companion object {

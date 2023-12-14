@@ -159,7 +159,6 @@ fun AppScreen(
                         .fillMaxHeight()
                         .padding(top = 16.dp)
                         .pullRefresh(state),
-                    contentAlignment = Alignment.Center
                 ) {
                     if (vm.softListLoading) {
                         Loading404()
