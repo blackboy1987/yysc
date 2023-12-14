@@ -145,9 +145,10 @@ fun SoftIcon8(url: String) {
     )
 }
 @Composable
-fun SoftIcon6(url: String) {
+fun SoftIcon6(url: String,modifier: Modifier=Modifier) {
     AsyncImage(
         modifier = Modifier
+            .then(modifier)
             .size(60.dp)
             .clip(CircleShape),
         model = url,

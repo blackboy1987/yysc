@@ -1,13 +1,13 @@
 package com.bootx.yysc.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.MemberEntity
 import com.bootx.yysc.model.service.MemberService
+import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
 
 class MemberViewModel:ViewModel() {
@@ -23,7 +23,8 @@ class MemberViewModel:ViewModel() {
             if (res.code == 0) {
                 memberInfo = res.data
             }
-        } catch (_: Throwable) {
+        } catch (e: Throwable) {
+            CommonUtils.toast(context,e.message.toString())
         }
     }
 }

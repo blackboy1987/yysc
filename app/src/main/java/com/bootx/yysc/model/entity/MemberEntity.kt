@@ -7,8 +7,8 @@ data class MemberEntity(
     var avatar: String="",
     var username: String="",
     var createdDate: String="",
-    var point: String="",
+    var point: Int=0,
     var rankName: String="",
-    var concernCount: String="",
-    var fanCount: String="",
+    var concernCount: Int=0,
+    var fanCount: Int=0,
 )
