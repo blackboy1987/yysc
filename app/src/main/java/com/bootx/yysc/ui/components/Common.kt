@@ -23,6 +23,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,10 +43,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
@@ -262,4 +265,19 @@ fun MyTabRow(tabs: List<String>,onClick: (index: Int) -> Unit){
             }
         }
     )
+}
+
+@Composable
+fun Tag(text: String){
+    Card(
+        modifier = Modifier.padding(0.dp),
+        shape = RoundedCornerShape(8.dp),
+    ) {
+        Text(
+            modifier = Modifier.height(16.dp).padding(horizontal = 12.dp, vertical = 0.dp),
+            text = text, fontSize = 10.sp, fontStyle = FontStyle.Italic,
+            lineHeight = 16.sp,
+        )
+    }
+
 }

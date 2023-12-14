@@ -88,7 +88,6 @@ fun FanScreen(navController: NavHostController,type:Int,fanViewModel: FanViewMod
                     tabs = {
                         tabs.forEachIndexed { index, item ->
                             Tab(
-                                modifier = Modifier.padding(vertical = 16.dp),
                                 selected = selectedTabIndex == index,
                                 onClick = {
                                     selectedTabIndex = index
@@ -96,7 +95,7 @@ fun FanScreen(navController: NavHostController,type:Int,fanViewModel: FanViewMod
                                 Text(
                                     text = item,
                                     fontSize = fontSize14,
-                                    modifier = Modifier.padding(4.dp),
+                                    modifier = Modifier.padding(16.dp),
                                 )
                             }
                         }
