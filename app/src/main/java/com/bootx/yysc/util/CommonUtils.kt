@@ -1,5 +1,7 @@
 package com.bootx.yysc.util
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -53,6 +55,17 @@ object CommonUtils {
         bitMap.compress(Bitmap.CompressFormat.PNG, 100, baos)
         val bytes = baos.toByteArray()
         return Base64.getEncoder().encodeToString(bytes)
+    }
+
+
+    fun copy(context: Context,value: String){
+        val manager: ClipboardManager = context.getSystemService(
+            Context.CLIPBOARD_SERVICE
+        ) as ClipboardManager
+        val mClipData =
+            ClipData.newPlainText("Label", value)
+        manager.setPrimaryClip(mClipData)
+        toast(context,"复制成功")
     }
 
 

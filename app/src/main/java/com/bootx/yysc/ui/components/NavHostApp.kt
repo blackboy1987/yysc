@@ -26,6 +26,7 @@ import com.bootx.yysc.ui.screens.IconDetailScreen
 import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainScreen
+import com.bootx.yysc.ui.screens.MemberScreen
 import com.bootx.yysc.ui.screens.MyIconListScreen
 import com.bootx.yysc.ui.screens.MyIconScreen
 import com.bootx.yysc.ui.screens.NotifyListScreen
@@ -47,22 +48,22 @@ import com.google.gson.Gson
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
+fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
     val navController = rememberNavController()
     var context = LocalContext.current
     val storeManager: StoreManager = StoreManager(context)
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         val gson = Gson()
         val setting = settingViewModel.initApp(context)
-        storeManager.save("setting",gson.toJson(setting))
+        storeManager.save("setting", gson.toJson(setting))
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.FanFrame.route+"/0",
+        startDestination = Destinations.MemberFrame.route + "/1",
     ) {
         composable(
-            Destinations.MainFrame.route+"/{type}",
+            Destinations.MainFrame.route + "/{type}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -75,7 +76,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             val type = it.arguments?.getString("type") ?: "0"
-            MainScreen(navController,type)
+            MainScreen(navController, type)
         }
         composable(
             Destinations.LoginFrame.route,
@@ -108,7 +109,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             SearchScreen(navController)
         }
         composable(
-            route = Destinations.ListFrame.route+"/{title}/{orderBy}",
+            route = Destinations.ListFrame.route + "/{title}/{orderBy}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -122,7 +123,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         ) {
             val title = it.arguments?.getString("title") ?: ""
             val orderBy = it.arguments?.getString("orderBy") ?: ""
-            ListScreen(navController,title,orderBy)
+            ListScreen(navController, title, orderBy)
         }
         composable(
             Destinations.SupportFrame.route,
@@ -221,7 +222,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
         }
 
         composable(
-            Destinations.FanFrame.route+"/{type}",
+            Destinations.FanFrame.route + "/{type}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -234,7 +235,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             val type = it.arguments?.getInt("type") ?: 0
-            FanScreen(navController,type)
+            FanScreen(navController, type)
         }
         composable(
             Destinations.MyIconFrame.route,
@@ -298,7 +299,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             TouGaoAppInfoListScreen(navController)
         }
         composable(
-            Destinations.TouGaoFrame.route+"/{packageName}",
+            Destinations.TouGaoFrame.route + "/{packageName}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -311,10 +312,10 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             val packageName = it.arguments?.getString("packageName") ?: ""
-            TouGaoScreen(navController,packageName)
+            TouGaoScreen(navController, packageName)
         }
         composable(
-            Destinations.AppDetailFrame.route+"/{id}",
+            Destinations.AppDetailFrame.route + "/{id}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -326,9 +327,9 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
                 )
             },
         ) {
-            Log.e("NavHostApp", "NavHostApp: ${it.arguments.toString()}", )
+            Log.e("NavHostApp", "NavHostApp: ${it.arguments.toString()}")
             val id = it.arguments?.getString("id") ?: ""
-            AppDetailScreen(navController,id)
+            AppDetailScreen(navController, id)
         }
         composable(
             Destinations.SettingFrame.route,
@@ -361,7 +362,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             NotifyScreen(navController)
         }
         composable(
-            Destinations.NotifyListFrame.route+"/{type}",
+            Destinations.NotifyListFrame.route + "/{type}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -374,7 +375,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             val type = it.arguments?.getString("type") ?: "0"
-            NotifyListScreen(navController,type)
+            NotifyListScreen(navController, type)
         }
 
 
@@ -424,7 +425,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             AboutScreen(navController)
         }
         composable(
-            Destinations.ComplaintsFrame.route+"/{id}",
+            Destinations.ComplaintsFrame.route + "/{id}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -437,10 +438,10 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             val id = it.arguments?.getString("id") ?: ""
-            ComplaintsScreen(navController,id)
+            ComplaintsScreen(navController, id)
         }
         composable(
-            Destinations.AppMoreFrame.route+"/{id}",
+            Destinations.AppMoreFrame.route + "/{id}",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right
@@ -453,7 +454,7 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             val id = it.arguments?.getString("id") ?: ""
-            AppMoreScreen(navController,id)
+            AppMoreScreen(navController, id)
         }
 
         composable(
@@ -485,6 +486,22 @@ fun NavHostApp(settingViewModel:SettingViewModel= viewModel()) {
             },
         ) {
             HistoryScreen(navController)
+        }
+        composable(
+            Destinations.MemberFrame.route + "/{id}",
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            val id = it.arguments?.getString("id") ?: ""
+            MemberScreen(navController, id)
         }
 
 

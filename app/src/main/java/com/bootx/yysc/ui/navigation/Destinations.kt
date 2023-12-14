@@ -77,6 +77,8 @@ sealed class Destinations(val route: String) {
     object ComplaintsFrame : Destinations("ComplaintsFrame")
     //webView
     object OtherFrame : Destinations("OtherFrame")
+    //会员信息
+    object MemberFrame : Destinations("MemberFrame")
 
 
 
