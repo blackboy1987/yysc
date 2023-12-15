@@ -38,7 +38,7 @@ import com.bootx.yysc.viewmodel.FuLiViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FuLiScreen(navController: NavHostController,fuLiViewModel: FuLiViewModel= viewModel()) {
-    var context = LocalContext.current
+    val context = LocalContext.current
     LaunchedEffect(Unit){
         fuLiViewModel.list(context)
     }

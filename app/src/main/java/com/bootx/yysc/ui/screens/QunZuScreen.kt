@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -17,17 +18,26 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.viewmodel.QunZuViewModel
 
+// QunZu
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QunZuScreen(navController: NavHostController) {
+fun QunZuScreen(navController: NavHostController, qunZuViewModel: QunZuViewModel = viewModel()) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        qunZuViewModel.list(context)
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,7 +60,7 @@ fun QunZuScreen(navController: NavHostController) {
             modifier = Modifier.padding(it)
         ) {
             LazyColumn() {
-                items(10) {
+                items(qunZuViewModel.list) { item ->
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -61,18 +71,24 @@ fun QunZuScreen(navController: NavHostController) {
                                     modifier = Modifier
                                         .size(60.dp)
                                         .clip(CircleShape),
-                                    model = "https://www.iprompt.art/images/1.jpg",
+                                    model = "${item.image}",
                                     contentDescription = "",
                                 )
                             },
                             headlineContent = {
                                 Text(
-                                    text = "奇谈君",
+                                    text = "${item.title1}",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )
                             },
-                            supportingContent = { Text(text = "关注官方公众号，加入奇妙大家庭") },
+                            supportingContent = {
+                                Text(
+                                    text = "${item.title2}",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            },
                         )
                     }
                 }
