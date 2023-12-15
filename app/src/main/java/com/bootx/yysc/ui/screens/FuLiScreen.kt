@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,20 +19,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.TopBarTitle
+import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.viewmodel.FuLiViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FuLiScreen(navController: NavHostController) {
+fun FuLiScreen(navController: NavHostController,fuLiViewModel: FuLiViewModel= viewModel()) {
+    var context = LocalContext.current
+    LaunchedEffect(Unit){
+        fuLiViewModel.list(context)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,7 +61,7 @@ fun FuLiScreen(navController: NavHostController) {
             modifier = Modifier.padding(it)
         ) {
             LazyColumn() {
-                items(10) {
+                items(fuLiViewModel.list) {item->
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -66,17 +77,17 @@ fun FuLiScreen(navController: NavHostController) {
                         ) {
                             AsyncImage(
                                 modifier = Modifier
-                                    .background(Color.Red)
                                     .fillMaxWidth()
-                                    .aspectRatio(3 / 1f, true),
-                                contentScale = ContentScale.FillBounds,
-                                model = "https://www.iprompt.art/images/1.jpg",
+                                    .aspectRatio(40 / 17f, true),
+                                contentScale = ContentScale.FillWidth,
+                                model = "${item.image}",
                                 contentDescription = "",
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "奇谈君",
+                                text = "${item.title1}",
                                 maxLines = 1,
+                                color = Color(0xff0e0e0e),
                                 fontSize= MaterialTheme.typography.titleMedium.fontSize,
                                 fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
                                 overflow = TextOverflow.Ellipsis,
@@ -84,7 +95,10 @@ fun FuLiScreen(navController: NavHostController) {
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "关注官方公众号，加入奇妙大家庭",
+                                text = "${item.title2}",
+                                color = Color(0xff8b8b8b),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
                                 fontSize= MaterialTheme.typography.titleSmall.fontSize,
                                 modifier = Modifier.padding(start = 16.dp),
                             )

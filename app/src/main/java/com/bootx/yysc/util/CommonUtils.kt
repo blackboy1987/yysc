@@ -68,5 +68,7 @@ object CommonUtils {
         toast(context,"复制成功")
     }
 
-
+    fun getToken(context: Context): String{
+       return SharedPreferencesUtils(context).get("token")
+    }
 }
