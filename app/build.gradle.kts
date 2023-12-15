@@ -83,9 +83,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
 
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.33.2-alpha")
-    implementation("com.google.accompanist:accompanist-insets:0.31.5-beta")
-
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("androidx.compose.material:material:1.6.0-beta02")
