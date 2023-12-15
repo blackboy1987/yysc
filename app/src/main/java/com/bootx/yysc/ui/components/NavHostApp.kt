@@ -60,7 +60,7 @@ fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.MemberFrame.route + "/1",
+        startDestination = Destinations.MainFrame.route + "/0",
     ) {
         composable(
             Destinations.MainFrame.route + "/{type}",

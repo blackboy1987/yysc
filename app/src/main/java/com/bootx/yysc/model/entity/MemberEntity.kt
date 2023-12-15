@@ -7,6 +7,7 @@ data class MemberEntity(
     var avatar: String="",
     var username: String="",
     var createdDate: String="",
+    var memo: String="",
     var point: Int=0,
     var rankName: String="",
     var concernCount: Int=0,
