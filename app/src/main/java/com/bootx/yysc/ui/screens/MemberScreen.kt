@@ -40,6 +40,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.extension.onScroll
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.LeftIcon
@@ -86,7 +87,7 @@ fun MemberScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
-                        SoftIcon6(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/5.png")
+                        SoftIcon6(url = "${Config.imageUrl}avatar/5.png")
                         Text(text = "blackboy", modifier = Modifier.padding(start = 16.dp))
                     }
                 }
@@ -125,7 +126,7 @@ fun MemberScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        SoftIcon8_8(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/5.png")
+                        SoftIcon8_8(url = "${Config.imageUrl}avatar/5.png")
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,

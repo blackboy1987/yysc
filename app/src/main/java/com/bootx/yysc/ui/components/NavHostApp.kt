@@ -22,7 +22,6 @@ import com.bootx.yysc.ui.screens.FanScreen
 import com.bootx.yysc.ui.screens.FuLiScreen
 import com.bootx.yysc.ui.screens.HistoryScreen
 import com.bootx.yysc.ui.screens.HotScreen
-import com.bootx.yysc.ui.screens.IconDetailScreen
 import com.bootx.yysc.ui.screens.ListScreen
 import com.bootx.yysc.ui.screens.LoginScreen
 import com.bootx.yysc.ui.screens.MainScreen
@@ -50,7 +49,7 @@ import com.google.gson.Gson
 @Composable
 fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
     val navController = rememberNavController()
-    var context = LocalContext.current
+    val context = LocalContext.current
     val storeManager: StoreManager = StoreManager(context)
 
     LaunchedEffect(Unit) {
@@ -393,21 +392,6 @@ fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
             },
         ) {
             SysMsgScreen(navController)
-        }
-        composable(
-            Destinations.IconDetailFrame.route,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left
-                )
-            },
-        ) {
-            IconDetailScreen(navController)
         }
         composable(
             Destinations.AboutFrame.route,

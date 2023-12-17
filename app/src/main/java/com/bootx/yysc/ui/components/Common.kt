@@ -56,6 +56,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
@@ -326,7 +327,7 @@ fun SoftItem(item: SoftEntity) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SoftIcon8_8(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/5.png")
+        SoftIcon8_8(url = "${Config.imageUrl}avatar/5.png")
         Column(
             modifier = Modifier
                 .weight(1.0f)

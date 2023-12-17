@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.MyBottomSheet
 import com.bootx.yysc.ui.components.SoftIcon4
@@ -94,7 +95,7 @@ fun SysMsgScreen(navController: NavHostController) {
                         headlineContent = { Text(text = "签到奖励") },
                         supportingContent = { Text(text = "签到奖励硬币5枚") },
                         leadingContent = {
-                            SoftIcon4(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/${it + 10}.png")
+                            SoftIcon4(url = "${Config.imageUrl}avatar/${it + 10}.png")
                         },
                         trailingContent = {
                             Text(text = "8天前")

@@ -15,23 +15,32 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.ui.components.GifImage
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
+import com.bootx.yysc.viewmodel.UserViewModel
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyIconScreen(navController: NavHostController) {
+fun MyIconScreen(navController: NavHostController,userViewModel: UserViewModel= viewModel()) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit){
+        userViewModel.loadUserInfo(context)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,7 +72,7 @@ fun MyIconScreen(navController: NavHostController) {
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
                             )) {
-                            append("30")
+                            append("${userViewModel.userInfo.point}")
                         }
                         withStyle(style = SpanStyle(
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,

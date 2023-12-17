@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.ActivityEntity
 import com.bootx.yysc.model.entity.HomeCenterBar
 import com.bootx.yysc.model.entity.SoftEntity
@@ -102,7 +103,7 @@ fun HomeScreen(
     val token = sharedPreferencesUtils.get("token")
     LaunchedEffect(Unit) {
         // 获取用户信息
-        userViewModel.loadUserInfo(token)
+        userViewModel.loadUserInfo(context)
         //获取轮播数据
         carouselViewModel.fetchList(token);
         // 中间工具栏
@@ -130,7 +131,7 @@ fun HomeScreen(
                         })
                 } else {
                     SoftIcon4(
-                        url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/0.png?x-oss-process=style/size_100",
+                        url = "${Config.imageUrl}avatar/0.png?x-oss-process=style/size_100",
                         modifier = Modifier.clickable {
                             navController.navigate(Destinations.LoginFrame.route)
                         })

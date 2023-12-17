@@ -109,7 +109,7 @@ fun NotifyListScreen(
                         headlineContent = { Text(text = item.title) },
                         supportingContent = { Text(text = item.memo) },
                         leadingContent = {
-                            SoftIcon4(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/${index + 10}.png")
+                            SoftIcon4(url = "${Config.imageUrl}avatar/${index + 10}.png")
                         },
                         trailingContent = {
                             RightIcon {

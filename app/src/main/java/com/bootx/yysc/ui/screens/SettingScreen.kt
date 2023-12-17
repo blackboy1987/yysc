@@ -53,7 +53,7 @@ fun SettingScreen(navController: NavHostController, userViewModel: UserViewModel
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val token = SharedPreferencesUtils(context).get("token")
     LaunchedEffect(Unit) {
-        userViewModel.loadUserInfo(token)
+        userViewModel.loadUserInfo(context)
     }
 
     Scaffold(
@@ -250,7 +250,7 @@ fun SettingScreen(navController: NavHostController, userViewModel: UserViewModel
                         Button(enabled = username.isNotEmpty(), onClick = {
                             coroutineScope.launch {
                                 userViewModel.update(context, token, username)
-                                userViewModel.loadUserInfo(token)
+                                userViewModel.loadUserInfo(context)
                                 sheetState.hide()
                             }
                         }, modifier = Modifier.fillMaxWidth(0.8f)) {

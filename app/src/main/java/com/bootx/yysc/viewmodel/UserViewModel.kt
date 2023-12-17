@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.SignInEntity
 import com.bootx.yysc.model.service.SignInService
 import com.bootx.yysc.model.service.UserService
+import com.bootx.yysc.repository.DataBase
 import com.bootx.yysc.repository.entity.UserEntity
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
@@ -38,7 +39,8 @@ class UserViewModel:ViewModel() {
             val res = userService.currentUser(SharedPreferencesUtils(context).get("token"))
             if (res.code == 0) {
                 userInfo = res.data
-                Log.e("loadUserInfo", "loadUserInfo: ${userInfo.toString()}", )
+                // 存储到数据库
+                DataBase.getDb(context)?.getUserDao()?.insert(userInfo)
             }
         } catch (_: Throwable) {
         }
