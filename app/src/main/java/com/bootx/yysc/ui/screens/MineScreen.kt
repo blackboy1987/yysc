@@ -98,9 +98,9 @@ fun MineScreen(
     }
 
     LaunchedEffect(Unit) {
-        mineViewModel.load(context, SharedPreferencesUtils(context).get("token"))
+        mineViewModel.load(context)
         // 获取用户信息
-        userViewModel.loadUserInfo(SharedPreferencesUtils(context).get("token"))
+        userViewModel.loadUserInfo(context)
     }
 
     Surface {

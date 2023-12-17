@@ -15,7 +15,7 @@ class MineViewModel:ViewModel() {
 
     var list by mutableStateOf(listOf<HistoryEntity>())
 
-    suspend fun load(context: Context, token: String) {
+    suspend fun load(context: Context) {
         val historyDao = DataBase.getDb(context)?.getHistoryDao()
         CoroutineScope(Dispatchers.IO).launch {
             list = historyDao?.getAll()!!

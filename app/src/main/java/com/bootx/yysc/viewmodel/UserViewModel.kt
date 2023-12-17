@@ -11,6 +11,7 @@ import com.bootx.yysc.model.service.SignInService
 import com.bootx.yysc.model.service.UserService
 import com.bootx.yysc.repository.entity.UserEntity
 import com.bootx.yysc.util.CommonUtils
+import com.bootx.yysc.util.SharedPreferencesUtils
 
 class UserViewModel:ViewModel() {
     private val signInService = SignInService.instance()
@@ -32,9 +33,9 @@ class UserViewModel:ViewModel() {
         }
     }
 
-    suspend fun loadUserInfo(token: String) {
+    suspend fun loadUserInfo(context:Context) {
         try {
-            val res = userService.currentUser(token)
+            val res = userService.currentUser(SharedPreferencesUtils(context).get("token"))
             if (res.code == 0) {
                 userInfo = res.data
                 Log.e("loadUserInfo", "loadUserInfo: ${userInfo.toString()}", )
