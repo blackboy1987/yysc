@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,13 +23,16 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
@@ -44,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,31 +56,33 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
+import com.bootx.yysc.ui.theme.fontSize16
 import com.bootx.yysc.ui.theme.padding8
 
 @Composable
-fun RightIcon(onClick:()->Unit) {
+fun RightIcon(onClick: () -> Unit) {
     IconButton(
-        onClick={onClick()}
-    ){
+        onClick = { onClick() }
+    ) {
         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription = "")
     }
 }
 
 @Composable
-fun LeftIcon(onClick:()->Unit) {
+fun LeftIcon(onClick: () -> Unit) {
     IconButton(
-        onClick={onClick()}
-    ){
+        onClick = { onClick() }
+    ) {
         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBackIos, contentDescription = "")
     }
 }
 
 @Composable
-fun DownloadButton(title: String="下载",onClick:()->Unit) {
+fun DownloadButton(title: String = "下载", onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .padding(0.dp)
@@ -91,7 +98,7 @@ fun DownloadButton(title: String="下载",onClick:()->Unit) {
 }
 
 @Composable
-fun CardTitle(text: String,showIcon: Boolean=true,onClick: () -> Unit) {
+fun CardTitle(text: String, showIcon: Boolean = true, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(padding8)
@@ -99,8 +106,12 @@ fun CardTitle(text: String,showIcon: Boolean=true,onClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = text, fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Bold)
-        if(showIcon){
+        Text(
+            text = text,
+            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+            fontWeight = FontWeight.Bold
+        )
+        if (showIcon) {
             RightIcon {
                 onClick()
             }
@@ -123,6 +134,7 @@ fun SoftIcon(url: String) {
         contentDescription = ""
     )
 }
+
 @Composable
 fun SoftIcon12(url: String) {
     AsyncImage(
@@ -133,9 +145,9 @@ fun SoftIcon12(url: String) {
         contentDescription = ""
     )
 }
+
 @Composable
 fun SoftIcon8(url: String) {
-    Log.e("SoftIcon8", "SoftIcon8: $url", )
     AsyncImage(
         modifier = Modifier
             .size(80.dp)
@@ -144,8 +156,20 @@ fun SoftIcon8(url: String) {
         contentDescription = ""
     )
 }
+
 @Composable
-fun SoftIcon6(url: String,modifier: Modifier=Modifier) {
+fun SoftIcon8_8(url: String) {
+    AsyncImage(
+        modifier = Modifier
+            .size(80.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        model = url,
+        contentDescription = ""
+    )
+}
+
+@Composable
+fun SoftIcon6(url: String, modifier: Modifier = Modifier) {
     AsyncImage(
         modifier = Modifier
             .then(modifier)
@@ -155,6 +179,7 @@ fun SoftIcon6(url: String,modifier: Modifier=Modifier) {
         contentDescription = ""
     )
 }
+
 @Composable
 fun SoftIcon6_8(url: String) {
     AsyncImage(
@@ -165,12 +190,14 @@ fun SoftIcon6_8(url: String) {
         contentDescription = ""
     )
 }
+
 @Composable
-fun SoftIcon4(url: String,modifier: Modifier=Modifier) {
+fun SoftIcon4(url: String, modifier: Modifier = Modifier) {
     AsyncImage(
         modifier = Modifier
             .size(40.dp)
-            .clip(CircleShape).then(modifier),
+            .clip(CircleShape)
+            .then(modifier),
         model = url,
         contentDescription = ""
     )
@@ -178,7 +205,7 @@ fun SoftIcon4(url: String,modifier: Modifier=Modifier) {
 
 
 @Composable
-fun MyInput(value: String,onChange:(value: String)->Unit){
+fun MyInput(value: String, onChange: (value: String) -> Unit) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -198,7 +225,7 @@ fun MyInput(value: String,onChange:(value: String)->Unit){
 }
 
 @Composable
-fun MyPasswordInput(value: String,onChange:(value: String)->Unit){
+fun MyPasswordInput(value: String, onChange: (value: String) -> Unit) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,32 +245,32 @@ fun MyPasswordInput(value: String,onChange:(value: String)->Unit){
     )
 }
 
-fun toast(context: Context,message: String){
+fun toast(context: Context, message: String) {
     val toast =
         Toast.makeText(context, message, Toast.LENGTH_LONG)
-    toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0)
+    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
     toast.show()
 }
 
 @Composable
-fun Loading302(){
+fun Loading302() {
     CircularProgressIndicator(
         modifier = Modifier.size(30.dp),
-        strokeWidth=2.dp,
+        strokeWidth = 2.dp,
     )
 }
 
 @Composable
-fun Loading404(){
+fun Loading404() {
     CircularProgressIndicator(
         modifier = Modifier.size(40.dp),
-        strokeWidth=4.dp,
+        strokeWidth = 4.dp,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun MyTabRow(tabs: List<String>,onClick: (index: Int) -> Unit){
+fun MyTabRow(tabs: List<String>, onClick: (index: Int) -> Unit) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     SecondaryTabRow(
         divider = @Composable {
@@ -270,7 +297,7 @@ fun MyTabRow(tabs: List<String>,onClick: (index: Int) -> Unit){
 }
 
 @Composable
-fun Tag(text: String){
+fun Tag(text: String) {
     Card(
         modifier = Modifier.padding(0.dp),
         shape = RoundedCornerShape(8.dp),
@@ -280,10 +307,58 @@ fun Tag(text: String){
         ),
     ) {
         Text(
-            modifier = Modifier.height(16.dp).padding(horizontal = 12.dp, vertical = 0.dp),
+            modifier = Modifier
+                .height(16.dp)
+                .padding(horizontal = 12.dp, vertical = 0.dp),
             text = text, fontSize = 10.sp, fontStyle = FontStyle.Italic,
             lineHeight = 16.sp,
         )
     }
 
+}
+
+@Composable
+fun SoftItem(item: SoftEntity) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SoftIcon8_8(url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/5.png")
+        Column(
+            modifier = Modifier
+                .weight(1.0f)
+                .padding(start = 16.dp)
+        ) {
+            Text(fontSize = MaterialTheme.typography.bodyLarge.fontSize, text = "BiliYou", modifier = Modifier.padding(bottom = 4.dp))
+            Row(
+                modifier = Modifier.padding(bottom = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    modifier = Modifier.padding(end = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp), imageVector = Icons.Default.Star, contentDescription = "")
+                    Text(text = "8.9")
+                }
+                Text(text = "1.1.5")
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+                Tag(text = "官方")
+                Text(text = "14.01MB")
+                Text(text = "8179下载")
+            }
+        }
+        OutlinedButton(onClick = { /*TODO*/ }) {
+            Text(text = "下载")
+        }
+    }
 }

@@ -36,7 +36,7 @@ data class NavigationItem(
 
 @Composable
 fun MainScreen(navController: NavHostController,type: String="0") {
-    var context = LocalContext.current
+    val context = LocalContext.current
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
         NavigationItem(title = "应用", icon = Icons.Filled.Apps),

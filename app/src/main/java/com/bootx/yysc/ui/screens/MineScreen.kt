@@ -79,12 +79,12 @@ fun MineScreen(
     mineViewModel: MineViewModel = viewModel(),
     userViewModel: UserViewModel = viewModel()
 ) {
-    var gson = Gson()
+    val gson = Gson()
     val storeManager: StoreManager = StoreManager(LocalContext.current)
     var showTopBar by remember {
         mutableStateOf(false)
     }
-    var context = LocalContext.current
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
 
@@ -178,7 +178,11 @@ fun MineScreen(
                         }
                         RightIcon {
                             coroutineScope.launch {
-
+                                navController.navigate(
+                                    Destinations.MemberFrame.route + "/${
+                                        userViewModel.userInfo.id
+                                    }"
+                                )
                             }
                         }
                     }
