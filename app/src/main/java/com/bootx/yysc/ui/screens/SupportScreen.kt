@@ -11,21 +11,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -33,19 +30,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import coil.compose.SubcomposeAsyncImage
+import com.bootx.yysc.ui.components.GifImage
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.requestRewardAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
+import com.bootx.yysc.viewmodel.SupportViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SupportScreen(navController: NavHostController) {
+fun SupportScreen(navController: NavHostController,supportViewModel: SupportViewModel= viewModel()) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        supportViewModel.loadAd(context)
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,17 +74,7 @@ fun SupportScreen(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                SubcomposeAsyncImage(
-                    loading = {
-                        CircularProgressIndicator() // 圆形进度条
-                    },
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(RoundedCornerShape(240.0f)),
-                    model = "https://img.zcool.cn/community/0132255a604c8da80120121f36db45.gif",
-                    contentDescription = ""
-                )
+                GifImage(url = "https://img.zcool.cn/community/0132255a604c8da80120121f36db45.gif",height = 300.dp)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     buildAnnotatedString {
@@ -91,7 +85,7 @@ fun SupportScreen(navController: NavHostController) {
                                 fontWeight = FontWeight.Bold,
                             )
                         ) {
-                            append("1")
+                            append("${supportViewModel.loadAdEntity.times}")
                         }
                         withStyle(style = SpanStyle(color = Color.Black)) {
                             append("次")
@@ -99,11 +93,13 @@ fun SupportScreen(navController: NavHostController) {
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "已获得5硬币")
+                Text(text = "已获得${supportViewModel.loadAdEntity.point}硬币")
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = { requestRewardAd(context,onClose={status->
-                    run {
-                        Log.i("requestInteractionAd", "SupportScreen: $status")
+                Button(onClick = { requestRewardAd(context,onClose={type->
+                    Log.i("requestRewardAd", "SupportScreen: ${type}")
+                    coroutineScope.launch {
+                        supportViewModel.reward(context)
+                        supportViewModel.loadAd(context)
                     }
                 }) }) {
                     Text(text = "观看激励广告")

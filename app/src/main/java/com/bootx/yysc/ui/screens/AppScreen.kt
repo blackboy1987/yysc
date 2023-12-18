@@ -50,7 +50,8 @@ import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.model.entity.CategoryEntity
 import com.bootx.yysc.ui.components.Item3
-import com.bootx.yysc.ui.components.Loading
+import com.bootx.yysc.ui.components.Loading302
+import com.bootx.yysc.ui.components.Loading404
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
@@ -128,7 +129,7 @@ fun AppScreen(
                             .padding(top = 16.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Loading()
+                        Loading302()
                     }
                 } else {
                     LazyColumn(
@@ -160,15 +161,7 @@ fun AppScreen(
                         .pullRefresh(state),
                 ) {
                     if (vm.softListLoading) {
-                        Box(
-                            modifier = Modifier
-                                .width(60.dp)
-                                .fillMaxHeight()
-                                .padding(top = 16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Loading()
-                        }
+                        Loading404()
                     }
                     LazyColumn(
                         state = lazyListState,

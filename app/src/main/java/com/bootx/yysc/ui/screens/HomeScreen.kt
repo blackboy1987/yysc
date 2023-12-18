@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.service.CenterBarData
 import com.bootx.yysc.ui.components.AdData
 import com.bootx.yysc.ui.components.CardTitle
@@ -92,7 +93,7 @@ fun HomeScreen(
                         })
                 } else {
                     SoftIcon4(
-                        url = "https://bootx-tuchuang.oss-cn-hangzhou.aliyuncs.com/avatar/0.png?x-oss-process=style/size_100",
+                        url = "${Config.imageUrl}avatar/0.png?x-oss-process=style/size_100",
                         modifier = Modifier.clickable {
                             navController.navigate(Destinations.LoginFrame.route)
                         })

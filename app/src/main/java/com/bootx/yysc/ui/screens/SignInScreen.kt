@@ -83,8 +83,14 @@ fun SignInScreen(navController: NavHostController, userViewModel: UserViewModel 
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             color = MaterialTheme.colorScheme.primary
                         )
+                        var text = "连续签到${userViewModel.signInInfo.days}天";
+                        if(!userViewModel.signInInfo.isSign){
+                            text += "，今日未签到"
+                        }else{
+                            text += "，排名：${userViewModel.signInInfo.rank}"
+                        }
                         Text(
-                            text = "已连续签到${userViewModel.signInInfo.days}天",
+                            text = text,
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
                             color = MaterialTheme.colorScheme.secondary
                         )
