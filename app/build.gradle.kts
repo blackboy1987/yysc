@@ -9,6 +9,10 @@ android {
     namespace = "com.bootx.yysc"
     compileSdk = 34
 
+    buildFeatures{
+        buildConfig=true
+    }
+
     defaultConfig {
         applicationId = "com.bootx.yysc"
         minSdk = 27
