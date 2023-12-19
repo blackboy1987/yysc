@@ -1,6 +1,5 @@
 package com.bootx.yysc.viewmodel
 
-import android.R.attr
 import android.app.Activity
 import android.content.Context
 import android.content.Intent

@@ -83,7 +83,9 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                MySearchBar()
+                MySearchBar(onClick = {
+                    navController.navigate(Destinations.SearchFrame.route)
+                })
             }, navigationIcon = {
                 if (userViewModel.userInfo.id > 0) {
                     SoftIcon4(
