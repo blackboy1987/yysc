@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -83,7 +84,7 @@ fun SearchScreen(
 
     val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
-        //获取分类列表
+        //获取热搜应用
         hotList = softViewModel.orderBy(token,1, 20, "8")
         hotSearchViewModel.fetchList(token,)
     }
@@ -186,7 +187,7 @@ fun SearchScreen(
         Surface(modifier = Modifier.padding(it)) {
 
             if(searchStatus){
-                PrimaryTabRow(
+                SecondaryTabRow(
                     indicator= {tabPositions->
                         if (selectedTabIndex < tabPositions.size) {
                             val width by animateDpAsState(targetValue = tabPositions[selectedTabIndex].width,

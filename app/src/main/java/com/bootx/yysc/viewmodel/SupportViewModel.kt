@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.bootx.yysc.model.entity.SoftDetailEntity
 import com.bootx.yysc.model.service.LoadAdEntity
 import com.bootx.yysc.model.service.RewardService
 import com.bootx.yysc.util.CommonUtils
