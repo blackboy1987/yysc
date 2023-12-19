@@ -71,5 +71,4 @@ object CommonUtils {
     fun getToken(context: Context): String{
        return SharedPreferencesUtils(context).get("token")
     }
-
 }

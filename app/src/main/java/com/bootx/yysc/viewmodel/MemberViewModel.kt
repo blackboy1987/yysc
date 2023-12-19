@@ -17,11 +17,6 @@ class MemberViewModel:ViewModel() {
 
     ))
 
-
-
-
-
-
     suspend fun loadUserInfo(context: Context, id: String) {
         try {
             val res = memberService.load(SharedPreferencesUtils(context).get("token"),id)
