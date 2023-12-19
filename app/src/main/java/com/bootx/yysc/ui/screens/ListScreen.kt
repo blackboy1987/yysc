@@ -71,7 +71,7 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,so
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         // 发起网络请求
-        softViewModel.orderBy(token,1,20,orderBy)
+        softViewModel.orderBy(context,1,20,orderBy)
         connected.value = NetWorkUtils.isConnected(context)
     }
     Scaffold(

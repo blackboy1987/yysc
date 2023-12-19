@@ -1,36 +1,31 @@
 package com.bootx.yysc.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.HotSearchEntity
 import com.bootx.yysc.model.service.HotSearchService
+import com.bootx.yysc.util.CommonUtils
+import com.bootx.yysc.util.SharedPreferencesUtils
 
 class HotSearchViewModel:ViewModel() {
     private val hotSearchService = HotSearchService.instance()
 
-    var listLoaded by mutableStateOf(false)
-        private set
-
-    var list = mutableListOf<HotSearchEntity>()
+    var list by mutableStateOf(listOf<HotSearchEntity>())
 
 
-
-    suspend fun fetchList(token: String,): List<HotSearchEntity> {
+    suspend fun fetchList(context: Context){
         try {
-            listLoaded = false
-            val res = hotSearchService.fetchList(token)
+            val res = hotSearchService.fetchList(SharedPreferencesUtils(context).get("token"))
             if (res.code == 0 && res.data != null) {
                 val tmpList = mutableListOf<HotSearchEntity>()
                 tmpList.addAll(res.data)
                 list = tmpList
-                listLoaded = true
-                return tmpList;
             }
         }catch (e: Throwable){
-            return listOf()
+            CommonUtils.toast(context,"${e.message}")
         }
-        return listOf()
     }
 }
