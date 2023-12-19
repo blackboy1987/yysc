@@ -57,9 +57,9 @@ android {
 
 dependencies {
 
-    implementation("androidx.room:room-runtime:2.5.2")
-    annotationProcessor("androidx.room:room-compiler:2.5.2")
-    ksp("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
     implementation("io.github.leavesczy:matisse:1.1.3")
 
     implementation("io.github.azhon:appupdate:4.3.1")
