@@ -2,21 +2,21 @@ package com.bootx.yysc
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.lifecycleScope
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.AdConfig
+import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.HttpUtils
 import com.bootx.yysc.util.IHttpCallback
 import com.bootx.yysc.util.SharedPreferencesUtils
-import com.bootx.yysc.util.StoreManager
 import com.google.gson.Gson
 import com.youxiao.ssp.core.SSPSdk
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -54,28 +54,50 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        HttpUtils.post("{}",Config.baseUrl+"/api/adConfig",object:IHttpCallback{
-            override fun onSuccess(data: Any?) {
-                try {
-                    val gson = Gson()
-                    val adConfig = gson.fromJson("${data}", AdConfig::class.java)
-                    SharedPreferencesUtils(this@MainActivity).set("adConfig",gson.toJson(adConfig))
-                    Log.e("adConfig", "onSuccess: ${data.toString()}")
-                    SSPSdk.init(this@MainActivity, adConfig.mediaId, true)
-                    SSPSdk.init(this@MainActivity, adConfig.mediaId, null, true)
-                    SSPSdk.setReqPermission(true)
-                }catch (e: Exception){
-                    Log.e("adConfig", "onSuccess: 广告配置失败：${data}")
+
+        val connectivityManager = getSystemService(ConnectivityManager::class.java)
+        val currentNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(currentNetwork)
+        //
+        if (networkCapabilities != null) {
+            if(networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)){
+                // 不是表示网络不是虚拟专用网。
+            }else{
+                // 是虚拟网络
+                CommonUtils.toast(this@MainActivity,"虚拟网络")
+            }
+        }
+
+
+
+        HttpUtils.post(
+            "{}",
+            Config.baseUrl + "/api/adConfig",
+            object : IHttpCallback {
+                override fun onSuccess(data: Any?) {
+                    try {
+                        val gson = Gson()
+                        val adConfig = gson.fromJson("${data}", AdConfig::class.java)
+                        SharedPreferencesUtils(this@MainActivity).set(
+                            "adConfig",
+                            gson.toJson(adConfig)
+                        )
+                        Log.e("adConfig", "onSuccess: ${data.toString()}")
+                        SSPSdk.init(this@MainActivity, adConfig.mediaId, true)
+                        SSPSdk.init(this@MainActivity, adConfig.mediaId, null, true)
+                        SSPSdk.setReqPermission(true)
+                    } catch (e: Exception) {
+                        Log.e("adConfig", "onSuccess: 广告配置失败：${data}")
+                    }
+
+
                 }
 
+                override fun onFailed(error: Any?) {
+                    Log.e("adConfig", "onFailed: 广告配置失败：${error.toString()}")
+                }
 
-            }
-
-            override fun onFailed(error: Any?) {
-                Log.e("adConfig", "onFailed: 广告配置失败：${error.toString()}")
-            }
-
-        })
+            })
 
 
 
