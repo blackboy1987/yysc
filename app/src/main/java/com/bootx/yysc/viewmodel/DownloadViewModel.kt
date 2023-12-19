@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.azhon.appupdate.config.Constant
 import com.azhon.appupdate.listener.OnDownloadListener
@@ -26,8 +25,7 @@ class DownloadViewModel:ViewModel() {
     suspend fun download(context: Context,id: Int) {
         // 接口请求下载地址
         val downloadInfo = softService.download(SharedPreferencesUtils(context).get("token"), id)
-        val data = downloadInfo.data
-        Log.e("download", "download: ${data.toString()}", )
+        var data = downloadInfo.data
         if (downloadInfo.code == 0 && data != null && data.downloadUrl.isNotEmpty()) {
             val manager = DownloadManager.Builder(context as Activity).run {
                 apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
@@ -81,7 +79,7 @@ class DownloadViewModel:ViewModel() {
                         )
                     }
                 })
-                apkVersionName("${data.versionName ?:"未知"}")
+                apkVersionName(data.versionName)
                 apkSize(data.size)
                 apkDescription("更新描述信息(取服务端返回数据)")
                 build()

@@ -1,5 +1,6 @@
 package com.bootx.yysc.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,6 +59,7 @@ import coil.compose.AsyncImage
 import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.TabRowList
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.fontSize14
 import com.bootx.yysc.util.StoreManager
@@ -77,19 +79,21 @@ fun SearchScreen(
     softViewModel: SoftViewModel = viewModel(),
     hotSearchViewModel: HotSearchViewModel = viewModel()
 ) {
-    val storeManager: StoreManager = StoreManager(LocalContext.current)
+    val context = LocalContext.current
+    val storeManager = StoreManager(context)
     val coroutineScope = rememberCoroutineScope()
     var hotList by remember { mutableStateOf(listOf<SoftEntity>()) }
     var searchStatus by remember { mutableStateOf(false) }
 
-    val token = storeManager.getToken().collectAsState(initial = Config.initToken).value
     LaunchedEffect(Unit) {
         //获取热搜应用
-        hotList = softViewModel.orderBy(token,1, 20, "8")
-        hotSearchViewModel.fetchList(token,)
+        hotList = softViewModel.orderBy(context, 1, 20, "8")
+        // 热门搜索
+        hotSearchViewModel.fetchList(context)
+        Log.e("LaunchedEffect", "SearchScreen: ${hotSearchViewModel.list.size}")
     }
     val gson = Gson()
-    val keywords = remember {
+    var keywords by remember {
         mutableStateOf("")
     }
     val searchResult = storeManager.get("keywords").collectAsState(initial = "[]")
@@ -132,14 +136,14 @@ fun SearchScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 title = {
                     OutlinedTextField(
-                        value = keywords.value,
+                        value = keywords,
                         onValueChange = {
-                            keywords.value = it
+                            keywords = it
                         },
                         trailingIcon = {
-                            if (keywords.value.isNotEmpty()) Icon(
+                            if (keywords.isNotEmpty()) Icon(
                                 modifier = Modifier.clickable {
-                                    keywords.value = ""
+                                    keywords = ""
                                     searchStatus = false
                                 },
                                 imageVector = Icons.Outlined.Close,
@@ -151,14 +155,6 @@ fun SearchScreen(
                         },
                         shape = RoundedCornerShape(8.dp),
                         singleLine = true,
-                        /*colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            disabledContainerColor = Color.White,
-                            focusedBorderColor = Color.White,
-                            unfocusedBorderColor = Color.White,
-                        )*/
-
                     )
                 },
                 navigationIcon = {
@@ -172,8 +168,7 @@ fun SearchScreen(
                         contentDescription = "",
                         modifier = Modifier.clickable {
                             coroutineScope.launch {
-                                add(keywords.value)
-                                // 搜索
+                                add(keywords)
                                 searchStatus = true
                             }
                         }
@@ -186,61 +181,53 @@ fun SearchScreen(
         var selectedTabIndex by remember { mutableIntStateOf(0) }
         Surface(modifier = Modifier.padding(it)) {
 
-            if(searchStatus){
-                SecondaryTabRow(
-                    indicator= {tabPositions->
-                        if (selectedTabIndex < tabPositions.size) {
-                            val width by animateDpAsState(targetValue = tabPositions[selectedTabIndex].width,
-                                label = ""
-                            )
-                            TabRowDefaults.PrimaryIndicator(
-                                Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                                width = width
-                            )
-                        }
-                    },
-                    selectedTabIndex = selectedTabIndex,
-                    modifier = Modifier.focusRestorer(),
-                    tabs = {
-                        tabs.forEachIndexed { index, item ->
-                            Tab(selected = selectedTabIndex == index, onClick = {
-                                selectedTabIndex = index
-                            }) {
-                                Text(
-                                    text = item,
-                                    fontSize = fontSize14,
-                                    modifier = Modifier.padding(4.dp),
-                                )
-                            }
-                        }
-                    }
-                )
+            if (searchStatus) {
+                TabRowList(tabs = tabs, selectedTabIndex = selectedTabIndex, onClick = { index ->
+                    selectedTabIndex = index
+                })
                 LazyColumn(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                ){
+                ) {
 
                 }
-            }else{
+            } else {
                 LazyColumn(
                     modifier = Modifier.padding(horizontal = 16.dp),
                 ) {
                     val get = get().filter { text -> text.isNotEmpty() }
-                    if(get.isNotEmpty()){
+                    if (get.isNotEmpty()) {
                         item {
-                            History(title="搜索记录", allowClear = true, list = get, clear = { clear() }, onSearch = {value->
-                                // 搜索
-                            })
+                            History(
+                                title = "搜索记录",
+                                allowClear = true,
+                                list = get,
+                                clear = { clear() },
+                                onSearch = { value ->
+                                    coroutineScope.launch {
+                                        add(value)
+                                        keywords = value
+                                        searchStatus = true
+                                    }
+                                })
                         }
                     }
-
-                    if(hotSearchViewModel.list.size>0){
-                        item{
-                            History(title="热门搜索", allowClear = true, list = hotSearchViewModel.list.map { item-> item.name }, clear = { clear() }, onSearch = {value->
-                                // 搜索
-                            })
+                    if (hotSearchViewModel.list.size > 0) {
+                        item {
+                            History(
+                                title = "热门搜索",
+                                allowClear = false,
+                                list = hotSearchViewModel.list.map { item -> item.name },
+                                clear = { clear() },
+                                onSearch = { value ->
+                                    coroutineScope.launch {
+                                        add(value)
+                                        keywords = value
+                                        searchStatus = true
+                                    }
+                                })
                         }
                     }
-                    if(hotList.isNotEmpty()) {
+                    if (hotList.isNotEmpty()) {
                         item {
                             Spacer(modifier = Modifier.height(24.dp))
                             Row(
@@ -298,20 +285,29 @@ fun SearchScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun History(title: String,allowClear: Boolean=false,list: List<String>,clear: () -> Unit,onSearch:(keyword: String)->Unit){
+fun History(
+    title: String,
+    allowClear: Boolean = false,
+    list: List<String>,
+    clear: () -> Unit,
+    onSearch: (keyword: String) -> Unit
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = title)
-        if(allowClear){
-            Text(text = "清空", modifier = Modifier.clickable {
-                clear()
-            })
+        if (allowClear) {
+            Text(text = "清空", modifier = Modifier
+                .padding(4.dp)
+                .clickable {
+                    clear()
+                })
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
     FlowRow(
         horizontalArrangement = Arrangement.Start,
         verticalArrangement = Arrangement.Center
@@ -319,10 +315,10 @@ fun History(title: String,allowClear: Boolean=false,list: List<String>,clear: ()
         list.forEach { s ->
             Card(
                 modifier = Modifier
+                    .padding(4.dp)
                     .clickable {
                         onSearch(s)
-                    }
-                    .padding(4.dp),
+                    },
             ) {
                 Text(
                     text = s,

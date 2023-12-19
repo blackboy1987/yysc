@@ -13,6 +13,7 @@ import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.model.service.SoftService
 import com.bootx.yysc.repository.DataBase
 import com.bootx.yysc.repository.entity.HistoryEntity
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,9 +40,9 @@ class SoftViewModel:ViewModel() {
         private set
 
 
-    suspend fun orderBy(token: String,pageNumber: Int,pageSize: Int,orderBy: String): List<SoftEntity> {
+    suspend fun orderBy(context: Context,pageNumber: Int,pageSize: Int,orderBy: String): List<SoftEntity> {
         try {
-            val res = softService.orderBy(token,pageNumber, pageSize,orderBy)
+            val res = softService.orderBy(SharedPreferencesUtils(context).get("token"),pageNumber, pageSize,orderBy)
             if (res.code == 0 && res.data != null) {
                 val tmpList = mutableListOf<SoftEntity>()
                 tmpList.addAll(res.data)
