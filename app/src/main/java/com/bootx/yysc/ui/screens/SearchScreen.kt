@@ -71,8 +71,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalMaterial3Api::class
 )
 @Composable
 fun SearchScreen(
