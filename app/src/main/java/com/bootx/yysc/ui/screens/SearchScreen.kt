@@ -131,7 +131,6 @@ fun SearchScreen(
                     OutlinedTextField(
                         value = keywords,
                         textStyle = TextStyle.Default,
-                        value = keywords,
                         onValueChange = {
                             keywords = it
                         },
