@@ -134,7 +134,6 @@ fun SearchScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(horizontal = 16.dp),
                 title = {
                     OutlinedTextField(
                         textStyle = TextStyle.Default,
