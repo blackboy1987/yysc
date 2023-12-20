@@ -3,11 +3,13 @@ package com.bootx.yysc.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,17 +18,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -55,41 +65,79 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.bootx.yysc.config.Config
+import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.model.entity.SoftEntity
+import com.bootx.yysc.model.service.SearchData
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.SoftIcon6
+import com.bootx.yysc.ui.components.SoftIcon8_8
 import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.TabRowList
+import com.bootx.yysc.ui.components.Tag
+import com.bootx.yysc.ui.components.ad.RequestBannerAd
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
+import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.HotSearchViewModel
+import com.bootx.yysc.viewmodel.SearchViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
     navController: NavHostController,
     softViewModel: SoftViewModel = viewModel(),
-    hotSearchViewModel: HotSearchViewModel = viewModel()
+    hotSearchViewModel: HotSearchViewModel = viewModel(),
+    searchViewModel: SearchViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val storeManager = StoreManager(context)
     val coroutineScope = rememberCoroutineScope()
     var hotList by remember { mutableStateOf(listOf<SoftEntity>()) }
     var searchStatus by remember { mutableStateOf(false) }
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val refreshScope = rememberCoroutineScope()
+    var refreshing by remember { mutableStateOf(false) }
+    var keywords by remember {
+        mutableStateOf("")
+    }
+
+    fun refresh() = refreshScope.launch {
+        refreshing = true
+        searchViewModel.search(context, keywords, selectedTabIndex, 1)
+        refreshing = false
+    }
+
+    val state = rememberPullRefreshState(refreshing, ::refresh)
+    val lazyListState = rememberLazyListState()
+    lazyListState.onBottomReached(buffer = 3) {
+        coroutineScope.launch {
+            if (searchViewModel.hasMore) {
+                searchViewModel.search(
+                    context,
+                    keywords,
+                    selectedTabIndex,
+                    searchViewModel.pageNumber
+                )
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         //获取热搜应用
         hotList = softViewModel.orderBy(context, 1, 20, "8")
         // 热门搜索
         hotSearchViewModel.fetchList(context)
+
+        searchViewModel.type(context)
     }
     val gson = Gson()
-    var keywords by remember {
-        mutableStateOf("")
-    }
+
     val searchResult = storeManager.get("keywords").collectAsState(initial = "[]")
 
     fun add(value: String) {
@@ -121,6 +169,15 @@ fun SearchScreen(
     fun clear() {
         coroutineScope.launch {
             storeManager.save("keywords", gson.toJson(listOf<String>()))
+        }
+    }
+
+    fun search(keyword: String) {
+        keywords = keyword
+        add(keywords)
+        searchStatus = true
+        coroutineScope.launch {
+            searchViewModel.search(context, keywords, selectedTabIndex, 1)
         }
     }
 
@@ -170,19 +227,10 @@ fun SearchScreen(
                     }
                 },
                 actions = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "",
-                        modifier = Modifier.clickable {
-                            coroutineScope.launch {
-                                add(keywords)
-                                searchStatus = true
-                            }
-                        }
-                    )
                     IconButton(onClick = {
-                        add(keywords)
-                        searchStatus = true
+                        if (keywords.isNotEmpty()) {
+                            search(keywords)
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -193,34 +241,75 @@ fun SearchScreen(
             )
         }
     ) {
-        val tabs = listOf("站内", "全网", "广场", "用户")
-        var selectedTabIndex by remember { mutableIntStateOf(1) }
         Surface(modifier = Modifier.padding(it)) {
 
             if (searchStatus) {
-                TabRowList(tabs = tabs, selectedTabIndex = selectedTabIndex, onClick = { index ->
-                    selectedTabIndex = index
-                })
-                LazyColumn(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                TabRowList(
+                    tabs = searchViewModel.typeList,
+                    selectedTabIndex = selectedTabIndex,
+                    onClick = { index ->
+                        selectedTabIndex = index
+                        coroutineScope.launch {
+                            searchViewModel.search(context, keywords, index, 1)
+                            lazyListState.animateScrollToItem(0)
+                        }
+                    })
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 64.dp)
+                        .fillMaxHeight()
+                        .padding(top = 16.dp)
+                        .pullRefresh(state),
                 ) {
-                    if (selectedTabIndex == 0) {
-                        items(200) {
-                            SoftItem(item = SoftEntity())
-                        }
-                    } else if (selectedTabIndex == 1) {
-                        items(200) {
-                            Item2(item = Item2Data())
-                        }
-                    } else if (selectedTabIndex == 2) {
-                        items(200) {
-                            SoftItem(item = SoftEntity())
-                        }
-                    } else if (selectedTabIndex == 3) {
-                        items(200) {
-                            SoftItem(item = SoftEntity())
+                    LazyColumn(
+                        state = lazyListState,
+                    ) {
+                        if (selectedTabIndex == 0) {
+                            items(searchViewModel.list) { item ->
+                                SoftItem1(item = item)
+                            }
+                        } else if (selectedTabIndex == 1) {
+                            items(searchViewModel.list) { item ->
+                                UserItem(item = item, onClick = { type ->
+                                    coroutineScope.launch {
+                                        if (type == 0) {
+                                            // 关注
+                                            searchViewModel.userType(context, item.id, type)
+                                        } else if (type == 1) {
+                                            // 取消关注
+                                            searchViewModel.userType(context, item.id, type)
+                                        } else if (type == 2) {
+                                            // 用户详细页面
+                                            navController.navigate(Destinations.MemberFrame.route + "/${item.id}")
+                                        }
+                                    }
+                                })
+                            }
+                        } else if (selectedTabIndex == 2) {
+                            items(200) {
+                                SoftItem(item = SoftEntity())
+                            }
+                        } else if (selectedTabIndex == 3) {
+                            items(searchViewModel.list) { item ->
+                                UserItem(item = item, onClick = { type ->
+                                    coroutineScope.launch {
+                                        if (type == 0) {
+                                            // 关注
+                                            searchViewModel.userType(context, item.id, type)
+                                        } else if (type == 1) {
+                                            // 取消关注
+                                            searchViewModel.userType(context, item.id, type)
+                                        } else if (type == 2) {
+                                            // 用户详细页面
+                                            navController.navigate(Destinations.MemberFrame.route + "/${item.id}")
+                                        }
+                                    }
+                                })
+                            }
                         }
                     }
+                    PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.Center))
+                    RequestBannerAd(context = context)
                 }
             } else {
                 LazyColumn(
@@ -235,11 +324,7 @@ fun SearchScreen(
                                 list = get,
                                 clear = { clear() },
                                 onSearch = { value ->
-                                    coroutineScope.launch {
-                                        add(value)
-                                        keywords = value
-                                        searchStatus = true
-                                    }
+                                    search(value)
                                 })
                         }
                     }
@@ -252,9 +337,7 @@ fun SearchScreen(
                                 clear = { clear() },
                                 onSearch = { value ->
                                     coroutineScope.launch {
-                                        add(value)
-                                        keywords = value
-                                        searchStatus = true
+                                        search(value)
                                     }
                                 })
                         }
@@ -364,37 +447,135 @@ fun History(
     Spacer(modifier = Modifier.height(24.dp))
 }
 
-data class Item2Data(
-    val title: String = "",
-    val size: String = "",
-    val updateDate: String = "",
-)
-
 @Composable
-fun Item2(item: Item2Data) {
+fun Item2(item: SearchData) {
     Column {
         Text(text = "主标题", fontSize = MaterialTheme.typography.bodyLarge.fontSize)
         Text(
             buildAnnotatedString {
-                withStyle(style = SpanStyle(
-                    color = MaterialTheme.typography.bodySmall.color,
-                    fontSize = MaterialTheme.typography.titleSmall.fontSize
-                )) {
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.typography.bodySmall.color,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize
+                    )
+                ) {
                     append("3.0 M")
                 }
-                withStyle(style = SpanStyle(
-                    color = MaterialTheme.typography.bodySmall.color,
-                    fontSize = MaterialTheme.typography.titleSmall.fontSize
-                )) {
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.typography.bodySmall.color,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize
+                    )
+                ) {
                     append(" * ")
                 }
-                withStyle(style = SpanStyle(
-                    color = MaterialTheme.typography.bodySmall.color,
-                    fontSize = MaterialTheme.typography.titleSmall.fontSize
-                )) {
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.typography.bodySmall.color,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize
+                    )
+                ) {
                     append("2023-04-23")
                 }
             }
         )
+    }
+}
+
+
+@Composable
+fun UserItem(item: SearchData, onClick: (type: Int) -> Unit) {
+    ListItem(modifier = Modifier.clickable {
+        onClick(2)
+    }, headlineContent = {
+        Text(text = "${item.username}")
+    }, supportingContent = {
+        Text(text = "坐拥${item.point}枚硬币")
+    }, leadingContent = {
+        SoftIcon6(url = "${item.avatar}")
+    }, trailingContent = {
+        if (item.isConcern > 0) {
+            OutlinedButton(onClick = {
+                onClick(1)
+            }) {
+                Text(text = "取关")
+            }
+        } else {
+            OutlinedButton(onClick = {
+                onClick(0)
+            }) {
+                Text(text = "关注")
+            }
+        }
+
+    })
+}
+
+@Composable
+fun SoftItem1(item: SearchData) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SoftIcon8_8(url = "${item.logo}")
+        Column(
+            modifier = Modifier
+                .weight(1.0f)
+                .padding(start = 16.dp)
+        ) {
+            Text(
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                text = "${item.name}",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(bottom = 2.dp)
+            )
+            Row(
+                modifier = Modifier.padding(bottom = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    modifier = Modifier.padding(end = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .padding(end = 4.dp),
+                        imageVector = Icons.Default.Star,
+                        contentDescription = ""
+                    )
+                    Text(
+                        text = "${item.score}",
+                        fontSize = MaterialTheme.typography.labelSmall.fontSize
+                    )
+                }
+                Text(
+                    text = "${item.versionName}",
+                    fontSize = MaterialTheme.typography.labelSmall.fontSize
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Tag(text = "官方")
+                Text(
+                    text = "${item.size}",
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    fontSize = MaterialTheme.typography.labelSmall.fontSize
+                )
+                Text(text = "${item.memo}", fontSize = MaterialTheme.typography.labelSmall.fontSize)
+            }
+        }
+        OutlinedButton(onClick = {}) {
+            Text(text = "下载")
+        }
     }
 }
