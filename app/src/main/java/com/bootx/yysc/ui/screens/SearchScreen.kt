@@ -62,6 +62,7 @@ import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.SoftItem
 import com.bootx.yysc.ui.components.TabRowList
+import com.bootx.yysc.ui.components.TabRowList
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.util.StoreManager
 import com.bootx.yysc.viewmodel.HotSearchViewModel
@@ -135,12 +136,21 @@ fun SearchScreen(
             TopAppBar(
                 title = {
                     OutlinedTextField(
+                        value = keywords,
                         textStyle = TextStyle.Default,
                         value = keywords,
                         onValueChange = {
                             keywords = it
                         },
                         trailingIcon = {
+                            if (keywords.isNotEmpty()) Icon(
+                                modifier = Modifier.clickable {
+                                    keywords = ""
+                                    searchStatus = false
+                                },
+                                imageVector = Icons.Outlined.Close,
+                                contentDescription = null
+                            )
                             if (keywords.isNotEmpty()) IconButton(onClick = {
                                 keywords = ""
                                 searchStatus = false
@@ -168,6 +178,16 @@ fun SearchScreen(
                     }
                 },
                 actions = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "",
+                        modifier = Modifier.clickable {
+                            coroutineScope.launch {
+                                add(keywords)
+                                searchStatus = true
+                            }
+                        }
+                    )
                     IconButton(onClick = {
                         add(keywords)
                         searchStatus = true
@@ -190,6 +210,9 @@ fun SearchScreen(
                     selectedTabIndex = index
                 })
                 LazyColumn(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                ) {
+
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 64.dp),
                 ) {
                     if (selectedTabIndex == 0) {
