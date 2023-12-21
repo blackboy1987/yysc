@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.azhon.appupdate.config.Constant
 import com.azhon.appupdate.listener.OnDownloadListener
@@ -15,6 +16,9 @@ import com.bootx.yysc.repository.DataBase
 import com.bootx.yysc.repository.entity.DownloadManagerEntity
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -25,10 +29,14 @@ class DownloadViewModel:ViewModel() {
     suspend fun download(context: Context,id: Int) {
         // 接口请求下载地址
         val downloadInfo = softService.download(SharedPreferencesUtils(context).get("token"), id)
-        var data = downloadInfo.data
+        val data = downloadInfo.data
+        Log.i("download", "download: ${data.toString()}")
         if (downloadInfo.code == 0 && data != null && data.downloadUrl.isNotEmpty()) {
             val manager = DownloadManager.Builder(context as Activity).run {
                 apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
+                    .showNotification(false)
+                    .showBgdToast(false)
+                    .showNewerToast(false)
                 apkName(data.name + ".apk").onDownloadListener(onDownloadListener = object :
                     OnDownloadListener {
                     override fun cancel() {
@@ -41,16 +49,23 @@ class DownloadViewModel:ViewModel() {
                             "点击安装${data.name}",
                             Constant.AUTHORITIES!!, apk
                         )
-                        // 写入到数据库
-                        DataBase.getDb(context)?.getDownloadManagerDao()?.insert(
-                            DownloadManagerEntity(
-                                id = id,
-                                name = data.name,
-                                logo = data.logo,
-                                packageName = data.packageName ?: "",
-                                path = apk.path,
-                            )
-                        )
+                        CoroutineScope(Dispatchers.IO).launch {
+                            // 写入到数据库
+                            try {
+                                DataBase.getDb(context)?.getDownloadManagerDao()?.insert(
+                                    DownloadManagerEntity(
+                                        id = id,
+                                        name = data.name,
+                                        logo = data.logo,
+                                        packageName = data.packageName ?: "",
+                                        path = apk.path,
+                                    )
+                                )
+                            }catch (e:Exception){
+                              e.stackTrace
+                            }
+                        }
+
                     }
 
                     override fun downloading(max: Int, progress: Int) {

@@ -80,6 +80,7 @@ import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.util.StoreManager
+import com.bootx.yysc.viewmodel.DownloadViewModel
 import com.bootx.yysc.viewmodel.HotSearchViewModel
 import com.bootx.yysc.viewmodel.SearchViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
@@ -93,7 +94,8 @@ fun SearchScreen(
     navController: NavHostController,
     softViewModel: SoftViewModel = viewModel(),
     hotSearchViewModel: HotSearchViewModel = viewModel(),
-    searchViewModel: SearchViewModel = viewModel()
+    searchViewModel: SearchViewModel = viewModel(),
+    downloadViewModel: DownloadViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val storeManager = StoreManager(context)
@@ -266,21 +268,24 @@ fun SearchScreen(
                     ) {
                         if (selectedTabIndex == 0) {
                             items(searchViewModel.list) { item ->
-                                SoftItem1(item = item)
+                                SoftItem1(item = item,onClick={type->
+                                    coroutineScope.launch {
+                                        if(type==0){
+                                            navController.navigate(Destinations.AppDetailFrame.route+"/${item.id}")
+                                        }else{
+                                            downloadViewModel.download(context,item.id)
+                                        }
+                                    }
+                                })
                             }
                         } else if (selectedTabIndex == 1) {
                             items(searchViewModel.list) { item ->
                                 UserItem(item = item, onClick = { type ->
                                     coroutineScope.launch {
-                                        if (type == 0) {
-                                            // 关注
-                                            searchViewModel.userType(context, item.id, type)
-                                        } else if (type == 1) {
-                                            // 取消关注
-                                            searchViewModel.userType(context, item.id, type)
-                                        } else if (type == 2) {
-                                            // 用户详细页面
-                                            navController.navigate(Destinations.MemberFrame.route + "/${item.id}")
+                                        when (type) {
+                                            0 -> searchViewModel.userType(context, item.id, type)
+                                            1 -> searchViewModel.userType(context, item.id, type)
+                                            2 -> navController.navigate(Destinations.MemberFrame.route + "/${item.id}")
                                         }
                                     }
                                 })
@@ -512,11 +517,14 @@ fun UserItem(item: SearchData, onClick: (type: Int) -> Unit) {
 }
 
 @Composable
-fun SoftItem1(item: SearchData) {
+fun SoftItem1(item: SearchData,onClick:(type: Int)->Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .padding(top = 16.dp)
+            .clickable {
+                onClick(0)
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -574,7 +582,9 @@ fun SoftItem1(item: SearchData) {
                 Text(text = "${item.memo}", fontSize = MaterialTheme.typography.labelSmall.fontSize)
             }
         }
-        OutlinedButton(onClick = {}) {
+        OutlinedButton(onClick = {
+            onClick(1)
+        }) {
             Text(text = "下载")
         }
     }
