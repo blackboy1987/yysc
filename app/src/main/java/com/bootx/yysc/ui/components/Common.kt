@@ -43,6 +43,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -167,6 +168,7 @@ fun SoftIcon6(url: String, modifier: Modifier = Modifier) {
             .then(modifier)
             .size(60.dp)
             .clip(CircleShape),
+        contentScale = ContentScale.FillBounds,
         model = url,
         contentDescription = ""
     )
