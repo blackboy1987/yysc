@@ -16,6 +16,7 @@ import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.screens.AboutScreen
 import com.bootx.yysc.ui.screens.AppDetailScreen
 import com.bootx.yysc.ui.screens.AppMoreScreen
+import com.bootx.yysc.ui.screens.AppRankScreen
 import com.bootx.yysc.ui.screens.ComplaintsScreen
 import com.bootx.yysc.ui.screens.DownloadManagerScreen
 import com.bootx.yysc.ui.screens.FanScreen
@@ -59,7 +60,7 @@ fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.SearchFrame.route,
+        startDestination = Destinations.AppRankFrame.route,
     ) {
         composable(
             Destinations.MainFrame.route + "/{type}",
@@ -486,6 +487,21 @@ fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
         ) {
             val id = it.arguments?.getString("id") ?: ""
             MemberScreen(navController, id)
+        }
+        composable(
+            Destinations.AppRankFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            AppRankScreen(navController)
         }
 
 
