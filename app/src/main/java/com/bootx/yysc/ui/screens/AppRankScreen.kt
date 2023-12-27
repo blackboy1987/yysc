@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -62,11 +64,11 @@ fun AppRankScreen(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         appRankViewModel.appRank(context)
-        Log.e("appRankViewModel", "AppRankScreen: ${appRankViewModel.list.toString()}", )
+        Log.e("appRankViewModel", "AppRankScreen: ${appRankViewModel.list.toString()}")
     }
-    if(appRankViewModel.list.isNotEmpty()){
+    if (appRankViewModel.list.isNotEmpty()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0.dp, 0.dp, 0.dp, 0.dp),
             topBar = {
@@ -90,12 +92,14 @@ fun AppRankScreen(
                             onDismissRequest = { expanded = false },
                             offset = DpOffset(0.dp, (-56).dp)
                         ) {
-                            appRankViewModel.list.mapIndexed { index,item->
-                                DropdownMenuItem(text = { Text(text = "${item.title}") }, onClick = {
-                                    selectIndex = index
-                                    selectedTabIndex = 0
-                                    expanded = false
-                                })
+                            appRankViewModel.list.mapIndexed { index, item ->
+                                DropdownMenuItem(
+                                    text = { Text(text = "${item.title}") },
+                                    onClick = {
+                                        selectIndex = index
+                                        selectedTabIndex = 0
+                                        expanded = false
+                                    })
                             }
                         }
                     },
@@ -111,16 +115,19 @@ fun AppRankScreen(
             Surface(
                 modifier = Modifier.padding(it)
             ) {
-                if(appRankViewModel.list.isNotEmpty() && appRankViewModel.list[selectIndex].children.isNotEmpty()){
-                    TabRowScrollList(tabs = appRankViewModel.list[selectIndex].children.map { item->item.title }, selectedTabIndex = selectedTabIndex, onClick = {index->
-                        selectedTabIndex = index
-                    })
+                if (appRankViewModel.list.isNotEmpty() && appRankViewModel.list[selectIndex].children.isNotEmpty()) {
+                    TabRowScrollList(
+                        tabs = appRankViewModel.list[selectIndex].children.map { item -> item.title },
+                        selectedTabIndex = selectedTabIndex,
+                        onClick = { index ->
+                            selectedTabIndex = index
+                        })
                 }
                 Box(
                     modifier = Modifier.padding(top = 60.dp)
-                ){
-                    LazyColumn(){
-                        items(100){index->
+                ) {
+                    LazyColumn() {
+                        items(100) { index ->
                             SoftItemDownload()
                         }
                     }
@@ -132,31 +139,45 @@ fun AppRankScreen(
 
 
 @Composable
-fun SoftItemDownload(){
+fun SoftItemDownload(rank:Int=-1,showDownload:Boolean=false,onDownload:()->Unit={}) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.height(100.dp).fillMaxWidth().clickable {
+
+        }
     ) {
-        Text(text = "1", modifier = Modifier.width(40.dp), textAlign = TextAlign.Center)
+        if(rank>-1){
+            Text(text = "${rank}", modifier = Modifier.width(40.dp), textAlign = TextAlign.Center)
+        }
         SoftIcon6(url = "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1lT9Jm.img")
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp, end = 16.dp)
         ) {
             Text(text = "安卓清理君")
-            Row {
-                Icon(imageVector = Icons.Default.Star, contentDescription = "")
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(imageVector = Icons.Default.Star, contentDescription = "",Modifier.size(12.dp))
                 Text(text = "9.5")
                 Text(text = "3.7.9")
             }
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Icon(imageVector = Icons.Default.Star, contentDescription = "")
                 Tag(text = "星标")
                 Text(text = "今日938")
             }
         }
-        OutlinedButton(onClick = { /*TODO*/ }) {
-            Text(text = "下载")
+        if(showDownload){
+            OutlinedButton(modifier = Modifier.padding(end = 16.dp), onClick = { onDownload() }) {
+                Text(text = "下载")
+            }
         }
     }
 }
