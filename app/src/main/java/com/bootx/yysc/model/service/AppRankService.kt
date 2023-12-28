@@ -1,6 +1,7 @@
 package com.bootx.yysc.model.service
 
 import com.bootx.yysc.model.entity.AppRankEntityListResponse
+import com.bootx.yysc.model.entity.AppRankSearchEntityListResponse
 import com.bootx.yysc.model.entity.AppVersionListResponse
 import com.bootx.yysc.util.HiRetrofit
 import retrofit2.http.Field
@@ -15,6 +16,14 @@ interface AppRankService {
     suspend fun appRank(
         @Header("token") token: String,
     ): AppRankEntityListResponse
+
+    @POST("/api/appRank/search")
+    @FormUrlEncoded
+    suspend fun search(
+        @Header("token") token: String,
+        @Field("type") type: Int,
+        @Field("type1") type1: Int,
+    ): AppRankSearchEntityListResponse
 
     companion object {
         fun instance(): AppRankService {

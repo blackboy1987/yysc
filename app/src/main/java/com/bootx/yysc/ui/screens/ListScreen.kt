@@ -42,7 +42,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun ListScreen(navController: NavHostController,title: String,orderBy: String,softViewModel: SoftViewModel = viewModel(),downloadViewModel:DownloadViewModel= viewModel()) {
+fun ListScreen(
+    navController: NavHostController,
+    title: String,
+    orderBy: String,
+    softViewModel: SoftViewModel = viewModel(),
+    downloadViewModel: DownloadViewModel = viewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
     val connected = remember {
         mutableStateOf(true)
@@ -63,7 +69,7 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,so
     lazyListState.onBottomReached(buffer = 3) {
         coroutineScope.launch {
             refreshing = true
-            softViewModel.loadMore(token,orderBy)
+            softViewModel.loadMore(token, orderBy)
             refreshing = false
         }
     }
@@ -71,7 +77,7 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,so
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         // 发起网络请求
-        softViewModel.orderBy(context,1,20,orderBy)
+        softViewModel.orderBy(context, 1, 20, orderBy)
         connected.value = NetWorkUtils.isConnected(context)
     }
     Scaffold(
@@ -91,24 +97,24 @@ fun ListScreen(navController: NavHostController,title: String,orderBy: String,so
                 .padding(it)
                 .fillMaxHeight(),
         ) {
-            if(!connected.value){
+            if (!connected.value) {
                 NetWorkError()
-            }else{
-                if(softViewModel.listLoadedErrorData.isNotEmpty()){
+            } else {
+                if (softViewModel.listLoadedErrorData.isNotEmpty()) {
                     ServerError()
-                }else{
-                    Box(){
+                } else {
+                    Box() {
                         LazyColumn(
                             state = lazyListState,
                         ) {
-                            itemsIndexed(softViewModel.softList){ index, soft ->
-                                SoftItemRank(soft = soft, index = index+1,onClick={
-                                    Log.e("onClick", "ListScreen: ", )
+                            itemsIndexed(softViewModel.softList) { index, soft ->
+                                SoftItemRank(soft = soft, index = index + 1, onClick = {
+                                    Log.e("onClick", "ListScreen: ")
                                 }, onDownload = {
                                     coroutineScope.launch {
                                         downloadViewModel.download(context, soft.id)
                                     }
-                                },showRank=(orderBy!="2"))
+                                }, showRank = (orderBy != "2"))
                             }
                         }
                         PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))

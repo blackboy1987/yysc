@@ -1,6 +1,5 @@
 package com.bootx.yysc.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,11 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,28 +34,37 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.bootx.yysc.extension.onBottomReached
+import com.bootx.yysc.model.entity.AppRankSearchEntity
+import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.LeftIcon
+import com.bootx.yysc.ui.components.RankIndex
 import com.bootx.yysc.ui.components.SoftIcon6
-import com.bootx.yysc.ui.components.TabRowList
 import com.bootx.yysc.ui.components.TabRowScrollList
 import com.bootx.yysc.ui.components.Tag
+import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.viewmodel.AppRankViewModel
+import com.bootx.yysc.viewmodel.DownloadViewModel
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun AppRankScreen(
     navController: NavHostController,
     appRankViewModel: AppRankViewModel = viewModel(),
+    downloadViewModel: DownloadViewModel = viewModel(),
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     var selectIndex by remember {
         mutableStateOf(0)
@@ -66,8 +78,27 @@ fun AppRankScreen(
 
     LaunchedEffect(Unit) {
         appRankViewModel.appRank(context)
-        Log.e("appRankViewModel", "AppRankScreen: ${appRankViewModel.list.toString()}")
     }
+
+    val refreshScope = rememberCoroutineScope()
+    var refreshing by remember { mutableStateOf(false) }
+
+    fun refresh() = refreshScope.launch {
+        refreshing = true
+        appRankViewModel.search(context, selectIndex, selectedTabIndex)
+        refreshing = false
+    }
+
+    val state = rememberPullRefreshState(refreshing, ::refresh)
+    val lazyListState = rememberLazyListState()
+    lazyListState.onBottomReached(buffer = 3) {
+        coroutineScope.launch {
+            refreshing = true
+            appRankViewModel.search(context, selectIndex, selectedTabIndex)
+            refreshing = false
+        }
+    }
+
     if (appRankViewModel.list.isNotEmpty()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0.dp, 0.dp, 0.dp, 0.dp),
@@ -121,16 +152,32 @@ fun AppRankScreen(
                         selectedTabIndex = selectedTabIndex,
                         onClick = { index ->
                             selectedTabIndex = index
+                            coroutineScope.launch {
+                                lazyListState.animateScrollToItem(0)
+                                appRankViewModel.search(context, selectIndex, selectedTabIndex)
+                            }
                         })
                 }
                 Box(
                     modifier = Modifier.padding(top = 60.dp)
                 ) {
-                    LazyColumn() {
-                        items(100) { index ->
-                            SoftItemDownload()
+                    LazyColumn(
+                        state = lazyListState,
+                    ) {
+                        itemsIndexed(appRankViewModel.list1) { index, soft ->
+                            SoftItemDownload(rank = index, item = soft, onClick = {type->
+                                if(type==0){
+                                    navController.navigate(Destinations.AppDetailFrame.route+"/${soft.id}")
+                                }else if(type == 1){
+                                    coroutineScope.launch {
+                                        downloadViewModel.download(context,soft.id)
+                                    }
+                                }
+                            })
+
                         }
                     }
+                    PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))
                 }
             }
         }
@@ -139,43 +186,71 @@ fun AppRankScreen(
 
 
 @Composable
-fun SoftItemDownload(rank:Int=-1,showDownload:Boolean=false,onDownload:()->Unit={}) {
+fun SoftItemDownload(
+    rank: Int = -1,
+    showDownload: Boolean = false,
+    onClick:(type: Int)->Unit,
+    item: AppRankSearchEntity
+) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.height(100.dp).fillMaxWidth().clickable {
-
-        }
+        modifier = Modifier
+            .height(100.dp)
+            .fillMaxWidth()
+            .clickable {
+                onClick(0);
+            }
     ) {
-        if(rank>-1){
-            Text(text = "${rank}", modifier = Modifier.width(40.dp), textAlign = TextAlign.Center)
+        if (rank > -1) {
+            RankIndex(index = rank + 1)
         }
-        SoftIcon6(url = "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1lT9Jm.img")
+        SoftIcon6(url = "${item.logo}")
         Column(
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 16.dp, end = 16.dp)
         ) {
-            Text(text = "安卓清理君")
+            Text(text = "${item.name}")
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "",
+                    Modifier.size(12.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "${item.score}",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 12.sp
+                )
+                if (item.versionName != null && item.versionName.isNotEmpty()) {
+                    Text(
+                        text = item.versionName,
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.padding(start = 8.dp),
+                        fontSize = 12.sp
+                    )
+                }
+            }
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(imageVector = Icons.Default.Star, contentDescription = "",Modifier.size(12.dp))
-                Text(text = "9.5")
-                Text(text = "3.7.9")
-            }
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(imageVector = Icons.Default.Star, contentDescription = "")
                 Tag(text = "星标")
-                Text(text = "今日938")
+                Text(
+                    text = "${item.memo}", color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(start = 8.dp),
+                    fontSize = 12.sp
+                )
             }
         }
-        if(showDownload){
-            OutlinedButton(modifier = Modifier.padding(end = 16.dp), onClick = { onDownload() }) {
+        if (showDownload) {
+            OutlinedButton(modifier = Modifier.padding(end = 16.dp), onClick = { onClick(1) }) {
                 Text(text = "下载")
             }
         }
