@@ -343,87 +343,76 @@ fun TouGaoListScreen(
         sheetElevation = 0.dp,
         sheetState = sheetState,
         sheetContent = {
-            Spacer(modifier = Modifier.height(10.dp))
-            if (sheetStateType == 0) {
-                Text(
-                    text = "应用投稿",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "选择安装包位置",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                TextButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "手机存储",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Left
-                    )
-                }
-                TextButton(onClick = {
-                    navController.navigate(Destinations.TouGaoAppInfoListFrame.route)
-                }, modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "已安装应用",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Left
-                    )
-                }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
                 Spacer(modifier = Modifier.height(10.dp))
-                Button(onClick = {
-                    coroutineScope.launch {
-                        sheetState.hide()
-                    }
-                }, modifier = Modifier.fillMaxWidth()) {
+                if (sheetStateType == 0) {
                     Text(
-                        text = "取消",
+                        text = "应用投稿",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
-                }
-            } else if (sheetStateType == 1) {
-                Text(
-                    text = "内容下载管理器",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                TextButton(
-                    onClick = {
+                    Text(
+                        text = "选择安装包位置",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    TextButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "手机存储",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Left
+                        )
+                    }
+                    TextButton(onClick = {
+                        navController.navigate(Destinations.TouGaoAppInfoListFrame.route)
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "已安装应用",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Left
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(onClick = {
+                        coroutineScope.launch {
+                            sheetState.hide()
+                        }
+                    }, modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "取消",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                } else if (sheetStateType == 1) {
+                    Text(
+                        text = "内容下载管理器",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    TextButton(
+                        onClick = {
+                            sheetStateType = 0
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text(
+                                text = "更新版本",
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                    TextButton(onClick = {
                         sheetStateType = 0
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = "更新版本",
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-                }
-                TextButton(onClick = {
-                    sheetStateType = 0
-                }, modifier = Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = "更新信息",
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-                }
-                if (touGaoInfoStatus == 100 || touGaoInfoStatus == 2) {
-                    // 草稿，未通过
-                    TextButton(onClick = {
-                        update(0)
                     }, modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -431,15 +420,48 @@ fun TouGaoListScreen(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             Text(
-                                text = "重新提交",
+                                text = "更新信息",
                                 fontWeight = FontWeight.Bold,
                             )
                         }
                     }
-                } else if (touGaoInfoStatus == 0 || touGaoInfoStatus == 1) {
+                    if (touGaoInfoStatus == 100 || touGaoInfoStatus == 2) {
+                        // 草稿，未通过
+                        TextButton(onClick = {
+                            update(0)
+                        }, modifier = Modifier.fillMaxWidth()) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                Text(
+                                    text = "重新提交",
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
+                    } else if (touGaoInfoStatus == 0 || touGaoInfoStatus == 1) {
+                        TextButton(onClick = {
+                            // 全部，已上架，审核中
+                            update(1)
+                        }, modifier = Modifier.fillMaxWidth()) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                Text(
+                                    text = "取消审核",
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
+                    }
                     TextButton(onClick = {
-                        // 全部，已上架，审核中
-                        update(1)
+                        coroutineScope.launch {
+                            update(2)
+                        }
                     }, modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -447,30 +469,13 @@ fun TouGaoListScreen(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             Text(
-                                text = "取消审核",
+                                text = "删除应用",
                                 fontWeight = FontWeight.Bold,
                             )
                         }
-                    }
-                }
-                TextButton(onClick = {
-                    coroutineScope.launch {
-                        update(2)
-                    }
-                }, modifier = Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(
-                            text = "删除应用",
-                            fontWeight = FontWeight.Bold,
-                        )
                     }
                 }
             }
-
         },
         modifier = Modifier.fillMaxWidth(),
         sheetShape = RoundedCornerShape(4.dp),

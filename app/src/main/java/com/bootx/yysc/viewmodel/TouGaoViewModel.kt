@@ -80,17 +80,18 @@ class TouGaoViewModel : ViewModel() {
         downloadUrl: String,
         password: String,
     ) {
-        // 先上传图片
-        progress = 0
-        val rate = 100/list.size
-
         val urls = arrayOfNulls<String>(list.size)
-        // 因为只支持单个文件上传，所以。得循环上传
-        list.forEachIndexed { index, item->
-            UploadUtils.uri2File(item.uri, context)?.let {
-                urls[index] = UploadUtils.uploadImage(SharedPreferencesUtils(context).get("token"), it)
-                progress += rate
-                msg = "正在上传${index+1}张图片"
+        // 先上传图片
+        if(list.isNotEmpty()){
+            progress = 0
+            val rate = 100/list.size
+            // 因为只支持单个文件上传，所以。得循环上传
+            list.forEachIndexed { index, item->
+                UploadUtils.uri2File(item.uri, context)?.let {
+                    urls[index] = UploadUtils.uploadImage(SharedPreferencesUtils(context).get("token"), it)
+                    progress += rate
+                    msg = "正在上传${index+1}张图片"
+                }
             }
         }
         touGaoService.create(
