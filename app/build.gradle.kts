@@ -62,7 +62,7 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("io.github.leavesczy:matisse:1.1.3")
 
-    implementation("io.github.azhon:appupdate:4.3.1")
+    implementation("io.github.azhon:appupdate:4.3.2")
 
 
     implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")

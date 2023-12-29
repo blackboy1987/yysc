@@ -38,6 +38,7 @@ import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.requestRewardAd
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.ui.theme.fontSize12
+import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.viewmodel.SupportViewModel
 import kotlinx.coroutines.launch
 
@@ -72,7 +73,7 @@ fun SupportScreen(navController: NavHostController,supportViewModel: SupportView
                     .padding(it)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
             ) {
                 GifImage(url = "https://img.zcool.cn/community/0132255a604c8da80120121f36db45.gif",height = 300.dp)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -97,9 +98,14 @@ fun SupportScreen(navController: NavHostController,supportViewModel: SupportView
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(onClick = { requestRewardAd(context,onClose={type->
                     Log.i("requestRewardAd", "SupportScreen: ${type}")
-                    coroutineScope.launch {
-                        supportViewModel.reward(context)
-                        supportViewModel.loadAd(context)
+                    CommonUtils.toast(context,"${type}")
+                    if(type=="loadRewardAdFail"){
+                        CommonUtils.toast(context,"视频播放失败")
+                    }else if(type=="playRewardVideoCompleted"){
+                        coroutineScope.launch {
+                            supportViewModel.reward(context)
+                            supportViewModel.loadAd(context)
+                        }
                     }
                 }) }) {
                     Text(text = "观看激励广告")

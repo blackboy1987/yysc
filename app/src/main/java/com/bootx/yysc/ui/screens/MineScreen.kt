@@ -199,7 +199,6 @@ fun MineScreen(
                             fontWeight = FontWeight.Bold,
                             fontSize = fontSize14
                         )
-                        Text(text = "免费广告权益", fontSize = fontSize10)
                         Icon(
                             tint = Color(0xFFAEAEAE),
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

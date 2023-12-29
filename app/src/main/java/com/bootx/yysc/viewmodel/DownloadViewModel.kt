@@ -33,7 +33,7 @@ class DownloadViewModel:ViewModel() {
         Log.i("download", "download: ${data.toString()}")
         if (downloadInfo.code == 0 && data != null && data.downloadUrl.isNotEmpty()) {
             val manager = DownloadManager.Builder(context as Activity).run {
-                apkUrl(data.downloadUrl).smallIcon(R.drawable.network_error)
+                apkUrl(data.downloadUrl).smallIcon(R.drawable.logo)
                     .showNotification(false)
                     .showBgdToast(false)
                     .showNewerToast(false)

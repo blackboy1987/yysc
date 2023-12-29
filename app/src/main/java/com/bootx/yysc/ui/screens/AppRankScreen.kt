@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -165,7 +166,7 @@ fun AppRankScreen(
                         state = lazyListState,
                     ) {
                         itemsIndexed(appRankViewModel.list1) { index, soft ->
-                            SoftItemDownload(rank = index, item = soft, onClick = {type->
+                            SoftItemDownload(rank = index,showDownload = true, item = soft, onClick = {type->
                                 if(type==0){
                                     navController.navigate(Destinations.AppDetailFrame.route+"/${soft.id}")
                                 }else if(type == 1){

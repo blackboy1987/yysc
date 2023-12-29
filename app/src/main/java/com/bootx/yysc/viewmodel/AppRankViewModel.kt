@@ -11,6 +11,7 @@ import com.bootx.yysc.model.entity.AppRankEntity
 import com.bootx.yysc.model.entity.AppRankSearchEntity
 import com.bootx.yysc.model.service.AppRankService
 import com.bootx.yysc.util.SharedPreferencesUtils
+import kotlinx.coroutines.delay
 
 class AppRankViewModel:ViewModel() {
 

@@ -40,8 +40,8 @@ fun MainScreen(navController: NavHostController,type: String="0") {
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
         NavigationItem(title = "应用", icon = Icons.Filled.Apps),
-        NavigationItem(title = "游戏", icon = Icons.Filled.Games),
-        NavigationItem(title = "广场", icon = Icons.Filled.Place),
+        /*NavigationItem(title = "游戏", icon = Icons.Filled.Games),
+        NavigationItem(title = "广场", icon = Icons.Filled.Place),*/
         NavigationItem(title = "我的", icon = Icons.Filled.Person),
     )
 
@@ -92,14 +92,6 @@ fun MainScreen(navController: NavHostController,type: String="0") {
                 }
                 2-> {
                     SharedPreferencesUtils(context).set("homeIndex","2")
-                    GameScreen(navController = navController)
-                }
-                3-> {
-                    SharedPreferencesUtils(context).set("homeIndex","3")
-                    PlazaScreen(navController = navController)
-                }
-                4-> {
-                    SharedPreferencesUtils(context).set("homeIndex","4")
                     MineScreen(navController = navController)
                 }
             }
