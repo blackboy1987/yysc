@@ -92,7 +92,7 @@ fun SupportRankScreen(navController: NavHostController,supportRankViewModel: Sup
             modifier = Modifier.padding(it)
         ) {
             LazyColumn(
-                modifier = Modifier.padding(it)
+                state = lazyListState,
             ) {
                 itemsIndexed(supportRankViewModel.list){index,item->
                     Row(
