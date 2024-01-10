@@ -49,7 +49,7 @@ fun NotifyListScreen(
     type: String,
     notifyViewModel: NotifyViewModel = viewModel(),
 ) {
-    var context = LocalContext.current
+    val context = LocalContext.current
     val show = remember {
         mutableStateOf(false)
     }

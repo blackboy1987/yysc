@@ -13,6 +13,7 @@ import com.bootx.yysc.model.service.HomeService
 import com.bootx.yysc.util.AppInfoUtils
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
+import com.google.gson.Gson
 
 class HomeViewModel:ViewModel() {
     private val appVersionService = AppVersionService.instance()
@@ -20,7 +21,7 @@ class HomeViewModel:ViewModel() {
 
     var homeData by mutableStateOf(HomeData())
 
-    var loading by mutableStateOf(true)
+    var loading by mutableStateOf(false)
         private set
 
     /**

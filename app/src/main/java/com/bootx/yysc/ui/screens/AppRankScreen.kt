@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -47,7 +46,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bootx.yysc.extension.onBottomReached
 import com.bootx.yysc.model.entity.AppRankSearchEntity
-import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.RankIndex
 import com.bootx.yysc.ui.components.SoftIcon6

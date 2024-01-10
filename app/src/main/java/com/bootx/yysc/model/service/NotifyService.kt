@@ -10,7 +10,7 @@ import retrofit2.http.POST
 
 interface NotifyService {
 
-    @POST("/api/member/member/list")
+    @POST("/api/member/message/list")
     @FormUrlEncoded
     suspend fun list(
         @Header("token") token: String,

@@ -91,7 +91,7 @@ fun HomeScreen(
                     SoftIcon4(
                         url = "${userViewModel.userInfo.avatar}?x-oss-process=style/size_100",
                         modifier = Modifier.clickable {
-                            navController.navigate(Destinations.MainFrame.route+"/4")
+                            navController.navigate(Destinations.MainFrame.route+"/2")
                         })
                 } else {
                     SoftIcon4(
@@ -101,7 +101,7 @@ fun HomeScreen(
                         })
                 }
             }, actions = {
-                Box(
+                /*Box(
                     modifier = Modifier
                         .clickable {
                             navController.navigate(Destinations.DownloadManagerFrame.route)
@@ -119,7 +119,7 @@ fun HomeScreen(
                     ) {
                         Text(text = "2", fontSize = MaterialTheme.typography.bodySmall.fontSize)
                     }
-                }
+                }*/
 
                 Icon(modifier = Modifier.clickable {
                     navController.navigate(Destinations.NotifyFrame.route)

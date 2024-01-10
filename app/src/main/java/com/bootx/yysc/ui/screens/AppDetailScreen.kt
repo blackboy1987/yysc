@@ -75,8 +75,12 @@ import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.ShareUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.AppDetailViewModel
+import com.bootx.yysc.viewmodel.DownloadViewModel
 import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.Timer
+import java.util.TimerTask
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalLayoutApi::class
@@ -87,8 +91,12 @@ fun AppDetailScreen(
     id: String,
     softViewModel: SoftViewModel = viewModel(),
     appDetailViewModel: AppDetailViewModel = viewModel(),
+    downloadViewModel: DownloadViewModel = viewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var progress by remember {
+        mutableStateOf("")
+    }
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     var loading by remember {
         mutableStateOf(false)
@@ -126,8 +134,27 @@ fun AppDetailScreen(
                     Text(text = "投币")
                 }
             }
-            Button(modifier = Modifier.weight(1.0f), onClick = { /*TODO*/ }) {
-                Text(text = "下载")
+            Button(modifier = Modifier.weight(1.0f), onClick = {
+                coroutineScope.launch {
+                    downloadViewModel.download(context, softViewModel.softDetail.id)
+                    val timer = Timer();
+                    timer.schedule(object : TimerTask() {
+                        override fun run() {
+                            val get = SharedPreferencesUtils(context).get("download_$id")
+                            if(get=="100%"){
+                                timer.cancel()
+                            }
+                            progress = get
+                            Log.d("MyTimerTask", "${get=="100%"},${get}")
+                        }
+                    }, Date(), 100)
+                }
+            }) {
+                if(progress.isBlank()){
+                    Text(text = "下载")
+                }else{
+                    Text(text = "下载中($progress)")
+                }
             }
             TextButton(onClick = {
                 val shareAppList = ShareUtils.getShareAppList(context)
@@ -303,7 +330,7 @@ fun AppDetailScreen(
                         ) {
                             Text(text = "详情")
                             RightIcon {
-                                navController.navigate(Destinations.AppMoreFrame.route+"/${softViewModel.softDetail.id}")
+                                navController.navigate(Destinations.AppMoreFrame.route + "/${softViewModel.softDetail.id}")
                             }
                         }
                     })
@@ -368,7 +395,12 @@ fun AppDetailScreen(
                         Button(modifier = Modifier.fillMaxWidth(), onClick = {
                             coroutineScope.launch {
                                 loading = true
-                                appDetailViewModel.reward(SharedPreferencesUtils(context).get("token"),id,point,memo)
+                                appDetailViewModel.reward(
+                                    SharedPreferencesUtils(context).get("token"),
+                                    id,
+                                    point,
+                                    memo
+                                )
                                 loading = false
                             }
                         }) {
@@ -379,7 +411,7 @@ fun AppDetailScreen(
             }
         }) {
     }
-    if(loading){
+    if (loading) {
         Loading("提交中...")
     }
 }
