@@ -7,4 +7,4 @@ data class LoginEntity(
     val token: String,
 )
 
-data class LoginEntityResponse(val data: LoginEntity) : BaseResponse()
+data class LoginEntityResponse(val data: LoginEntity?) : BaseResponse()

@@ -61,6 +61,8 @@ sealed class Destinations(val route: String) {
     data object MemberFrame : Destinations("MemberFrame")
     //排行榜
     data object AppRankFrame : Destinations("AppRankFrame")
+    //注册
+    data object RegisterFrame : Destinations("RegisterFrame")
 
 
 

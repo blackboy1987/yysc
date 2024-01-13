@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -40,17 +41,27 @@ import com.bootx.yysc.ui.components.toast
 import com.bootx.yysc.ui.navigation.Destinations
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.LoginViewModel
+import com.bootx.yysc.viewmodel.RegisterViewModel
 import kotlinx.coroutines.launch
 
 
 @SuppressLint("ShowToast")
 @Composable
-fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
+fun RegisterScreen(
+    navController: NavHostController,
+    registerViewModel: RegisterViewModel = viewModel()
+) {
     val context = LocalContext.current
     var username by remember {
         mutableStateOf("")
     }
+    var email by remember {
+        mutableStateOf("")
+    }
     var password by remember {
+        mutableStateOf("")
+    }
+    var spreadMemberUsername by remember {
         mutableStateOf("")
     }
     val coroutineScope = rememberCoroutineScope()
@@ -73,7 +84,7 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = "爱尚应用",
+                        text = "注册账号",
                         fontSize = MaterialTheme.typography.titleLarge.fontSize,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -81,57 +92,88 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                             .padding(top = 24.dp)
                     )
                     Text(
-                        text = "欢迎回来，共聚此刻",
+                        text = "欢迎加入我们",
                         fontSize = MaterialTheme.typography.titleSmall.fontSize,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 24.dp)
                     )
-                    MyInput(value = username, leadingIcon = Icons.Default.Email, onChange = {
-                        username = it
-                    }, placeholder = { Text(text = "邮箱或用户名") })
+                    MyInput(
+                        value = username,
+                        leadingIcon = Icons.Default.Email,
+                        onChange = {
+                            username = it
+                        },
+                        placeholder = {
+                            Text(
+                                text = "请输入昵称",
+                                fontSize = MaterialTheme.typography.labelSmall.fontSize
+                            )
+                        })
+                    Spacer(modifier = Modifier.height(8.dp))
+                    MyInput(
+                        value = email,
+                        leadingIcon = Icons.Default.Email,
+                        onChange = {
+                            email = it
+                        },
+                        placeholder = {
+                            Text(
+                                text = "请输入邮箱，找回密码时需要",
+                                fontSize = MaterialTheme.typography.labelSmall.fontSize
+                            )
+                        })
                     Spacer(modifier = Modifier.height(8.dp))
                     MyPasswordInput(value = password, onChange = {
                         password = it
                     })
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "忘记密码",
-                        textAlign = TextAlign.End,
-                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    MyInput(
+                        value = spreadMemberUsername,
+                        leadingIcon = Icons.Default.Leaderboard,
+                        onChange = {
+                            spreadMemberUsername = it
+                        },
+                        placeholder = {
+                            Text(
+                                text = "邀请码，有就填一下",
+                                fontSize = MaterialTheme.typography.labelSmall.fontSize
+                            )
+                        })
+                    Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        enabled = username.isNotEmpty() && password.isNotEmpty() && !loginViewModel.loading,
+                        enabled = username.isNotEmpty() && password.isNotEmpty() && email.isNotEmpty() && !registerViewModel.loading,
                         onClick = {
                             coroutineScope.launch {
-                                loginViewModel.login(context, username, password)
-                                if (loginViewModel.data.token.isBlank()) {
-                                    toast(context, "用户不存在！")
-                                } else {
-                                    val sharedPreferencesUtils = SharedPreferencesUtils(context)
-                                    sharedPreferencesUtils.set("token", loginViewModel.data.token)
+                                val flag = registerViewModel.register(
+                                    context,
+                                    username,
+                                    password,
+                                    email,
+                                    spreadMemberUsername
+                                )
+                                if (flag) {
                                     navController.navigate(Destinations.MainFrame.route + "/0")
                                 }
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = "登录")
+                        Text(text = "注册")
                     }
                     Text(text = "或者", modifier = Modifier.padding(vertical = 8.dp))
                     OutlinedButton(onClick = {
-                        navController.navigate(Destinations.RegisterFrame.route)
+                        navController.navigate(Destinations.LoginFrame.route)
                     }, modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "账号注册")
+                        Text(text = "已有账号")
                     }
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
     }
-    if (loginViewModel.loading) {
+    if (registerViewModel.loading) {
         Loading("登录中...")
     }
 }

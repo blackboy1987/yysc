@@ -7,7 +7,6 @@ data class SignInEntity(
     var days: Int=0,
     var isSign: Boolean=false,
     var rank: Int=0,
-    var list: List<SignRank> = listOf()
 )
 
 @JsonClass(generateAdapter = true)
@@ -18,5 +17,5 @@ data class SignRank(
     var signDate: String="",
 )
 
-data class SignInEntityListResponse(val data: List<SignInEntity>?) : BaseResponse()
+data class SignRankListResponse(val data: List<SignRank>) : BaseResponse()
 data class SignInEntityResponse(val data: SignInEntity) : BaseResponse()

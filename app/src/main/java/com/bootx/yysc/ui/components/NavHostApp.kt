@@ -33,6 +33,7 @@ import com.bootx.yysc.ui.screens.NotifyListScreen
 import com.bootx.yysc.ui.screens.NotifyScreen
 import com.bootx.yysc.ui.screens.OtherScreen
 import com.bootx.yysc.ui.screens.QunZuScreen
+import com.bootx.yysc.ui.screens.RegisterScreen
 import com.bootx.yysc.ui.screens.SearchScreen
 import com.bootx.yysc.ui.screens.SettingScreen
 import com.bootx.yysc.ui.screens.SignInScreen
@@ -60,7 +61,7 @@ fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
     }
     NavHost(
         navController = navController,
-        startDestination = Destinations.MainFrame.route+"/0",
+        startDestination = Destinations.RegisterFrame.route,
     ) {
         composable(
             Destinations.MainFrame.route + "/{type}",
@@ -503,7 +504,21 @@ fun NavHostApp(settingViewModel: SettingViewModel = viewModel()) {
         ) {
             AppRankScreen(navController)
         }
-
+        composable(
+            Destinations.RegisterFrame.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+        ) {
+            RegisterScreen(navController)
+        }
 
 
 

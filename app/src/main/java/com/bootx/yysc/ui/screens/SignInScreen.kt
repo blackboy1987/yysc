@@ -35,17 +35,19 @@ import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.SoftIcon6
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.util.SharedPreferencesUtils
+import com.bootx.yysc.viewmodel.SignViewModel
 import com.bootx.yysc.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(navController: NavHostController, userViewModel: UserViewModel = viewModel()) {
+fun SignInScreen(navController: NavHostController, signViewModel: SignViewModel = viewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current;
     LaunchedEffect(Unit) {
-        userViewModel.signIn(SharedPreferencesUtils(context).get("token"))
-        userViewModel.loadUserInfo(context)
+        signViewModel.isSign(context)
+        signViewModel.loadUserInfo(context)
+        signViewModel.list(context)
     }
 
     Scaffold(
@@ -72,22 +74,22 @@ fun SignInScreen(navController: NavHostController, userViewModel: UserViewModel 
                         .padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
                 ) {
                     Spacer(modifier = Modifier.width(40.dp))
-                    SoftIcon6(url = "${userViewModel.userInfo.avatar}")
+                    SoftIcon6(url = "${signViewModel.userInfo.avatar}")
                     Column(
                         modifier = Modifier
                             .weight(1.0f)
                             .padding(start = 8.dp)
                     ) {
                         Text(
-                            text = "${userViewModel.userInfo.username}",
+                            text = "${signViewModel.userInfo.username}",
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             color = MaterialTheme.colorScheme.primary
                         )
-                        var text = "连续签到${userViewModel.signInInfo.days}天";
-                        if(!userViewModel.signInInfo.isSign){
+                        var text = "连续签到${signViewModel.signInInfo.days}天";
+                        if(!signViewModel.signInInfo.isSign){
                             text += "，今日未签到"
                         }else{
-                            text += "，排名：${userViewModel.signInInfo.rank}"
+                            text += "，排名：${signViewModel.signInInfo.rank}"
                         }
                         Text(
                             text = text,
@@ -95,12 +97,12 @@ fun SignInScreen(navController: NavHostController, userViewModel: UserViewModel 
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
-                    if (!userViewModel.signInInfo.isSign) {
+                    if (!signViewModel.signInInfo.isSign) {
                         Button(
                             modifier = Modifier.padding(start = 8.dp),
                             onClick = {
                                 coroutineScope.launch {
-                                    userViewModel.signIn(SharedPreferencesUtils(context).get("token"))
+                                    signViewModel.signIn(SharedPreferencesUtils(context).get("token"))
                                 }
                             }) {
                             Text(text = "签到")
@@ -119,7 +121,7 @@ fun SignInScreen(navController: NavHostController, userViewModel: UserViewModel 
                     )
                 }
                 LazyColumn() {
-                    itemsIndexed(userViewModel.signInInfo.list) {index,item->
+                    itemsIndexed(signViewModel.list) {index,item->
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,

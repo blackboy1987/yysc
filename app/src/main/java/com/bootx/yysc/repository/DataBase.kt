@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bootx.yysc.repository.dao.DownloadManagerDao
 import com.bootx.yysc.repository.dao.HistoryDao
-import com.bootx.yysc.repository.dao.UserDao
 import com.bootx.yysc.repository.entity.DownloadManagerEntity
 import com.bootx.yysc.repository.entity.HistoryEntity
 import com.bootx.yysc.repository.entity.UserEntity
@@ -34,9 +33,6 @@ abstract class DataBase : RoomDatabase() {
             db
         }
     }
-
-    abstract fun getUserDao(): UserDao
-
     abstract fun getHistoryDao(): HistoryDao
 
     abstract fun getDownloadManagerDao(): DownloadManagerDao

@@ -7,13 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bootx.yysc.model.entity.LoginEntity
-import com.bootx.yysc.model.service.LoginService
+import com.bootx.yysc.model.service.RegisterService
 import com.bootx.yysc.model.service.UserService
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
 
-class LoginViewModel : ViewModel() {
-    private val loginService = LoginService.instance()
+class RegisterViewModel : ViewModel() {
+    private val registerService = RegisterService.instance()
     private val userService = UserService.instance()
     // 加载状态
     var loading by mutableStateOf(false)
@@ -30,20 +30,26 @@ class LoginViewModel : ViewModel() {
     )
 
 
-    suspend fun login(context: Context, username: String, password: String){
+    suspend fun register(context: Context, username: String, password: String,email: String,spreadMemberUsername: String): Boolean{
         try {
             loading = true
-            val res = loginService.login(username, password)
-            if (res.code == 0 && res.data !=null) {
+            val res = registerService.register(username, password,email,spreadMemberUsername)
+            return if (res.code == 0 && res.data !=null) {
                 data = res.data
-                val currentUser = userService.currentUser(data.token)
-                SharedPreferencesUtils(context).set("userId","${currentUser.data.id}")
+                SharedPreferencesUtils(context).set("token",data.token)
+                loading = false
+                true;
+            }else{
+                loading = false
+                CommonUtils.toast(context,res.msg);
+                false
             }
-            loading = false
         } catch (e: Throwable) {
             loading = false
+            e.printStackTrace()
             Log.e("login", "login: ${e.toString()}", )
             CommonUtils.toast(context,e.toString());
+            return false;
         }
     }
 }

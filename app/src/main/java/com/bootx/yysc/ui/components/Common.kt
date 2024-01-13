@@ -43,7 +43,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusRestorer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.OnPlacedModifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -55,6 +57,7 @@ import com.bootx.yysc.config.Config
 import com.bootx.yysc.model.entity.SoftEntity
 import com.bootx.yysc.ui.theme.fontSize12
 import com.bootx.yysc.ui.theme.padding8
+import com.bumptech.glide.integration.compose.placeholder
 
 @Composable
 fun RightIcon(onClick: () -> Unit) {
@@ -199,7 +202,7 @@ fun SoftIcon4(url: String, modifier: Modifier = Modifier) {
 
 
 @Composable
-fun MyInput(value: String, onChange: (value: String) -> Unit) {
+fun MyInput(value: String, leadingIcon: ImageVector, onChange: (value: String) -> Unit, placeholder: @Composable (() -> Unit)) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,11 +212,12 @@ fun MyInput(value: String, onChange: (value: String) -> Unit) {
             onChange(it)
         },
         leadingIcon = {
-            Icon(imageVector = Icons.Default.Email, contentDescription = "")
+            Icon(imageVector = leadingIcon, contentDescription = "")
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
         ),
+        placeholder = placeholder,
         singleLine = true,
     )
 }
@@ -236,6 +240,7 @@ fun MyPasswordInput(value: String, onChange: (value: String) -> Unit) {
         ),
         visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
+        placeholder= { Text(text = "请输入密码", fontSize = MaterialTheme.typography.labelSmall.fontSize)}
     )
 }
 

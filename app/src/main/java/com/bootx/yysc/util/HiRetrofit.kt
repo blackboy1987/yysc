@@ -1,7 +1,6 @@
 package com.bootx.yysc.util
 
 import com.bootx.yysc.config.Config
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

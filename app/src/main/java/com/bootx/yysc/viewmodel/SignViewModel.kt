@@ -15,7 +15,7 @@ import com.bootx.yysc.repository.entity.UserEntity
 import com.bootx.yysc.util.CommonUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
 
-class UserViewModel:ViewModel() {
+class SignViewModel:ViewModel() {
     private val signInService = SignInService.instance()
     private val userService = UserService.instance()
 
@@ -68,11 +68,15 @@ class UserViewModel:ViewModel() {
         }
     }
 
+    /**
+     * 直接从数据库里面获取
+     */
     suspend fun loadUserInfo(context:Context) {
         try {
             val res = userService.currentUser(SharedPreferencesUtils(context).get("token"))
             if (res.code == 0) {
                 userInfo = res.data
+                SharedPreferencesUtils(context).set("userId","${userInfo.id}")
             }
         } catch (_: Throwable) {
         }
