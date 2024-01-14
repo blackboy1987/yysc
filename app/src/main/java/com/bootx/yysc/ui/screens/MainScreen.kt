@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -36,7 +37,10 @@ data class NavigationItem(
 
 @Composable
 fun MainScreen(navController: NavHostController,type: String="0") {
-    var context = LocalContext.current
+    val context = LocalContext.current
+    var token by remember {
+        mutableStateOf(SharedPreferencesUtils(context).get("token"))
+    }
     val navigationItems = listOf(
         NavigationItem(title = "首页", icon = Icons.Filled.Home),
         NavigationItem(title = "应用", icon = Icons.Filled.Apps),
@@ -91,8 +95,12 @@ fun MainScreen(navController: NavHostController,type: String="0") {
                     AppScreen(navController = navController)
                 }
                 2-> {
-                    SharedPreferencesUtils(context).set("homeIndex","2")
-                    MineScreen(navController = navController)
+                    if(token.isNotBlank()){
+                        SharedPreferencesUtils(context).set("homeIndex","2")
+                        MineScreen(navController = navController)
+                    }else{
+                        navController.navigate(Destinations.LoginFrame.route)
+                    }
                 }
             }
         }

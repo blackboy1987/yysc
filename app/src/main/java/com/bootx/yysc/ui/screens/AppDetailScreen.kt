@@ -68,6 +68,7 @@ import com.bootx.yysc.ui.components.LeftIcon
 import com.bootx.yysc.ui.components.Loading
 import com.bootx.yysc.ui.components.MyTabRow
 import com.bootx.yysc.ui.components.RightIcon
+import com.bootx.yysc.ui.components.SoftIcon4
 import com.bootx.yysc.ui.components.SoftIcon6
 import com.bootx.yysc.ui.components.TopBarTitle
 import com.bootx.yysc.ui.components.ad.RequestBannerAd
@@ -76,7 +77,6 @@ import com.bootx.yysc.util.ShareUtils
 import com.bootx.yysc.util.SharedPreferencesUtils
 import com.bootx.yysc.viewmodel.AppDetailViewModel
 import com.bootx.yysc.viewmodel.DownloadViewModel
-import com.bootx.yysc.viewmodel.SoftViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.Timer
@@ -89,7 +89,6 @@ import java.util.TimerTask
 fun AppDetailScreen(
     navController: NavHostController,
     id: String,
-    softViewModel: SoftViewModel = viewModel(),
     appDetailViewModel: AppDetailViewModel = viewModel(),
     downloadViewModel: DownloadViewModel = viewModel(),
 ) {
@@ -110,12 +109,12 @@ fun AppDetailScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        softViewModel.detail(context, SharedPreferencesUtils(context).get("token"), id)
+        appDetailViewModel.detail(context, SharedPreferencesUtils(context).get("token"), id)
     }
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { TopBarTitle(text = softViewModel.softDetail.name) },
+            title = { TopBarTitle(text = appDetailViewModel.softDetail.name) },
             navigationIcon = {
                 LeftIcon {
                     navController.popBackStack()
@@ -136,7 +135,7 @@ fun AppDetailScreen(
             }
             Button(modifier = Modifier.weight(1.0f), onClick = {
                 coroutineScope.launch {
-                    downloadViewModel.download(context, softViewModel.softDetail.id)
+                    downloadViewModel.download(context, appDetailViewModel.softDetail.id)
                     val timer = Timer();
                     timer.schedule(object : TimerTask() {
                         override fun run() {
@@ -181,20 +180,20 @@ fun AppDetailScreen(
                 item {
                     ListItem(headlineContent = {
                         Text(
-                            text = softViewModel.softDetail.name,
+                            text = appDetailViewModel.softDetail.name,
                             maxLines = 1,
                             color = MaterialTheme.colorScheme.primary,
                             overflow = TextOverflow.Ellipsis
                         )
                     }, supportingContent = {
                         Text(
-                            text = softViewModel.softDetail.fullName ?: "",
+                            text = appDetailViewModel.softDetail.fullName ?: "",
                             maxLines = 1,
                             color = MaterialTheme.colorScheme.secondary,
                             overflow = TextOverflow.Ellipsis
                         )
                     }, leadingContent = {
-                        SoftIcon6(url = softViewModel.softDetail.logo)
+                        SoftIcon6(url = appDetailViewModel.softDetail.logo)
                     })
                 }
                 item {
@@ -211,8 +210,8 @@ fun AppDetailScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Item(
-                                softViewModel.softDetail.score,
-                                "${softViewModel.softDetail.reviewCount}条评论"
+                                appDetailViewModel.softDetail.score,
+                                "${appDetailViewModel.softDetail.reviewCount}条评论"
                             )
                         }
                         Column(
@@ -220,14 +219,14 @@ fun AppDetailScreen(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Item(softViewModel.softDetail.size, "大小")
+                            Item(appDetailViewModel.softDetail.size, "大小")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Item(softViewModel.softDetail.downloads, "下载")
+                            Item(appDetailViewModel.softDetail.downloads, "下载")
                         }
                         Column(
                             modifier = Modifier.weight(1f),
@@ -235,8 +234,8 @@ fun AppDetailScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Item(
-                                "${softViewModel.softDetail.donationIcon}",
-                                "${softViewModel.softDetail.donationMember}人投币"
+                                "${appDetailViewModel.softDetail.donationIcon}",
+                                "${appDetailViewModel.softDetail.donationMember}人投币"
                             )
                         }
                     }
@@ -249,7 +248,7 @@ fun AppDetailScreen(
                 }
                 item {
                     LazyRow() {
-                        items(softViewModel.softDetail.images) { image ->
+                        items(appDetailViewModel.softDetail.images) { image ->
                             AsyncImage(
                                 modifier = Modifier
                                     .width(162.dp)
@@ -263,7 +262,7 @@ fun AppDetailScreen(
                         }
                     }
                 }
-                if (softViewModel.softDetail.updatedContent != null) {
+                if (appDetailViewModel.softDetail.updatedContent != null) {
                     item {
                         Text(
                             text = "更新内容",
@@ -272,12 +271,12 @@ fun AppDetailScreen(
                         )
                         AndroidView(factory = { context ->
                             TextView(context).apply {
-                                text = Html.fromHtml(softViewModel.softDetail.updatedContent)
+                                text = Html.fromHtml(appDetailViewModel.softDetail.updatedContent)
                             }
                         })
                     }
                 }
-                if (softViewModel.softDetail.introduce != null) {
+                if (appDetailViewModel.softDetail.introduce != null) {
                     item {
                         Text(
                             text = "关于应用",
@@ -286,7 +285,7 @@ fun AppDetailScreen(
                         )
                         AndroidView(factory = { context ->
                             TextView(context).apply {
-                                text = Html.fromHtml(softViewModel.softDetail.introduce)
+                                text = Html.fromHtml(appDetailViewModel.softDetail.introduce)
                             }
                         })
                     }
@@ -306,14 +305,8 @@ fun AppDetailScreen(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            AsyncImage(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clip(CircleShape),
-                                model = "https://profile-avatar.csdnimg.cn/9848118595564203baa263ac8ec3459a_ozhuimeng123.jpg",
-                                contentDescription = ""
-                            )
-                            Text(text = "湯姆")
+                            SoftIcon4(url = "${appDetailViewModel.softDetail.avatar}")
+                            Text(text = "${appDetailViewModel.softDetail.author}", modifier = Modifier.padding(start = 8.dp))
                         }
                     })
                 }
@@ -330,7 +323,7 @@ fun AppDetailScreen(
                         ) {
                             Text(text = "详情")
                             RightIcon {
-                                navController.navigate(Destinations.AppMoreFrame.route + "/${softViewModel.softDetail.id}")
+                                navController.navigate(Destinations.AppMoreFrame.route + "/${appDetailViewModel.softDetail.id}")
                             }
                         }
                     })
@@ -346,7 +339,7 @@ fun AppDetailScreen(
                         ) {
                             Text(text = "去举报")
                             RightIcon {
-                                navController.navigate(Destinations.ComplaintsFrame.route + "/${softViewModel.softDetail.id}")
+                                navController.navigate(Destinations.ComplaintsFrame.route + "/${appDetailViewModel.softDetail.id}")
                             }
                         }
                     })
@@ -395,13 +388,16 @@ fun AppDetailScreen(
                         Button(modifier = Modifier.fillMaxWidth(), onClick = {
                             coroutineScope.launch {
                                 loading = true
-                                appDetailViewModel.reward(
-                                    SharedPreferencesUtils(context).get("token"),
+                                val flag = appDetailViewModel.reward(
+                                    context,
                                     id,
                                     point,
                                     memo
                                 )
                                 loading = false
+                                if(flag){
+                                    state.hide()
+                                }
                             }
                         }) {
                             Text(text = "送上硬币")

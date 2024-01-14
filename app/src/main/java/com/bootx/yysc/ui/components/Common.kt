@@ -176,7 +176,6 @@ fun SoftIcon6(url: String, modifier: Modifier = Modifier) {
         contentDescription = ""
     )
 }
-
 @Composable
 fun SoftIcon6_8(url: String) {
     AsyncImage(

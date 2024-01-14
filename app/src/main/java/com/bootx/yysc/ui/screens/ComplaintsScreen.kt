@@ -36,6 +36,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -89,7 +90,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
         mutableStateOf("")
     }
     var type by remember {
-        mutableStateOf(1)
+        mutableIntStateOf(1)
     }
     val mediaPickerLauncher =
         rememberLauncherForActivityResult(contract = MatisseContract()) { images: List<MediaResource>? ->
@@ -120,7 +121,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
                     Button(onClick = {
                         coroutineScope.launch {
                             loading = true
-                            complaintsViewModel.save(context,SharedPreferencesUtils(context).get("token"),list,type,reason,id)
+                            complaintsViewModel.save(context,list,type,reason,id)
                             loading = false
                             navController.popBackStack()
                         }
@@ -185,7 +186,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
                     }
                 }
                 item {
-                    var imageWidth = (SystemInfoUtils.px2dp((SystemInfoUtils.getScreenWidth(context)-80) / 3,context))
+                    val imageWidth = (SystemInfoUtils.px2dp((SystemInfoUtils.getScreenWidth(context)-80) / 3,context))
                     FlowRow(
                         maxItemsInEachRow=3,
                         modifier = Modifier
@@ -255,7 +256,7 @@ fun ComplaintsScreen(navController: NavHostController, id: String, complaintsVie
 @Composable
 fun ComplaintsList(selectedKey: Int,onClick:(key: Int)->Unit) {
     var index by remember {
-        mutableStateOf(selectedKey)
+        mutableIntStateOf(selectedKey)
     }
 
     data class Item(

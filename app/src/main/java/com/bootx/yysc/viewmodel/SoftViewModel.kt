@@ -124,10 +124,9 @@ class SoftViewModel:ViewModel() {
         return softService.download(token,id)
     }
 
-    suspend fun more(token: String, id: String) {
-        val res = softService.more(token,id)
+    suspend fun more(context: Context, id: String) {
+        val res = softService.more(SharedPreferencesUtils(context).get("token"),id)
         if (res.code == 0) {
-            Log.e("softService", "more: ${res.data.toString()}", )
             softDetail = res.data
         }
     }

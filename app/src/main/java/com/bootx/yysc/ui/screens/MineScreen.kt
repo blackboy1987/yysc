@@ -86,8 +86,6 @@ fun MineScreen(
     }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
-
     val lazyListState = rememberLazyListState()
     lazyListState.onScroll(callback = { index ->
         showTopBar = index > 0

@@ -30,7 +30,7 @@ fun AppMoreScreen(
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        softViewModel.more(SharedPreferencesUtils(context).get("token"), id)
+        softViewModel.more(context, id)
     }
     Scaffold(topBar = {
         TopAppBar(
@@ -50,66 +50,78 @@ fun AppMoreScreen(
                     .fillMaxSize()
                     .padding(8.dp),
             ) {
-                item{
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "Package Name")
-                        },
-                        trailingContent = {
-                            Text(text = softViewModel.softDetail.packageName)
-                        }
-                    )
+                if(softViewModel.softDetail.packageName!=null){
+                    item{
+                        ListItem(
+                            headlineContent = {
+                                Text(text = "Package Name")
+                            },
+                            trailingContent = {
+                                Text(text = softViewModel.softDetail.packageName)
+                            }
+                        )
+                    }
                 }
-                item{
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "Version")
-                        },
-                        trailingContent = {
-                            Text(text = softViewModel.softDetail.versionName)
-                        }
-                    )
+                if(softViewModel.softDetail.versionName!=null){
+                    item{
+                        ListItem(
+                            headlineContent = {
+                                Text(text = "Version")
+                            },
+                            trailingContent = {
+                                Text(text = softViewModel.softDetail.versionName)
+                            }
+                        )
+                    }
                 }
-                item{
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "Version Code")
-                        },
-                        trailingContent = {
-                            Text(text = softViewModel.softDetail.versionCode)
-                        }
-                    )
+                if(softViewModel.softDetail.versionCode!=null){
+                    item{
+                        ListItem(
+                            headlineContent = {
+                                Text(text = "Version Code")
+                            },
+                            trailingContent = {
+                                Text(text = softViewModel.softDetail.versionCode)
+                            }
+                        )
+                    }
                 }
-                item{
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "Target SKD")
-                        },
-                        trailingContent = {
-                            Text(text = softViewModel.softDetail.targetSdkVersion)
-                        }
-                    )
+                if(softViewModel.softDetail.targetSdkVersion!=null){
+                    item{
+                        ListItem(
+                            headlineContent = {
+                                Text(text = "Target SKD")
+                            },
+                            trailingContent = {
+                                Text(text = softViewModel.softDetail.targetSdkVersion)
+                            }
+                        )
+                    }
                 }
-                item{
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "Min SDK")
-                        },
-                        trailingContent = {
-                            Text(text = softViewModel.softDetail.minSdkVersion)
-                        }
-                    )
+                if(softViewModel.softDetail.minSdkVersion!=null){
+                    item{
+                        ListItem(
+                            headlineContent = {
+                                Text(text = "Min SDK")
+                            },
+                            trailingContent = {
+                                Text(text = softViewModel.softDetail.minSdkVersion)
+                            }
+                        )
+                    }
                 }
-                item{
-                    ListItem(
-                        headlineContent = {
-                            Text(text = "App Size")
-                        },
-                        trailingContent = {
-                            Text(text = softViewModel.softDetail.size)
-                        }
-                    )
-                }
+               if(softViewModel.softDetail.size!=null){
+                   item{
+                       ListItem(
+                           headlineContent = {
+                               Text(text = "App Size")
+                           },
+                           trailingContent = {
+                               Text(text = softViewModel.softDetail.size)
+                           }
+                       )
+                   }
+               }
             }
         }
     }
